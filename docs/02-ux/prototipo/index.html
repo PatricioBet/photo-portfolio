@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Prototipo navegable del portfolio de fotografía y video.">
+  <title>Prototipo — photo.patriciobet.dev</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-route="home">
+  <a class="skip" href="#main">Saltar al contenido</a>
+
+  <div class="proto-bar" role="region" aria-label="Controles del prototipo">
+    <span class="proto-badge">PROTOTIPO</span>
+    <p class="proto-note" id="proto-note">Piezas de demostración: no son obra del autor.</p>
+    <div class="proto-controls">
+      <a class="proto-link" href="#/admin">Admin</a>
+      <button type="button" class="proto-btn" id="mode-btn">Contenido: demo</button>
+      <button type="button" class="proto-btn" id="lang-btn" lang="en">EN</button>
+      <button type="button" class="proto-btn" id="theme-btn" aria-label="Cambiar tema">Tema</button>
+    </div>
+  </div>
+
+  <header class="site-header" id="site-header">
+    <a class="brand" href="#/" aria-label="Patricio Betancourt, inicio">PB</a>
+    <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-nav">
+      Menú
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Principal">
+      <a href="#/fotos" id="nav-photos">Fotos</a>
+      <a href="#/videos" id="nav-videos">Videos</a>
+      <a href="#/colecciones" id="nav-collections">Colecciones</a>
+      <a href="#/sobre-mi" id="nav-about">Sobre mí</a>
+      <a href="#/contacto" id="nav-contact">Contacto</a>
+    </nav>
+    <div class="header-tools">
+      <a href="#/buscar" id="nav-search" class="icon-link">Buscar</a>
+      <button type="button" class="icon-btn" id="theme-btn-2" aria-label="Cambiar tema">◐</button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1"></main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <dialog id="lightbox" class="lightbox" aria-labelledby="lb-title">
+    <div class="lb-bar">
+      <p class="lb-count" id="lb-count"></p>
+      <button type="button" class="lb-btn" id="lb-close" aria-label="Cerrar">×</button>
+    </div>
+    <div class="lb-art-wrap" id="lb-art-wrap">
+      <div class="art art-1" id="lb-art" role="img" aria-label=""></div>
+    </div>
+    <div class="lb-foot">
+      <h2 id="lb-title"></h2>
+      <div class="lb-nav">
+        <button type="button" class="lb-btn" id="lb-prev">Anterior</button>
+        <button type="button" class="lb-btn" id="lb-next">Siguiente</button>
+      </div>
+    </div>
+  </dialog>
+
+  <noscript>
+    <p class="notice" style="max-width: 720px; margin: 24px auto;">
+      <strong>Este prototipo necesita JavaScript.</strong> El sitio real funcionará
+      sin JavaScript para contenido, imágenes y navegación. El prototipo es solo
+      una herramienta de revisión de diseño.
+    </p>
+  </noscript>
+
+  <script src="data.js"></script>
+  <script src="views.js"></script>
+  <script src="admin.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
