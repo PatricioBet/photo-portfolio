@@ -1,0 +1,76 @@
+---
+/**
+ * Collection detail — /colecciones/{slug}/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/collections" : "/colecciones";
+
+// Placeholder collection
+const collection = {
+  title: locale === "es" ? "Colección de demostración" : "Demo collection",
+  description: locale === "es"
+    ? "Las colecciones aparecerán cuando se publiquen las primeras piezas."
+    : "Collections will appear when the first pieces are published.",
+  count: 0,
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: collection.title,
+  url: `${basePath}/${Astro.params?.slug || "demo"}`,
+  numberOfItems: collection.count,
+  description: collection.description,
+};
+---
+
+<BaseLayout
+  title={`${collection.title} — Patricio Betancourt`}
+  description={collection.description}
+  locale={locale}
+  path={`${basePath}/${Astro.params?.slug || "demo"}/`}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li>
+          <a href={basePath} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Colecciones" : "Collections"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {collection.title}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>{collection.title}</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      {collection.description}
+    </p>
+
+    <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-muted)" }}>
+      <p>
+        {locale === "es"
+          ? "El contenido de esta colección aparecerá cuando se publiquen las piezas correspondientes."
+          : "This collection's content will appear when the relevant pieces are published."}
+      </p>
+    </div>
+  </div>
+</BaseLayout>

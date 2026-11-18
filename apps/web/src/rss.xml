@@ -1,0 +1,45 @@
+---
+/**
+ * RSS Feed — Generates RSS for published content.
+ * Uses Astro's built-in RSS support.
+ */
+
+const site = "https://photo.patriciobet.dev";
+
+// RSS items are generated from the content API at build time.
+// With 0 media, the feed is valid but empty (no <item> elements).
+// This is correct behavior per RSS spec.
+
+export async function GET(Astro: any) {
+  const { Feed } = await import("astro:rss");
+
+  const feed = new Feed({
+    title: "Patricio Betancourt",
+    description: locale === "es"
+      ? "Archivo personal de fotografías y videos."
+      : "Personal archive of photographs and videos.",
+    site: site,
+    feedUrl: `${site}/rss.xml`,
+    language: "es",
+  });
+
+  // Items will be populated when media is published
+  // For now, the feed is valid with zero items
+
+  return Astro.response;
+}
+
+const locale: "es" = "es";
+---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Patricio Betancourt — Fotografía y video</title>
+    <link>https://photo.patriciobet.dev</link>
+    <description>Archivo personal de fotografías y videos de Patricio Betancourt.</description>
+    <language>es</language>
+    <atom:link href="https://photo.patriciobet.dev/rss.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>{new Date().toUTCString()}</lastBuildDate>
+  </channel>
+</rss>

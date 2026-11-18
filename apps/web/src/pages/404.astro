@@ -1,0 +1,55 @@
+---
+/**
+ * 404 page — Not found.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en" : "";
+
+Astro.response.setStatusAndMessage(404, "Not Found");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: locale === "es" ? "Página no encontrada" : "Page not found",
+  url: Astro.url.href,
+  httpStatus: 404,
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "No encontrado — Patricio Betancourt" : "Not found — Patricio Betancourt"}
+  description={locale === "es"
+    ? "La página que buscas no existe."
+    : "The page you're looking for does not exist."}
+  locale={locale}
+  path={Astro.url.pathname}
+  noindex={true}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ textAlign: "center", maxWidth: "48ch", marginInline: "auto" }}>
+    <h1 style={{ marginBottom: "1rem" }}>404</h1>
+    <p style={{ fontSize: "var(--text-xl)", color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+      {locale === "es" ? "NO ENCONTRAMOS ESTA PÁGINA" : "WE COULDN'T FIND THIS PAGE"}
+    </p>
+    <p style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>
+      {locale === "es"
+        ? "Puede que el enlace esté mal o que la pieza haya cambiado de URL."
+        : "The link may be wrong or the piece may have a new URL."}
+    </p>
+    <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+      <a href={basePath} class="btn btn-primary">{locale === "es" ? "Ir al inicio" : "Go home"}</a>
+      <a href={`${basePath}/photos`} class="btn btn-secondary">{locale === "es" ? "Ver fotos" : "View photos"}</a>
+      <a href={`${basePath}/search`} class="btn btn-secondary">{locale === "es" ? "Buscar" : "Search"}</a>
+    </div>
+  </div>
+</BaseLayout>

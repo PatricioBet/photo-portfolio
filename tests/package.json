@@ -1,0 +1,22 @@
+{
+  "name": "@photo-portfolio/tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:unit": "vitest run",
+    "test": "pnpm test:unit && pnpm test:integration && pnpm test:e2e"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.49.1",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.8",
+    "@vitest/browser": "^2.1.8",
+    "playwright": "^1.49.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

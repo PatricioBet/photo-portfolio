@@ -1,0 +1,137 @@
+---
+/**
+ * Accessibility statement page.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/accessibility" : "/accesibilidad";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: locale === "es" ? "Accesibilidad" : "Accessibility",
+  url: `https://photo.patriciobet.dev${basePath}`,
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Accesibilidad — Patricio Betancourt" : "Accessibility — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Declaración de accesibilidad del sitio photo.patriciobet.dev."
+    : "Accessibility statement for photo.patriciobet.dev."}
+  locale={locale}
+  path={basePath}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {locale === "es" ? "Accesibilidad" : "Accessibility"}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>{locale === "es" ? "Accesibilidad" : "Accessibility"}</h1>
+
+    <div style={{ color: "var(--text-muted)", lineHeight: "var(--leading-relaxed)" }}>
+      {locale === "es" ? (
+        <>
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Compromiso</h2>
+            <p>Patricio Betancourt se compromete a garantizar la accesibilidad de este sitio conforme a las pautas WCAG 2.2 nivel AA.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Medidas implementadas</h2>
+            <ul style={{ paddingLeft: "1.5rem" }}>
+              <li>Navegación completa por teclado.</li>
+              <li>Etiquetas ARIA en componentes interactivos.</li>
+              <li>Contraste de color ≥ 4.5:1 en texto normal.</li>
+              <li>Áreas táctiles ≥ 44×44px.</li>
+              <li>Soporte para prefers-reduced-motion.</li>
+              <li>Textos alternativos descriptivos en imágenes.</li>
+              <li>Formularios con labels visibles y errores asociados.</li>
+              <li>Estructura semántica con heading levels correctos.</li>
+              <li>Enlaces con texto descriptivo.</li>
+              <li>Lightbox accesible con foco atrapado y retorno.</li>
+            </ul>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Estado</h2>
+            <p>Este sitio ha sido diseñado con accesibilidad desde el inicio. Se revisa periódicamente con herramientas automatizadas y pruebas manuales.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Limitaciones conocidas</h2>
+            <ul style={{ paddingLeft: "1.5rem" }}>
+              <li>El reproductor de video personalizado puede necesitar validación adicional con lectores de pantalla.</li>
+              <li>Algunas animaciones pueden no estar completamente optimizadas para todos los lectores de pantalla.</li>
+            </ul>
+          </section>
+
+          <section style={{ marginTop: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Contacto</h2>
+            <p>Si encuentras barreras de accesibilidad, por favor contáctanos a través del formulario de contacto.</p>
+          </section>
+        </>
+      ) : (
+        <>
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Commitment</h2>
+            <p>Patricio Betancourt is committed to ensuring the accessibility of this site in accordance with WCAG 2.2 level AA guidelines.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Implemented measures</h2>
+            <ul style={{ paddingLeft: "1.5rem" }}>
+              <li>Complete keyboard navigation.</li>
+              <li>ARIA labels on interactive components.</li>
+              <li>Color contrast ≥ 4.5:1 for normal text.</li>
+              <li>Touch areas ≥ 44×44px.</li>
+              <li>prefers-reduced-motion support.</li>
+              <li>Descriptive alt text on images.</li>
+              <li>Forms with visible labels and associated errors.</li>
+              <li>Semantic structure with correct heading levels.</li>
+              <li>Descriptive link text.</li>
+              <li>Accessible lightbox with trapped focus and return.</li>
+            </ul>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Status</h2>
+            <p>This site was designed with accessibility from the start. It is reviewed periodically with automated tools and manual testing.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Known limitations</h2>
+            <ul style={{ paddingLeft: "1.5rem" }}>
+              <li>The custom video player may need additional validation with screen readers.</li>
+              <li>Some animations may not be fully optimized for all screen readers.</li>
+            </ul>
+          </section>
+
+          <section style={{ marginTop: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Contact</h2>
+            <p>If you encounter accessibility barriers, please contact us through the contact form.</p>
+          </section>
+        </>
+      )}
+    </div>
+  </div>
+</BaseLayout>

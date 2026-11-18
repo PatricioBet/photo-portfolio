@@ -1,0 +1,76 @@
+---
+/**
+ * Accessibility EN — /en/accessibility/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Accessibility",
+  url: "https://photo.patriciobet.dev/en/accessibility",
+};
+---
+
+<BaseLayout
+  title="Accessibility — Patricio Betancourt"
+  description="Accessibility statement for photo.patriciobet.dev."
+  locale={locale}
+  path="/en/accessibility"
+  alternates={{ es: "https://photo.patriciobet.dev/accesibilidad", en: "https://photo.patriciobet.dev/en/accessibility" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Accessibility</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>Accessibility</h1>
+
+    <div style={{ color: "var(--text-muted)", lineHeight: "var(--leading-relaxed)" }}>
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Commitment</h2>
+        <p>Patricio Betancourt is committed to ensuring the accessibility of this site in accordance with WCAG 2.2 level AA guidelines.</p>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Implemented measures</h2>
+        <ul style={{ paddingLeft: "1.5rem" }}>
+          <li>Complete keyboard navigation.</li>
+          <li>ARIA labels on interactive components.</li>
+          <li>Color contrast ≥ 4.5:1 for normal text.</li>
+          <li>Touch areas ≥ 44×44px.</li>
+          <li>prefers-reduced-motion support.</li>
+          <li>Descriptive alt text on images.</li>
+          <li>Forms with visible labels and associated errors.</li>
+          <li>Semantic structure with correct heading levels.</li>
+          <li>Descriptive link text.</li>
+          <li>Accessible lightbox with trapped focus and return.</li>
+        </ul>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Status</h2>
+        <p>This site was designed with accessibility from the start. It is reviewed periodically with automated tools and manual testing.</p>
+      </section>
+
+      <section>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Known limitations</h2>
+        <ul style={{ paddingLeft: "1.5rem" }}>
+          <li>The custom video player may need additional validation with screen readers.</li>
+          <li>Some animations may not be fully optimized for all screen readers.</li>
+        </ul>
+      </section>
+
+      <section style={{ marginTop: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Contact</h2>
+        <p>If you encounter accessibility barriers, please contact us through the contact form.</p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

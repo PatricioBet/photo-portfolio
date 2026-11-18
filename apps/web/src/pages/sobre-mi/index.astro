@@ -1,0 +1,134 @@
+---
+/**
+ * About page — Bio, focus, links.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/about" : "/sobre-mi";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  name: locale === "es" ? "Sobre mí" : "About",
+  url: `https://photo.patriciobet.dev${basePath}`,
+  mainEntity: {
+    "@type": "Person",
+    name: "Patricio Betancourt",
+    url: "https://patriciobet.dev",
+    jobTitle: "Software developer and data scientist",
+    description: locale === "es"
+      ? "Desarrollador de software y científico de datos con interés en fotografía y video."
+      : "Software developer and data scientist interested in photography and video.",
+  },
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Sobre mí — Patricio Betancourt" : "About — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Quién es Patricio Betancourt y cómo trabaja."
+    : "Who Patricio Betancourt is and how he works."}
+  locale={locale}
+  path={basePath}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {locale === "es" ? "Sobre mí" : "About"}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>{locale === "es" ? "Sobre mí" : "About"}</h1>
+
+    <!-- Portrait placeholder -->
+    <div style={{
+      width: "100%",
+      aspectRatio: "1 / 1",
+      maxWidth: "24rem",
+      marginInline: "auto",
+      marginBottom: "2rem",
+      backgroundColor: "var(--surface)",
+      border: "1px solid var(--border)",
+      borderRadius: "var(--radius-md)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "var(--text-muted)",
+      fontSize: "var(--text-sm)",
+    }}>
+      {locale === "es" ? "Retrato del autor" : "Author portrait"}
+    </div>
+
+    <!-- Bio -->
+    <div style={{ marginBottom: "2.5rem" }}>
+      <p style={{ marginBottom: "1rem", color: "var(--text-muted)" }}>
+        {locale === "es"
+          ? "Soy Patricio Betancourt. Trabajo en desarrollo de software y ciencia de datos, y la fotografía es la otra forma en que miro: composición, luz y tiempo."
+          : "I'm Patricio Betancourt. I work in software development and data science, and photography is the other way I look: composition, light and time."}
+      </p>
+      <p style={{ marginBottom: "1rem", color: "var(--text-muted)" }}>
+        {locale === "es"
+          ? "Este espacio reúne imágenes y piezas de video que he ido guardando. No es un catálogo comercial ni una retrospectiva: es un archivo que crece cuando tengo algo que valga la pena mostrar."
+          : "This space gathers images and video pieces I've been keeping. It's not a commercial catalogue or a retrospective: it's an archive that grows when I have something worth showing."}
+      </p>
+      <p style={{ color: "var(--text-muted)" }}>
+        {locale === "es"
+          ? "Cuando no estoy detrás de una cámara, estoy construyendo software. Puedes ver ese trabajo en patriciobet.dev."
+          : "When I'm not behind a camera, I'm building software. You can see that work at patriciobet.dev."}
+      </p>
+    </div>
+
+    <!-- Focus -->
+    <div style={{ marginBottom: "2.5rem" }}>
+      <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "1rem" }}>
+        {locale === "es" ? "Enfoque" : "Focus"}
+      </h2>
+      <p style={{ color: "var(--text-muted)" }}>
+        {locale === "es"
+          ? "Busco la quietud en lo cotidiano: la luz que cambia un espacio, la textura de lo conocido, los momentos que pasan desapercibidos. No busco la escena perfecta; busco la que existe."
+          : "I look for stillness in the everyday: the light that changes a space, the texture of the familiar, moments that go unnoticed. I don't seek the perfect scene; I seek the one that exists."}
+      </p>
+    </div>
+
+    <!-- Links -->
+    <div>
+      <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "1rem" }}>
+        {locale === "es" ? "Enlaces" : "Links"}
+      </h2>
+      <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <li>
+          <a href="https://patriciobet.dev" target="_blank" rel="noopener noreferrer">
+            {locale === "es" ? "Portfolio de desarrollo" : "Development portfolio"}
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/patob" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/patricio-betancourt" target="_blank" rel="noopener noreferrer">
+            LinkedIn
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

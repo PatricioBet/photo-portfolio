@@ -1,0 +1,48 @@
+---
+/**
+ * Collections EN — /en/collections/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EmptyState from "@components/EmptyState.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Collections",
+  url: "https://photo.patriciobet.dev/en/collections",
+  description: "Photography and video series and collections.",
+  isPartOf: { "@type": "WebSite", name: "Patricio Betancourt" },
+};
+---
+
+<BaseLayout
+  title="Collections — Patricio Betancourt"
+  description="Photography and video series and collections."
+  locale={locale}
+  path="/en/collections"
+  alternates={{ es: "https://photo.patriciobet.dev/colecciones", en: "https://photo.patriciobet.dev/en/collections" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Collections</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>Collections</h1>
+
+    <EmptyState
+      locale={locale}
+      title="COLLECTIONS ARE BEING ORGANIZED"
+      text="In the meantime, you can view all photos and videos."
+      actions={[
+        { label: "View all photos", href: "/en/photos" },
+        { label: "View all videos", href: "/en/videos" },
+      ]}
+    />
+  </div>
+</BaseLayout>

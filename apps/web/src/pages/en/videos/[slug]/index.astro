@@ -1,0 +1,63 @@
+---
+/**
+ * Video detail EN — /en/videos/{slug}/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import VideoPlayer from "@components/VideoPlayer.astro";
+
+const locale: "en" = "en";
+const { slug } = Astro.params;
+
+const video = {
+  title: "Demo piece",
+  description: "This piece will appear when the first videos are published.",
+  date: "",
+  collection: "",
+  tags: [],
+  duration: "",
+  src: "",
+  poster: "",
+  captions: "",
+  qualities: [],
+};
+---
+
+<BaseLayout
+  title={`${video.title} — Patricio Betancourt`}
+  description={video.description}
+  locale={locale}
+  path={`/en/videos/${slug}/`}
+  alternates={{ es: `https://photo.patriciobet.dev/videos/${slug}/`, en: `https://photo.patriciobet.dev/en/videos/${slug}/` }}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li><a href="/en/videos" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Videos</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>{video.title}</li>
+      </ol>
+    </nav>
+
+    <div style={{ marginBottom: "2rem" }}>
+      <VideoPlayer
+        src={video.src}
+        poster={video.poster}
+        title={video.title}
+        locale={locale}
+        captions={video.captions}
+        qualities={video.qualities}
+        client:load
+      />
+    </div>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>{video.title}</h1>
+    <p style={{ color: "var(--text-muted)", marginBottom: "2rem", maxWidth: "48ch" }}>
+      {video.description}
+    </p>
+
+    <dl class="meta-list" style={{ maxWidth: "36ch", marginBottom: "2rem" }}>
+      <dt>License</dt>
+      <dd>© Patricio Betancourt. All rights reserved.</dd>
+    </dl>
+  </div>
+</BaseLayout>

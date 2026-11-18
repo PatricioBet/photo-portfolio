@@ -1,0 +1,109 @@
+---
+/**
+ * Terms page — Terms of use.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/terms" : "/terminos";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: locale === "es" ? "Términos" : "Terms",
+  url: `https://photo.patriciobet.dev${basePath}`,
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Términos — Patricio Betancourt" : "Terms — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Términos de uso del sitio photo.patriciobet.dev."
+    : "Terms of use for photo.patriciobet.dev."}
+  locale={locale}
+  path={basePath}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {locale === "es" ? "Términos" : "Terms"}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>{locale === "es" ? "Términos" : "Terms"}</h1>
+
+    <div style={{ color: "var(--text-muted)", lineHeight: "var(--leading-relaxed)" }}>
+      {locale === "es" ? (
+        <>
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Uso del sitio</h2>
+            <p>Este sitio es un portfolio personal de fotografía y video. El contenido está protegido por derechos de autor. Queda prohibida su reproducción, distribución o comunicación pública sin autorización expresa del autor.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Propiedad intelectual</h2>
+            <p>Todas las fotografías, videos y contenido original publicados en este sitio son propiedad de Patricio Betancourt, salvo indicación contraria. El diseño, código y estructura del sitio también están protegidos.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Licencia</h2>
+            <p>Todos los derechos reservados. No se otorgan licencias implícitas. Para uso del contenido, contactar al autor.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Limitaciones</h2>
+            <p>El sitio se proporciona "tal cual". No se garantiza disponibilidad continua. El autor no se responsabiliza de daños indirectos derivados del uso del sitio.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Enlaces externos</h2>
+            <p>Este sitio puede contener enlaces a sitios de terceros. El autor no se responsabiliza del contenido de dichos sitios.</p>
+          </section>
+        </>
+      ) : (
+        <>
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Site use</h2>
+            <p>This site is a personal photography and video portfolio. Content is protected by copyright. Reproduction, distribution, or public communication without the author's express permission is prohibited.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Intellectual property</h2>
+            <p>All photographs, videos, and original content published on this site are the property of Patricio Betancourt, unless otherwise indicated. The site's design, code, and structure are also protected.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>License</h2>
+            <p>All rights reserved. No implied licenses are granted. For content usage, contact the author.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Limitations</h2>
+            <p>The site is provided "as is". Continuous availability is not guaranteed. The author is not liable for indirect damages arising from site use.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>External links</h2>
+            <p>This site may contain links to third-party sites. The author is not responsible for the content of such sites.</p>
+          </section>
+        </>
+      )}
+    </div>
+  </div>
+</BaseLayout>

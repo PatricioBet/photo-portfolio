@@ -1,0 +1,58 @@
+---
+/**
+ * 410 page — Gone.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+
+Astro.response.setStatusAndMessage(410, "Gone");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: locale === "es" ? "Contenido retirado" : "Content removed",
+  url: Astro.url.href,
+  httpStatus: 410,
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Contenido retirado — Patricio Betancourt" : "Content removed — Patricio Betancourt"}
+  description={locale === "es"
+    ? "El autor retiró este contenido."
+    : "The author removed this content."}
+  locale={locale}
+  path={Astro.url.pathname}
+  noindex={true}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ textAlign: "center", maxWidth: "48ch", marginInline: "auto" }}>
+    <h1 style={{ marginBottom: "1rem" }}>410</h1>
+    <p style={{ fontSize: "var(--text-xl)", color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+      {locale === "es" ? "ESTA PIEZA YA NO ESTÁ PUBLICADA" : "THIS PIECE IS NO LONGER PUBLISHED"}
+    </p>
+    <p style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>
+      {locale === "es" ? "El autor retiró este contenido." : "The author removed this content."}
+    </p>
+    <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+      <a href={locale === "en" ? "/en/photos" : "/fotos"} class="btn btn-secondary">
+        {locale === "es" ? "Ver fotos" : "View photos"}
+      </a>
+      <a href={locale === "en" ? "/en/videos" : "/videos"} class="btn btn-secondary">
+        {locale === "es" ? "Ver videos" : "View videos"}
+      </a>
+      <a href={locale === "en" ? "/en/" : "/"} class="btn btn-primary">
+        {locale === "es" ? "Inicio" : "Home"}
+      </a>
+    </div>
+  </div>
+</BaseLayout>

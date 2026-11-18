@@ -1,0 +1,185 @@
+---
+/**
+ * Header — fixed navigation with mobile menu, theme toggle, and language switcher.
+ */
+import ThemeToggle from "./ThemeToggle.astro";
+import type { Locale } from "@i18n/translations";
+
+export interface Props {
+  locale: Locale;
+  currentPage: string;
+  currentPath: string;
+}
+
+const { locale, currentPage, currentPath } = Astro.props;
+
+const navLinks = [
+  { labelKey: "nav.photos", href: locale === "en" ? "/en/photos" : "/fotos", page: "photos" },
+  { labelKey: "nav.videos", href: locale === "en" ? "/en/videos" : "/videos", page: "videos" },
+  { labelKey: "nav.collections", href: locale === "en" ? "/en/collections" : "/colecciones", page: "collections" },
+  { labelKey: "nav.about", href: locale === "en" ? "/en/about" : "/sobre-mi", page: "about" },
+  { labelKey: "nav.contact", href: locale === "en" ? "/en/contact" : "/contacto", page: "contact" },
+];
+
+function getLabel(key: string): string {
+  const map: Record<string, Record<string, string>> = {
+    "nav.photos": { es: "Fotos", en: "Photos" },
+    "nav.videos": { es: "Videos", en: "Videos" },
+    "nav.collections": { es: "Colecciones", en: "Collections" },
+    "nav.about": { es: "Sobre mí", en: "About" },
+    "nav.contact": { es: "Contacto", en: "Contact" },
+  };
+  return map[key]?.[locale] || key;
+}
+
+function getLanguageLabel(): string {
+  return locale === "en" ? "Español" : "English";
+}
+
+function getLanguageHref(): string {
+  const stripLocale = currentPath.replace(/^\/en(\/|$)/, "/");
+  return locale === "en" ? `/${stripLocale}` : `/en${stripLocale}`;
+}
+
+function isActive(page: string): boolean {
+  if (page === "home") return currentPath === "/" || currentPath === "";
+  return currentPath.startsWith(`/${page}`) || currentPath.startsWith(`/en/${page}`);
+}
+---
+
+<header class="no-print" style={{ position: "sticky", top: 0, zIndex: 100, backgroundColor: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
+  <div class="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "var(--header-height)", gap: "var(--space-4)" }}>
+    <a href={locale === "en" ? "/en/" : "/"} aria-label="Patricio Betancourt, inicio" style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--text)", textDecoration: "none" }}>
+      PB
+    </a>
+
+    <nav aria-label="Navegación principal" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+      <!-- Desktop nav -->
+      <ul style={{ display: "none", listStyle: "none", gap: "var(--space-2)", alignItems: "center", padding: 0 }} class="desktop-nav">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              style={{
+                color: isActive(link.page) ? "var(--accent-text)" : "var(--text-muted)",
+                textDecoration: "none",
+                padding: "0.5rem 0.75rem",
+                fontSize: "var(--text-sm)",
+                fontWeight: isActive(link.page) ? 600 : 400,
+                transition: "color 150ms ease-out",
+              }}
+              aria-current={isActive(link.page) ? "page" : undefined}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = isActive(link.page) ? "var(--accent-text)" : "var(--text-muted)")}
+            >
+              {getLabel(link.labelKey)}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <ThemeToggle client:load />
+
+      <a
+        href={getLanguageHref()}
+        class="btn btn-ghost no-print"
+        style={{ fontSize: "var(--text-sm)", minWidth: "2.75rem", minHeight: "2.75rem" }}
+        aria-label={getLanguageLabel()}
+      >
+        {locale === "en" ? "ES" : "EN"}
+      </a>
+
+      <!-- Mobile menu button -->
+      <button
+        type="button"
+        class="btn btn-ghost no-print mobile-menu-btn"
+        aria-label="Menú"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        style={{ display: "flex", minWidth: "2.75rem", minHeight: "2.75rem" }}
+      >
+        ☰
+      </button>
+    </nav>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" style={{ display: "none", position: "absolute", top: "var(--header-height)", left: 0, right: 0, backgroundColor: "var(--bg)", borderBottom: "1px solid var(--border)", padding: "var(--space-4)" }} role="dialog" aria-label="Menú de navegación">
+    <nav aria-label="Navegación móvil">
+      <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              style={{
+                display: "block",
+                padding: "var(--space-3) var(--space-4)",
+                color: isActive(link.page) ? "var(--accent-text)" : "var(--text-muted)",
+                textDecoration: "none",
+                fontWeight: isActive(link.page) ? 600 : 400,
+                borderRadius: "var(--radius-md)",
+              }}
+              aria-current={isActive(link.page) ? "page" : undefined}
+            >
+              {getLabel(link.labelKey)}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a
+            href={getLanguageHref()}
+            style={{ display: "block", padding: "var(--space-3) var(--space-4)", color: "var(--accent-text)", textDecoration: "none" }}
+          >
+            {locale === "en" ? "Español" : "English"}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  @media (min-width: 64rem) {
+    .desktop-nav {
+      display: flex !important;
+    }
+    .mobile-menu-btn {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelector(".mobile-menu-btn") as HTMLButtonElement;
+    const menu = document.getElementById("mobile-menu") as HTMLElement;
+    if (!btn || !menu) return;
+
+    btn.addEventListener("click", () => {
+      const isOpen = menu.style.display === "block";
+      menu.style.display = isOpen ? "none" : "block";
+      btn.setAttribute("aria-expanded", String(!isOpen));
+      btn.textContent = isOpen ? "☰" : "✕";
+    });
+
+    // Close menu on nav link click
+    menu.querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", () => {
+        menu.style.display = "none";
+        btn.setAttribute("aria-expanded", "false");
+        btn.textContent = "☰";
+      });
+    });
+
+    // Close on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menu.style.display === "block") {
+        menu.style.display = "none";
+        btn.setAttribute("aria-expanded", "false");
+        btn.textContent = "☰";
+        btn.focus();
+      }
+    });
+  });
+</script>

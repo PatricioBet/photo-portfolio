@@ -1,0 +1,62 @@
+---
+/**
+ * 500 page — Internal error.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+
+Astro.response.setStatusAndMessage(500, "Internal Server Error");
+
+const traceId = crypto.randomUUID();
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: locale === "es" ? "Error interno" : "Internal error",
+  url: Astro.url.href,
+  httpStatus: 500,
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Error — Patricio Betancourt" : "Error — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Algo salió mal al cargar esta página."
+    : "Something went wrong loading this page."}
+  locale={locale}
+  path={Astro.url.pathname}
+  noindex={true}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ textAlign: "center", maxWidth: "48ch", marginInline: "auto" }}>
+    <h1 style={{ marginBottom: "1rem" }}>500</h1>
+    <p style={{ fontSize: "var(--text-xl)", color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+      {locale === "es" ? "ALGO SALIÓ MAL" : "SOMETHING WENT WRONG"}
+    </p>
+    <p style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>
+      {locale === "es"
+        ? "No pudimos cargar esta página. Intenta de nuevo en unos minutos."
+        : "We couldn't load this page. Try again in a few minutes."}
+    </p>
+    <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", marginBottom: "1.5rem" }}>
+      <a href={Astro.url.href} class="btn btn-primary">
+        {locale === "es" ? "Reintentar" : "Retry"}
+      </a>
+      <a href={locale === "en" ? "/en/" : "/"} class="btn btn-secondary">
+        {locale === "es" ? "Inicio" : "Home"}
+      </a>
+    </div>
+    <p style={{ fontSize: "var(--text-xs)", fontFamily: "var(--font-mono)", color: "var(--text-muted)" }}>
+      {locale === "es" ? "Código:" : "Code:"} {traceId}
+    </p>
+  </div>
+</BaseLayout>

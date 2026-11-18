@@ -1,0 +1,69 @@
+---
+/**
+ * Collections page — Lists collections with counts.
+ * Shows editorial empty state when no collections exist.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EmptyState from "@components/EmptyState.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/collections" : "/colecciones";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: locale === "es" ? "Colecciones" : "Collections",
+  url: `https://photo.patriciobet.dev${basePath}`,
+  description: locale === "es"
+    ? "Series y colecciones de fotografía y video."
+    : "Photography and video series and collections.",
+  isPartOf: { "@type": "WebSite", name: "Patricio Betancourt" },
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Colecciones — Patricio Betancourt" : "Collections — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Series y colecciones de fotografía y video."
+    : "Photography and video series and collections."}
+  locale={locale}
+  path={basePath}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {locale === "es" ? "Colecciones" : "Collections"}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>{locale === "es" ? "Colecciones" : "Collections"}</h1>
+
+    <EmptyState
+      locale={locale}
+      title={locale === "es" ? "LAS COLECCIONES SE ESTÁN ORGANIZANDO" : "COLLECTIONS ARE BEING ORGANIZED"}
+      text={locale === "es"
+        ? "Mientras tanto, puedes ver todas las fotos y videos."
+        : "In the meantime, you can view all photos and videos."}
+      actions={[
+        { label: locale === "es" ? "Ver todas las fotos" : "View all photos", href: locale === "en" ? "/en/photos" : "/fotos" },
+        { label: locale === "es" ? "Ver todos los videos" : "View all videos", href: locale === "en" ? "/en/videos" : "/videos" },
+      ]}
+    />
+  </div>
+</BaseLayout>

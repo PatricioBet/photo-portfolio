@@ -1,0 +1,146 @@
+---
+/**
+ * BaseLayout — Shared layout with Header, Footer, SEO, and hreflang.
+ */
+import type { Locale } from "@i18n/translations";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import tokensCSS from "@/styles/tokens.css?inline";
+import globalCSS from "@/styles/global.css?inline";
+
+export interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+  path: string;
+  noindex?: boolean;
+  canonical?: string;
+  alternates?: Record<string, string>;
+  jsonLd?: object;
+  image?: string;
+}
+
+const {
+  title,
+  description,
+  locale,
+  path,
+  noindex = false,
+  canonical,
+  alternates = {},
+  jsonLd,
+  image,
+} = Astro.props;
+
+const site = "https://photo.patriciobet.dev";
+const finalCanonical = canonical || `${site}${path}`;
+
+// Default alternates
+const defaultAlternates: Record<string, string> = {
+  es: `${site}${path}`,
+  en: locale === "en" ? `${site}${path}` : `${site}/en${path}`,
+  "x-default": `${site}${path}`,
+};
+
+const finalAlternates = { ...defaultAlternates, ...alternates };
+if (locale !== "en" && !alternates["en"]) {
+  finalAlternates["en"] = `${site}/en${path}`;
+}
+if (locale !== "es" && !alternates["es"]) {
+  finalAlternates["es"] = `${site}${path}`;
+}
+
+// JSON-LD
+const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : undefined;
+
+// OG Image
+const ogImage = image || `${site}/og-default.png`;
+---
+
+<!doctype html>
+<html lang={locale} dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content={locale === "en" ? "light dark" : "dark light"} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Robots -->
+    {noindex ? (
+      <meta name="robots" content="noindex,follow" />
+    ) : (
+      <meta name="robots" content="index,follow" />
+    )}
+
+    <!-- Canonical -->
+    <link rel="canonical" href={finalCanonical} />
+
+    <!-- Hreflang alternates -->
+    {Object.entries(finalAlternates).map(([lang, url]) => (
+      <link rel="alternate" hreflang={lang} href={url} />
+    ))}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={finalCanonical} />
+    <meta property="og:locale" content={locale === "en" ? "en_US" : "es_ES"} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;500;600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload='this.media="all"'
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;500;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!-- Inline CSS for fast first paint -->
+    <style>{tokensCSS}</style>
+    <style>{globalCSS}</style>
+
+    <!-- JSON-LD -->
+    {jsonLdString && <script type="application/ld+json">{jsonLdString}</script>}
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">{locale === "es" ? "Saltar al contenido" : "Skip to content"}</a>
+
+    <Header locale={locale} currentPage={title} currentPath={path} />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <Footer locale={locale} />
+
+    <!-- Theme restore script -->
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+        const theme = stored || (prefersLight ? "light" : "dark");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+  </body>
+</html>

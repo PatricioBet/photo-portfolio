@@ -1,0 +1,23 @@
+{
+  "name": "photo-portfolio",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Portfolio de fotograf\u00eda y video de Patricio Betancourt",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:unit": "pnpm -r test:unit",
+    "test:integration": "pnpm -r test:integration",
+    "test:e2e": "pnpm -r test:e2e",
+    "clean": "pnpm -r --parallel clean"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.3.0"
+}

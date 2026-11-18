@@ -1,0 +1,77 @@
+---
+/**
+ * Privacy EN — /en/privacy/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Privacy",
+  url: "https://photo.patriciobet.dev/en/privacy",
+};
+---
+
+<BaseLayout
+  title="Privacy — Patricio Betancourt"
+  description="Privacy policy for photo.patriciobet.dev."
+  locale={locale}
+  path="/en/privacy"
+  alternates={{ es: "https://photo.patriciobet.dev/privacidad", en: "https://photo.patriciobet.dev/en/privacy" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Privacy</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>Privacy</h1>
+
+    <div style={{ color: "var(--text-muted)", lineHeight: "var(--leading-relaxed)" }}>
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Controller</h2>
+        <p>Patricio Betancourt is the controller of personal data collected through this site.</p>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Data collected</h2>
+        <p>This site is static and does not collect browsing data by default. Data is only collected when:</p>
+        <ul style={{ paddingLeft: "1.5rem", marginTop: "0.5rem" }}>
+          <li>The user submits the contact form (name, email, message).</li>
+          <li>The user interacts with client-side search (search terms are processed locally).</li>
+          <li>The theme preference is stored in browser localStorage.</li>
+        </ul>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Purpose</h2>
+        <p>Data is used exclusively to respond to the contact form. Data is not shared with third parties except where required by law.</p>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Legal basis</h2>
+        <p>Processing is based on the user's consent when submitting the form, under Article 6.1(a) of the GDPR.</p>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Retention</h2>
+        <p>Messages are retained while necessary to respond to the user. Once responded, they are deleted within a maximum of 12 months.</p>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Rights</h2>
+        <p>You may exercise your rights of access, rectification, erasure, opposition, portability, and limitation by writing to the controller's email.</p>
+      </section>
+
+      <section>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Cookies</h2>
+        <p>This site does not use tracking cookies. Only localStorage for theme preference, stored locally in the user's browser.</p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

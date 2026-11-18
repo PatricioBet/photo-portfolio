@@ -1,0 +1,139 @@
+---
+/**
+ * Privacy page — Legal privacy policy.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/privacy" : "/privacidad";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: locale === "es" ? "Privacidad" : "Privacy",
+  url: `https://photo.patriciobet.dev${basePath}`,
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Privacidad — Patricio Betancourt" : "Privacy — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Política de privacidad del sitio photo.patriciobet.dev."
+    : "Privacy policy for photo.patriciobet.dev."}
+  locale={locale}
+  path={basePath}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {locale === "es" ? "Privacidad" : "Privacy"}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>{locale === "es" ? "Privacidad" : "Privacy"}</h1>
+
+    <div style={{ color: "var(--text-muted)", lineHeight: "var(--leading-relaxed)" }}>
+      {locale === "es" ? (
+        <>
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Responsable</h2>
+            <p>Patricio Betancourt es el responsable del tratamiento de los datos personales recogidos a través de este sitio.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Datos que recogemos</h2>
+            <p>Este sitio es estático y no recoge datos de navegación por defecto. Únicamente se recogen datos cuando:</p>
+            <ul style={{ paddingLeft: "1.5rem", marginTop: "0.5rem" }}>
+              <li>El usuario envía el formulario de contacto (nombre, correo, mensaje).</li>
+              <li>El usuario interactúa con la búsqueda cliente (términos de búsqueda se procesan localmente).</li>
+              <li>Se almacena la preferencia de tema en localStorage del navegador.</li>
+            </ul>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Finalidad</h2>
+            <p>Los datos se utilizan exclusivamente para responder al formulario de contacto. No se comparten datos con terceros salvo obligación legal.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Base legal</h2>
+            <p>El tratamiento se basa en el consentimiento del usuario al enviar el formulario, conforme al artículo 6.1.a del RGPD.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Conservación</h2>
+            <p>Los mensajes se conservan mientras sean necesarios para dar respuesta al usuario. Una vez respondido, se eliminan en un plazo máximo de 12 meses.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Derechos</h2>
+            <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, portabilidad y limitación escribiendo al correo del responsable.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Cookies</h2>
+            <p>Este sitio no utiliza cookies de seguimiento. Únicamente localStorage para la preferencia de tema, almacenado localmente en el navegador del usuario.</p>
+          </section>
+        </>
+      ) : (
+        <>
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Controller</h2>
+            <p>Patricio Betancourt is the controller of personal data collected through this site.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Data collected</h2>
+            <p>This site is static and does not collect browsing data by default. Data is only collected when:</p>
+            <ul style={{ paddingLeft: "1.5rem", marginTop: "0.5rem" }}>
+              <li>The user submits the contact form (name, email, message).</li>
+              <li>The user interacts with client-side search (search terms are processed locally).</li>
+              <li>The theme preference is stored in browser localStorage.</li>
+            </ul>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Purpose</h2>
+            <p>Data is used exclusively to respond to the contact form. Data is not shared with third parties except where required by law.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Legal basis</h2>
+            <p>Processing is based on the user's consent when submitting the form, under Article 6.1(a) of the GDPR.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Retention</h2>
+            <p>Messages are retained while necessary to respond to the user. Once responded, they are deleted within a maximum of 12 months.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Rights</h2>
+            <p>You may exercise your rights of access, rectification, erasure, opposition, portability, and limitation by writing to the controller's email.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Cookies</h2>
+            <p>This site does not use tracking cookies. Only localStorage for theme preference, stored locally in the user's browser.</p>
+          </section>
+        </>
+      )}
+    </div>
+  </div>
+</BaseLayout>

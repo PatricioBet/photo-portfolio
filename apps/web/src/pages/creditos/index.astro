@@ -1,0 +1,139 @@
+---
+/**
+ * Credits page — Licenses, demo assets, fonts, tools.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/credits" : "/creditos";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: locale === "es" ? "Créditos" : "Credits",
+  url: `https://photo.patriciobet.dev${basePath}`,
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Créditos — Patricio Betancourt" : "Credits — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Licencias de assets, fuentes y herramientas del sitio."
+    : "Licenses for assets, fonts, and tools used on the site."}
+  locale={locale}
+  path={basePath}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {locale === "es" ? "Créditos" : "Credits"}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>{locale === "es" ? "Créditos" : "Credits"}</h1>
+
+    <div style={{ color: "var(--text-muted)", lineHeight: "var(--leading-relaxed)" }}>
+      {locale === "es" ? (
+        <>
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Tipografías</h2>
+            <dl class="meta-list">
+              <dt>Fraunces</dt>
+              <dd> SIL Open Font License 1.1 — <a href="https://github.com/underworld/fraunces" target="_blank" rel="noopener noreferrer">github.com/underworld/fraunces</a></dd>
+              <dt>Inter</dt>
+              <dd> SIL Open Font License 1.1 — <a href="https://github.com/rsms/inter" target="_blank" rel="noopener noreferrer">github.com/rsms/inter</a></dd>
+            </dl>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Framework</h2>
+            <dl class="meta-list">
+              <dt>Astro</dt>
+              <dd> BSD-3-Clause License — <a href="https://astro.build" target="_blank" rel="noopener noreferrer">astro.build</a></dd>
+              <dt>React</dt>
+              <dd> MIT License — <a href="https://react.dev" target="_blank" rel="noopener noreferrer">react.dev</a></dd>
+            </dl>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Assets demo</h2>
+            <p>No se utilizan imágenes ni videos de terceros en producción. Los assets demo, si se cargan, provienen de fuentes con licencia compatible y se indican individualmente.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Herramientas</h2>
+            <dl class="meta-list">
+              <dt>Pagefind</dt>
+              <dd> MIT License — <a href="https://pagefind.app" target="_blank" rel="noopener noreferrer">pagefind.app</a></dd>
+              <dt>HLS.js</dt>
+              <dd> Apache License 2.0 — <a href="https://hls.js.org" target="_blank" rel="noopener noreferrer">hls.js.org</a></dd>
+            </dl>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Contenido</h2>
+            <p>Todas las fotografías y videos publicados son propiedad de Patricio Betancourt. Todos los derechos reservados.</p>
+          </section>
+        </>
+      ) : (
+        <>
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Fonts</h2>
+            <dl class="meta-list">
+              <dt>Fraunces</dt>
+              <dd> SIL Open Font License 1.1 — <a href="https://github.com/underworld/fraunces" target="_blank" rel="noopener noreferrer">github.com/underworld/fraunces</a></dd>
+              <dt>Inter</dt>
+              <dd> SIL Open Font License 1.1 — <a href="https://github.com/rsms/inter" target="_blank" rel="noopener noreferrer">github.com/rsms/inter</a></dd>
+            </dl>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Framework</h2>
+            <dl class="meta-list">
+              <dt>Astro</dt>
+              <dd> BSD-3-Clause License — <a href="https://astro.build" target="_blank" rel="noopener noreferrer">astro.build</a></dd>
+              <dt>React</dt>
+              <dd> MIT License — <a href="https://react.dev" target="_blank" rel="noopener noreferrer">react.dev</a></dd>
+            </dl>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Demo assets</h2>
+            <p>No third-party images or videos are used in production. Demo assets, if loaded, come from compatible licensed sources and are indicated individually.</p>
+          </section>
+
+          <section style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Tools</h2>
+            <dl class="meta-list">
+              <dt>Pagefind</dt>
+              <dd> MIT License — <a href="https://pagefind.app" target="_blank" rel="noopener noreferrer">pagefind.app</a></dd>
+              <dt>HLS.js</dt>
+              <dd> Apache License 2.0 — <a href="https://hls.js.org" target="_blank" rel="noopener noreferrer">hls.js.org</a></dd>
+            </dl>
+          </section>
+
+          <section>
+            <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Content</h2>
+            <p>All published photographs and videos are the property of Patricio Betancourt. All rights reserved.</p>
+          </section>
+        </>
+      )}
+    </div>
+  </div>
+</BaseLayout>

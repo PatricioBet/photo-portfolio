@@ -1,0 +1,49 @@
+---
+/**
+ * Contact EN — /en/contact/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ContactForm from "@components/ContactForm.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Contact",
+  url: "https://photo.patriciobet.dev/en/contact",
+  description: "Write for projects, commissions or questions.",
+};
+---
+
+<BaseLayout
+  title="Contact — Patricio Betancourt"
+  description="Write for projects, commissions or questions."
+  locale={locale}
+  path="/en/contact"
+  alternates={{ es: "https://photo.patriciobet.dev/contacto", en: "https://photo.patriciobet.dev/en/contact" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Contact</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>Contact</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2.5rem" }}>
+      Do you have a project or a question? Write to me.
+    </p>
+
+    <ContactForm locale={locale} />
+
+    <div style={{ marginTop: "2.5rem", paddingBlockStart: "1.5rem", borderTop: "1px solid var(--border)" }}>
+      <p style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>
+        Prefer email?{" "}
+        <span style={{ color: "var(--text-muted)", fontStyle: "italic" }}>(email TBD)</span>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

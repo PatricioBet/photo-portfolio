@@ -1,0 +1,42 @@
+---
+/**
+ * Video sitemap — Lists all published videos.
+ * Empty when no media is published (valid state).
+ */
+import type { APIContext } from "astro";
+
+export async function GET(context: APIContext) {
+  const site = "https://photo.patriciobet.dev";
+  const now = new Date().toISOString();
+
+  // Video sitemap — no videos until media is published
+  const videos: { loc: string; title: string; description: string; thumbnail: string; duration: string; contentLength?: number; type?: string }[] = [];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+${videos.length > 0
+  ? videos.map((v) => `  <url>
+    <loc>${site}${v.loc}</loc>
+    <video:video>
+      <video:title>${v.title}</video:title>
+      <video:description>${v.description}</video:description>
+      <video:thumbnail_loc>${site}${v.thumbnail}</video:thumbnail_loc>
+      <video:content_length>${v.contentLength || 0}</video:content_length>
+      <video:content_type>${v.type || "video/mp4"}</video:content_type>
+      <video:duration>${v.duration || 0}</video:duration>
+    </video:video>
+  </url>`).join("\n")
+  : "  <!-- No videos published yet. Videos will appear here when media is published. -->"
+}
+</urlset>`;
+
+  return new Response(xml, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
+}
+---

@@ -1,0 +1,95 @@
+---
+/**
+ * Videos page — Video gallery with pagination.
+ * Shows editorial empty state when no videos are published.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EmptyState from "@components/EmptyState.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  const paths: any[] = [];
+  paths.push({ params: { locale: "es" } });
+  for (let i = 2; i <= 3; i++) {
+    paths.push({ params: { locale: "es", page: String(i) } });
+  }
+  paths.push({ params: { locale: "en" } });
+  for (let i = 2; i <= 3; i++) {
+    paths.push({ params: { locale: "en", page: String(i) } });
+  }
+  return paths;
+}
+
+const { locale, page = "1" } = Astro.params;
+const pageNum = parseInt(page as string, 10) || 1;
+const basePath = locale === "en" ? "/en/videos" : "/videos";
+const isHome = pageNum === 1;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: locale === "es" ? "Videos" : "Videos",
+  url: `https://photo.patriciobet.dev${isHome ? basePath : `${basePath}/pagina/${pageNum}/`}`,
+  description: locale === "es"
+    ? "Piezas de video de Patricio Betancourt."
+    : "Video pieces by Patricio Betancourt.",
+  isPartOf: { "@type": "WebSite", name: "Patricio Betancourt" },
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Videos — Patricio Betancourt" : "Videos — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Piezas de video de Patricio Betancourt."
+    : "Video pieces by Patricio Betancourt."}
+  locale={locale}
+  path={isHome ? basePath : `${basePath}/pagina/${pageNum}/`}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {locale === "es" ? "Videos" : "Videos"}
+        </li>
+        {!isHome && (
+          <li style={{ color: "var(--text)", fontWeight: 500 }}>
+            {locale === "es" ? "Página" : "Page"} {pageNum}
+          </li>
+        )}
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>{locale === "es" ? "Videos" : "Videos"}</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem", maxWidth: "48ch" }}>
+      {locale === "es"
+        ? "Piezas breves, en movimiento."
+        : "Short pieces, in motion."}
+    </p>
+
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2rem" }}>
+      <button class="chip" aria-pressed="true" style={{ cursor: "default" }}>
+        {locale === "es" ? "Todos" : "All"}
+      </button>
+      <button class="chip" aria-pressed="false">{locale === "es" ? "Colección" : "Collection"}</button>
+      <button class="chip" aria-pressed="false">{locale === "es" ? "Etiqueta" : "Tag"}</button>
+    </div>
+
+    <EmptyState
+      locale={locale}
+      title={locale === "es" ? "AÚN NO HAY VIDEOS PUBLICADOS" : "NO VIDEOS PUBLISHED YET"}
+      text={locale === "es"
+        ? "La primera pieza audiovisual está en preparación."
+        : "The first audiovisual piece is in preparation."}
+      actions={[
+        { label: locale === "es" ? "Ver fotos" : "View photos", href: locale === "en" ? "/en/photos" : "/fotos" },
+        { label: locale === "es" ? "Sobre mí" : "About", href: locale === "en" ? "/en/about" : "/sobre-mi" },
+      ]}
+    />
+  </div>
+</BaseLayout>

@@ -1,0 +1,151 @@
+---
+/**
+ * Photo detail page — Dynamic route /fotos/{slug}/
+ * Shows lightbox, metadata, related photos.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Lightbox from "@components/Lightbox.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  const locales: Locale[] = ["es", "en"];
+  // With 0 media, these routes are generated but show empty state
+  // When media is published, this will use a content collection
+  return locales.flatMap((locale) => [
+    { params: { locale, slug: "placeholder" } },
+  ]);
+}
+
+const { locale, slug } = Astro.params;
+const basePath = locale === "en" ? "/en/photos" : "/fotos";
+
+// Placeholder data — will be replaced with real content from collection
+const photo = {
+  title: locale === "es" ? "Pieza de demostración" : "Demo piece",
+  alt: locale === "es" ? "Pieza de demostración" : "Demo piece",
+  description: locale === "es"
+    ? "Esta pieza aparecerá cuando se publiquen las primeras fotografías."
+    : "This piece will appear when the first photographs are published.",
+  date: "",
+  collection: "",
+  tags: [],
+  credit: "",
+  license: "© Patricio Betancourt",
+  src: "",
+  thumb: "",
+};
+
+const photos = [photo];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ImageObject",
+  name: photo.title,
+  description: photo.description,
+  contentUrl: photo.src,
+  author: {
+    "@type": "Person",
+    name: "Patricio Betancourt",
+  },
+  copyrightHolder: {
+    "@type": "Person",
+    name: "Patricio Betancourt",
+  },
+  copyrightYear: "2026",
+};
+---
+
+<BaseLayout
+  title={`${photo.title} — Patricio Betancourt`}
+  description={photo.description}
+  locale={locale}
+  path={`${basePath}/${slug}/`}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <!-- Breadcrumbs -->
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li>
+          <a href={basePath} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Fotos" : "Photos"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {photo.title}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Image -->
+    <figure style={{ marginBottom: "2rem" }}>
+      {photo.src ? (
+        <img
+          src={photo.src}
+          alt={photo.alt}
+          style={{ width: "100%", maxWidth: "72ch", marginInline: "auto", display: "block" }}
+          loading="lazy"
+        />
+      ) : (
+        <div style={{
+          width: "100%",
+          aspectRatio: "16/9",
+          backgroundColor: "var(--surface)",
+          border: "1px solid var(--border)",
+          borderRadius: "var(--radius-md)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--text-muted)",
+        }}>
+          {locale === "es" ? "Vista previa de la foto" : "Photo preview"}
+        </div>
+      )}
+      <figcaption style={{ textAlign: "center", marginTop: "0.75rem", fontSize: "var(--text-sm)", color: "var(--text-muted)" }}>
+        {photo.title}
+      </figcaption>
+    </figure>
+
+    <!-- Metadata -->
+    <dl class="meta-list" style={{ maxWidth: "36ch", marginBottom: "2rem" }}>
+      {photo.date && (
+        <>
+          <dt>{locale === "es" ? "Fecha" : "Date"}</dt>
+          <dd>{photo.date}</dd>
+        </>
+      )}
+      {photo.collection && (
+        <>
+          <dt>{locale === "es" ? "Colección" : "Collection"}</dt>
+          <dd>{photo.collection}</dd>
+        </>
+      )}
+      {photo.tags.length > 0 && (
+        <>
+          <dt>{locale === "es" ? "Etiquetas" : "Tags"}</dt>
+          <dd>{photo.tags.join(", ")}</dd>
+        </>
+      )}
+      {photo.credit && (
+        <>
+          <dt>{locale === "es" ? "Crédito" : "Credit"}</dt>
+          <dd>{photo.credit}</dd>
+        </>
+      )}
+      <dt>{locale === "es" ? "Licencia" : "License"}</dt>
+      <dd>{photo.license}</dd>
+    </dl>
+
+    <!-- Rights -->
+    <p style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      {locale === "es" ? "© Patricio Betancourt. Todos los derechos reservados." : "© Patricio Betancourt. All rights reserved."}
+    </p>
+
+    <!-- Lightbox -->
+    <Lightbox photos={photos} initialIndex={0} locale={locale} client:load />
+  </div>
+</BaseLayout>

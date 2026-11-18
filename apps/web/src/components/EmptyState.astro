@@ -1,0 +1,25 @@
+---
+/**
+ * EmptyState — reusable empty state component.
+ */
+import type { Locale } from "@i18n/translations";
+
+export interface Props {
+  locale: Locale;
+  title: string;
+  text: string;
+  actions: { label: string; href: string }[];
+}
+
+const { locale, title, text, actions } = Astro.props;
+---
+
+<div class="empty-state" role="status">
+  <h2 class="empty-state__title">{title}</h2>
+  <p class="empty-state__text" style={{ whiteSpace: "pre-line" }}>{text}</p>
+  <div class="empty-state__actions">
+    {actions.map((action) => (
+      <a href={action.href} class="btn btn-secondary">{action.label}</a>
+    ))}
+  </div>
+</div>

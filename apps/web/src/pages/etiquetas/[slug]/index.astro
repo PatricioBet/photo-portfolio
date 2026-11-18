@@ -1,0 +1,72 @@
+---
+/**
+ * Tag detail — /etiquetas/{slug}/
+ * With < 8 items: noindex,follow. With >= 8 items: index,follow.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/tags" : "/etiquetas";
+
+// Placeholder tag — item count determines indexability
+const tag = {
+  name: locale === "es" ? "Etiqueta de demostración" : "Demo tag",
+  count: 0, // < 8 → noindex,follow
+};
+
+const isIndexable = tag.count >= 8;
+---
+
+<BaseLayout
+  title={`${tag.name} — Patricio Betancourt`}
+  description={locale === "es"
+    ? `Etiqueta: ${tag.name}. ${tag.count} piezas.`
+    : `Tag: ${tag.name}. ${tag.count} pieces.`}
+  locale={locale}
+  path={`${basePath}/${Astro.params?.slug || "demo"}/`}
+  noindex={!isIndexable}
+>
+  <div class="container section">
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li>
+          <a href={basePath} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Etiquetas" : "Tags"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {tag.name}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>{tag.name}</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      {locale === "es"
+        ? `${tag.count} piezas con esta etiqueta.`
+        : `${tag.count} pieces with this tag.`}
+    </p>
+
+    <!-- Tag items grid (empty until media is published) -->
+    <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-muted)" }}>
+      <p>
+        {locale === "es"
+          ? "Las piezas con esta etiqueta aparecerán cuando se publiquen."
+          : "Pieces with this tag will appear when published."}
+      </p>
+    </div>
+  </div>
+</BaseLayout>

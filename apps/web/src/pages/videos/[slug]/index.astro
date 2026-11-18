@@ -1,0 +1,130 @@
+---
+/**
+ * Video detail page — /videos/{slug}/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import VideoPlayer from "@components/VideoPlayer.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  const locales: Locale[] = ["es", "en"];
+  return locales.flatMap((locale) => [
+    { params: { locale, slug: "placeholder" } },
+  ]);
+}
+
+const { locale, slug } = Astro.params;
+const basePath = locale === "en" ? "/en/videos" : "/videos";
+
+const video = {
+  title: locale === "es" ? "Pieza de demostración" : "Demo piece",
+  description: locale === "es"
+    ? "Esta pieza aparecerá cuando se publiquen los primeros videos."
+    : "This piece will appear when the first videos are published.",
+  date: "",
+  collection: "",
+  tags: [],
+  duration: "",
+  src: "",
+  poster: "",
+  captions: "",
+  qualities: [],
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  name: video.title,
+  description: video.description,
+  thumbnailUrl: video.poster || `${import.meta.env.SITE}/og-default.png`,
+  uploadDate: video.date || new Date().toISOString(),
+  contentUrl: video.src,
+  duration: video.duration || "PT0S",
+  author: {
+    "@type": "Person",
+    name: "Patricio Betancourt",
+  },
+};
+---
+
+<BaseLayout
+  title={`${video.title} — Patricio Betancourt`}
+  description={video.description}
+  locale={locale}
+  path={`${basePath}/${slug}/`}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <!-- Breadcrumbs -->
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li>
+          <a href={basePath} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Videos" : "Videos"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {video.title}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Video player -->
+    <div style={{ marginBottom: "2rem" }}>
+      <VideoPlayer
+        src={video.src}
+        poster={video.poster}
+        title={video.title}
+        locale={locale}
+        captions={video.captions}
+        qualities={video.qualities}
+        client:load
+      />
+    </div>
+
+    <!-- Title -->
+    <h1 style={{ marginBottom: "0.5rem" }}>{video.title}</h1>
+
+    <!-- Description -->
+    <p style={{ color: "var(--text-muted)", marginBottom: "2rem", maxWidth: "48ch" }}>
+      {video.description}
+    </p>
+
+    <!-- Metadata -->
+    <dl class="meta-list" style={{ maxWidth: "36ch", marginBottom: "2rem" }}>
+      {video.date && (
+        <>
+          <dt>{locale === "es" ? "Fecha" : "Date"}</dt>
+          <dd>{video.date}</dd>
+        </>
+      )}
+      {video.duration && (
+        <>
+          <dt>{locale === "es" ? "Duración" : "Duration"}</dt>
+          <dd>{video.duration}</dd>
+        </>
+      )}
+      {video.collection && (
+        <>
+          <dt>{locale === "es" ? "Colección" : "Collection"}</dt>
+          <dd>{video.collection}</dd>
+        </>
+      )}
+      {video.tags.length > 0 && (
+        <>
+          <dt>{locale === "es" ? "Etiquetas" : "Tags"}</dt>
+          <dd>{video.tags.join(", ")}</dd>
+        </>
+      )}
+    </dl>
+
+    <p style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      {locale === "es" ? "© Patricio Betancourt. Todos los derechos reservados." : "© Patricio Betancourt. All rights reserved."}
+    </p>
+  </div>
+</BaseLayout>

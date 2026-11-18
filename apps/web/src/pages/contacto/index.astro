@@ -1,0 +1,74 @@
+---
+/**
+ * Contact page — Contact form with Turnstile and honeypot.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ContactForm from "@components/ContactForm.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" } },
+    { params: { locale: "en" } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en/contact" : "/contacto";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: locale === "es" ? "Contacto" : "Contact",
+  url: `https://photo.patriciobet.dev${basePath}`,
+  description: locale === "es"
+    ? "Escríbeme para proyectos, encargos o preguntas."
+    : "Write for projects, commissions or questions.",
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Contacto — Patricio Betancourt" : "Contact — Patricio Betancourt"}
+  description={locale === "es"
+    ? "Escríbeme para proyectos, encargos o preguntas."
+    : "Write for projects, commissions or questions."}
+  locale={locale}
+  path={basePath}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Migas de pan" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li>
+          <a href={locale === "en" ? "/en/" : "/"} style={{ color: "var(--text-muted)", textDecoration: "none" }}>
+            {locale === "es" ? "Inicio" : "Home"}
+          </a>
+        </li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>
+          {locale === "es" ? "Contacto" : "Contact"}
+        </li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>{locale === "es" ? "Contacto" : "Contact"}</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2.5rem" }}>
+      {locale === "es"
+        ? "¿Tienes un proyecto o una pregunta? Escríbeme."
+        : "Do you have a project or a question? Write to me."}
+    </p>
+
+    <ContactForm locale={locale} />
+
+    <!-- Alternative contact -->
+    <div style={{ marginTop: "2.5rem", paddingBlockStart: "1.5rem", borderTop: "1px solid var(--border)" }}>
+      <p style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)" }}>
+        {locale === "es"
+          ? "¿Prefieres correo?"
+          : "Prefer email?"}{" "}
+        <span style={{ color: "var(--text-muted)", fontStyle: "italic" }}>
+          {locale === "es" ? "(correo pendiente)" : "(email TBD)"}
+        </span>
+      </p>
+    </div>
+  </div>
+</BaseLayout>

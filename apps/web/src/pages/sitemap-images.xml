@@ -1,0 +1,41 @@
+---
+/**
+ * Image sitemap — Lists all published images.
+ * Empty when no media is published (valid state).
+ */
+import type { APIContext } from "astro";
+
+export async function GET(context: APIContext) {
+  const site = "https://photo.patriciobet.dev";
+  const now = new Date().toISOString();
+
+  // Image sitemap — no images until media is published
+  // This is a valid empty state
+  const images: { loc: string; title: string; caption: string; license: string }[] = [];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${images.length > 0
+  ? images.map((img) => `  <url>
+    <loc>${img.loc}</loc>
+    <image:image>
+      <image:loc>${site}${img.loc}</image:loc>
+      <image:title>${img.title}</image:title>
+      <image:caption>${img.caption}</image:caption>
+      <image:license>${img.license}</image:license>
+    </image:image>
+  </url>`).join("\n")
+  : "  <!-- No images published yet. Images will appear here when media is published. -->"
+}
+</urlset>`;
+
+  return new Response(xml, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
+}
+---

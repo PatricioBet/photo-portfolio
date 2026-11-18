@@ -1,0 +1,57 @@
+---
+/**
+ * Videos EN — /en/videos/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EmptyState from "@components/EmptyState.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Videos",
+  url: "https://photo.patriciobet.dev/en/videos",
+  description: "Video pieces by Patricio Betancourt.",
+  isPartOf: { "@type": "WebSite", name: "Patricio Betancourt" },
+};
+---
+
+<BaseLayout
+  title="Videos — Patricio Betancourt"
+  description="Video pieces by Patricio Betancourt."
+  locale={locale}
+  path="/en/videos"
+  alternates={{ es: "https://photo.patriciobet.dev/videos", en: "https://photo.patriciobet.dev/en/videos" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Videos</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>Videos</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem", maxWidth: "48ch" }}>
+      Short pieces, in motion.
+    </p>
+
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2rem" }}>
+      <button class="chip" aria-pressed="true" style={{ cursor: "default" }}>All</button>
+      <button class="chip" aria-pressed="false">Collection</button>
+      <button class="chip" aria-pressed="false">Tag</button>
+    </div>
+
+    <EmptyState
+      locale={locale}
+      title="NO VIDEOS PUBLISHED YET"
+      text="The first audiovisual piece is in preparation."
+      actions={[
+        { label: "View photos", href: "/en/photos" },
+        { label: "About", href: "/en/about" },
+      ]}
+    />
+  </div>
+</BaseLayout>

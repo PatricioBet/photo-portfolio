@@ -1,0 +1,74 @@
+---
+/**
+ * Photo detail EN — /en/photos/{slug}/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Lightbox from "@components/Lightbox.astro";
+
+const locale: "en" = "en";
+
+const { slug } = Astro.params;
+
+const photo = {
+  title: "Demo piece",
+  alt: "Demo piece",
+  description: "This piece will appear when the first photographs are published.",
+  date: "",
+  collection: "",
+  tags: [],
+  credit: "",
+  license: "© Patricio Betancourt",
+  src: "",
+  thumb: "",
+};
+
+const photos = [photo];
+---
+
+<BaseLayout
+  title={`${photo.title} — Patricio Betancourt`}
+  description={photo.description}
+  locale={locale}
+  path={`/en/photos/${slug}/`}
+  alternates={{ es: `https://photo.patriciobet.dev/fotos/${slug}/`, en: `https://photo.patriciobet.dev/en/photos/${slug}/` }}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li><a href="/en/photos" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Photos</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>{photo.title}</li>
+      </ol>
+    </nav>
+
+    <figure style={{ marginBottom: "2rem" }}>
+      <div style={{
+        width: "100%",
+        aspectRatio: "16/9",
+        backgroundColor: "var(--surface)",
+        border: "1px solid var(--border)",
+        borderRadius: "var(--radius-md)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "var(--text-muted)",
+      }}>
+        Photo preview
+      </div>
+      <figcaption style={{ textAlign: "center", marginTop: "0.75rem", fontSize: "0.875rem", color: "var(--text-muted)" }}>
+        {photo.title}
+      </figcaption>
+    </figure>
+
+    <dl class="meta-list" style={{ maxWidth: "36ch", marginBottom: "2rem" }}>
+      <dt>License</dt>
+      <dd>{photo.license}</dd>
+    </dl>
+
+    <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      © Patricio Betancourt. All rights reserved.
+    </p>
+
+    <Lightbox photos={photos} initialIndex={0} locale={locale} client:load />
+  </div>
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+/**
+ * Terms EN — /en/terms/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Terms",
+  url: "https://photo.patriciobet.dev/en/terms",
+};
+---
+
+<BaseLayout
+  title="Terms — Patricio Betancourt"
+  description="Terms of use for photo.patriciobet.dev."
+  locale={locale}
+  path="/en/terms"
+  alternates={{ es: "https://photo.patriciobet.dev/terminos", en: "https://photo.patriciobet.dev/en/terms" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Terms</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>Terms</h1>
+
+    <div style={{ color: "var(--text-muted)", lineHeight: "var(--leading-relaxed)" }}>
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Site use</h2>
+        <p>This site is a personal photography and video portfolio. Content is protected by copyright. Reproduction, distribution, or public communication without the author's express permission is prohibited.</p>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Intellectual property</h2>
+        <p>All photographs, videos, and original content published on this site are the property of Patricio Betancourt, unless otherwise indicated. The site's design, code, and structure are also protected.</p>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>License</h2>
+        <p>All rights reserved. No implied licenses are granted. For content usage, contact the author.</p>
+      </section>
+
+      <section style={{ marginBottom: "2rem" }}>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>Limitations</h2>
+        <p>The site is provided "as is". Continuous availability is not guaranteed. The author is not liable for indirect damages arising from site use.</p>
+      </section>
+
+      <section>
+        <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "0.75rem" }}>External links</h2>
+        <p>This site may contain links to third-party sites. The author is not responsible for the content of such sites.</p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

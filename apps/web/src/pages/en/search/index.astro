@@ -1,0 +1,50 @@
+---
+/**
+ * Search EN — /en/search/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Search from "@components/Search.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Search",
+  url: "https://photo.patriciobet.dev/en/search",
+  description: "Search the photography and video archive.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: "/en/search?q={search_term_string}",
+    "query-input": "required name=search_term_string",
+  },
+};
+---
+
+<BaseLayout
+  title="Search — Patricio Betancourt"
+  description="Search the photography and video archive."
+  locale={locale}
+  path="/en/search"
+  noindex={true}
+  alternates={{ es: "https://photo.patriciobet.dev/buscar", en: "https://photo.patriciobet.dev/en/search" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Search</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>Search</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      Search by title, description, collection or tag.
+    </p>
+
+    <Search locale={locale} />
+  </div>
+
+  <script src="/pagefind/pagefind-ui.js" defer />
+</BaseLayout>

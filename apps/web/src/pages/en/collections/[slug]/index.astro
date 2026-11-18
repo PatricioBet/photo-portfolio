@@ -1,0 +1,35 @@
+---
+/**
+ * Collection detail EN — /en/collections/{slug}/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const locale: "en" = "en";
+---
+
+<BaseLayout
+  title={"Demo collection — Patricio Betancourt"}
+  description="Collections will appear when the first pieces are published."
+  locale={locale}
+  path={`/en/collections/${Astro.params?.slug || "demo"}/`}
+  alternates={{ es: `https://photo.patriciobet.dev/colecciones/${Astro.params?.slug || "demo"}/`, en: `https://photo.patriciobet.dev/en/collections/${Astro.params?.slug || "demo"}/` }}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li><a href="/en/collections" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Collections</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Demo collection</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>Demo collection</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      Collections will appear when the first pieces are published.
+    </p>
+
+    <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-muted)" }}>
+      <p>This collection's content will appear when the relevant pieces are published.</p>
+    </div>
+  </div>
+</BaseLayout>

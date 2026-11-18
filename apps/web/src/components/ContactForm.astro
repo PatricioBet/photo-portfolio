@@ -1,0 +1,308 @@
+---
+/**
+ * ContactForm — Client-side validated contact form with Turnstile and honeypot.
+ * Props: locale
+ */
+import { useState, useRef, useCallback } from "react";
+
+interface Props {
+  locale: "es" | "en";
+}
+
+export default function ContactForm({ locale }: Props) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [generalError, setGeneralError] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const t = {
+    name: locale === "es" ? "Nombre" : "Name",
+    email: locale === "es" ? "Correo" : "Email",
+    message: locale === "es" ? "Mensaje" : "Message",
+    consent: locale === "es" ? "Acepto la política de privacidad." : "I accept the privacy policy.",
+    send: locale === "es" ? "Enviar mensaje" : "Send message",
+    sending: locale === "es" ? "Enviando…" : "Sending…",
+    messageHelp: locale === "es"
+      ? "Máximo 5 000 caracteres. No incluyas datos sensibles."
+      : "Maximum 5,000 characters. Do not include sensitive data.",
+    errorEmpty: (field: string) => locale === "es" ? `Escribe tu ${field}.` : `Enter your ${field}.`,
+    errorInvalidEmail: locale === "es"
+      ? "Revisa el correo: falta el formato nombre@dominio."
+      : "Check the email: it needs the name@domain format.",
+    errorTooLong: locale === "es"
+      ? "El mensaje supera los 5 000 caracteres."
+      : "The message exceeds 5,000 characters.",
+    errorNoConsent: locale === "es"
+      ? "Necesito tu consentimiento para responder."
+      : "I need your consent to reply.",
+    successTitle: locale === "es" ? "✓ Mensaje enviado" : "✓ Message sent",
+    successText: locale === "es"
+      ? "Gracias por escribir. Te responderé al correo que indicaste."
+      : "Thanks for writing. I'll reply to the email you provided.",
+    successAction: locale === "es" ? "Volver al inicio" : "Back to home",
+  };
+
+  const validate = useCallback((): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!name.trim()) {
+      newErrors.name = t.errorEmpty(locale === "es" ? "nombre" : "name");
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      newErrors.email = t.errorInvalidEmail;
+    }
+
+    if (message.length > 5000) {
+      newErrors.message = t.errorTooLong;
+    }
+
+    if (!consent) {
+      newErrors.consent = t.errorNoConsent;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [name, email, message, consent, t]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (honeypot) return; // Bot detected
+
+    if (!validate()) return;
+
+    setSubmitting(true);
+    setGeneralError("");
+
+    try {
+      // @ts-expect-error Turnstile global
+      const token = await window.turnstile?.getResponse();
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          consent,
+          token,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || "Failed to send");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setGeneralError(
+        locale === "es"
+          ? "No pudimos enviar el mensaje. Revisa tu conexión; tu texto se conserva."
+          : "We couldn't send the message. Check your connection; your text is preserved."
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div role="status" style={{ textAlign: "center", padding: "3rem 0" }}>
+        <h3 style={{ fontSize: "1.5rem", color: "var(--success)", marginBottom: "1rem" }}>
+          {t.successTitle}
+        </h3>
+        <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>{t.successText}</p>
+        <a href={locale === "en" ? "/en/" : "/"} class="btn btn-primary">
+          {t.successAction}
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      noValidate
+      style={{ maxWidth: "36rem" }}
+      aria-label={locale === "es" ? "Formulario de contacto" : "Contact form"}
+    >
+      {/* Honeypot */}
+      <input
+        type="text"
+        name="_honeypot"
+        value={honeypot}
+        onChange={(e) => setHoneypot(e.target.value)}
+        tabIndex={-1}
+        autoComplete="off"
+        style={{ position: "absolute", left: -9999, opacity: 0, height: 0, width: 0, overflow: "hidden" }}
+      />
+
+      {/* General error */}
+      {generalError && (
+        <div role="alert" style={{ padding: "0.75rem 1rem", backgroundColor: "var(--danger)", color: "var(--bg)", borderRadius: "var(--radius-md)", marginBottom: "1rem", fontSize: "0.875rem" }}>
+          {generalError}
+        </div>
+      )}
+
+      {/* Name */}
+      <div style={{ marginBottom: "1.5rem" }}>
+        <label htmlFor="contact-name" style={{ display: "block", fontSize: "0.875rem", fontWeight: 500, marginBottom: "0.5rem", color: "var(--text)" }}>
+          {t.name} <span style={{ color: "var(--danger)" }}>*</span>
+        </label>
+        <input
+          id="contact-name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          autoComplete="name"
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "error-name" : undefined}
+          style={{
+            width: "100%",
+            padding: "0.625rem 0.75rem",
+            fontSize: "1rem",
+            backgroundColor: "var(--surface-2)",
+            border: `1px solid ${errors.name ? "var(--danger)" : "var(--border-strong)"}`,
+            borderRadius: "var(--radius-sm)",
+            color: "var(--text)",
+            minHeight: "2.75rem",
+          }}
+        />
+        {errors.name && (
+          <p id="error-name" style={{ fontSize: "0.875rem", color: "var(--danger)", marginTop: "0.25rem" }} role="alert">
+            {errors.name}
+          </p>
+        )}
+      </div>
+
+      {/* Email */}
+      <div style={{ marginBottom: "1.5rem" }}>
+        <label htmlFor="contact-email" style={{ display: "block", fontSize: "0.875rem", fontWeight: 500, marginBottom: "0.5rem", color: "var(--text)" }}>
+          {t.email} <span style={{ color: "var(--danger)" }}>*</span>
+        </label>
+        <input
+          id="contact-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+          inputMode="email"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "error-email" : undefined}
+          style={{
+            width: "100%",
+            padding: "0.625rem 0.75rem",
+            fontSize: "1rem",
+            backgroundColor: "var(--surface-2)",
+            border: `1px solid ${errors.email ? "var(--danger)" : "var(--border-strong)"}`,
+            borderRadius: "var(--radius-sm)",
+            color: "var(--text)",
+            minHeight: "2.75rem",
+          }}
+        />
+        {errors.email && (
+          <p id="error-email" style={{ fontSize: "0.875rem", color: "var(--danger)", marginTop: "0.25rem" }} role="alert">
+            {errors.email}
+          </p>
+        )}
+      </div>
+
+      {/* Message */}
+      <div style={{ marginBottom: "1.5rem" }}>
+        <label htmlFor="contact-message" style={{ display: "block", fontSize: "0.875rem", fontWeight: 500, marginBottom: "0.5rem", color: "var(--text)" }}>
+          {t.message} <span style={{ color: "var(--danger)" }}>*</span>
+        </label>
+        <textarea
+          id="contact-message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          rows={6}
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? "error-message" : "help-message"}
+          style={{
+            width: "100%",
+            padding: "0.625rem 0.75rem",
+            fontSize: "1rem",
+            backgroundColor: "var(--surface-2)",
+            border: `1px solid ${errors.message ? "var(--danger)" : "var(--border-strong)"}`,
+            borderRadius: "var(--radius-sm)",
+            color: "var(--text)",
+            minHeight: "8rem",
+            resize: "vertical",
+          }}
+        />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.25rem" }}>
+          <p id="help-message" style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>{t.messageHelp}</p>
+          <span style={{ fontSize: "0.75rem", color: message.length > 5000 ? "var(--danger)" : "var(--text-muted)" }}>
+            {message.length}/5000
+          </span>
+        </div>
+        {errors.message && (
+          <p id="error-message" style={{ fontSize: "0.875rem", color: "var(--danger)", marginTop: "0.25rem" }} role="alert">
+            {errors.message}
+          </p>
+        )}
+      </div>
+
+      {/* Consent */}
+      <div style={{ marginBottom: "1.5rem" }}>
+        <label style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem", cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            style={{ marginTop: "0.25rem", accentColor: "var(--accent)" }}
+          />
+          <span style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>
+            {t.consent}{" "}
+            <a href={locale === "en" ? "/en/privacy" : "/privacidad"} style={{ fontSize: "0.875rem" }}>
+              {locale === "es" ? "Privacidad" : "Privacy"}
+            </a>
+          </span>
+        </label>
+        {errors.consent && (
+          <p style={{ fontSize: "0.875rem", color: "var(--danger)", marginTop: "0.25rem" }} role="alert">
+            {errors.consent}
+          </p>
+        )}
+      </div>
+
+      {/* Turnstile */}
+      {/* @ts-expect-error Turnstile global */}
+      {window.turnstile && (
+        <div
+          data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+          data-callback={(token: string) => { /* handled by form submission */ }}
+          style={{ marginBottom: "1.5rem" }}
+        />
+      )}
+
+      {/* Submit */}
+      <button
+        type="submit"
+        disabled={submitting}
+        class="btn btn-primary"
+        style={{ width: "100%" }}
+        aria-busy={submitting}
+      >
+        {submitting ? t.sending : t.send}
+      </button>
+
+      {/* Live region for SR */}
+      <div aria-live="polite" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0,0,0,0)" }}>
+        {submitting ? t.sending : ""}
+      </div>
+    </form>
+  );
+}

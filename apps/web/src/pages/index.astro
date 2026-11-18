@@ -1,0 +1,138 @@
+---
+/**
+ * Home page — Hero, featured, collections, reel, about, contact.
+ * Works with 0 media: shows editorial empty states.
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EmptyState from "@components/EmptyState.astro";
+import type { Locale } from "@i18n/translations";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "es" }, props: { locale: "es" as const } },
+    { params: { locale: "en" }, props: { locale: "en" as const } },
+  ];
+}
+
+const { locale } = Astro.props;
+const basePath = locale === "en" ? "/en" : "";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Patricio Betancourt",
+  url: "https://photo.patriciobet.dev",
+  description: locale === "es"
+    ? "Archivo personal de fotografías y videos de Patricio Betancourt."
+    : "Personal archive of photographs and videos by Patricio Betancourt.",
+  inLanguage: [locale === "es" ? "es" : "en", "en"],
+  publisher: {
+    "@type": "Person",
+    name: "Patricio Betancourt",
+  },
+};
+---
+
+<BaseLayout
+  title={locale === "es" ? "Patricio Betancourt — Fotografía y video" : "Patricio Betancourt — Photography and video"}
+  description={locale === "es"
+    ? "Archivo personal de fotografías y videos de Patricio Betancourt."
+    : "Personal archive of photographs and videos by Patricio Betancourt."}
+  locale={locale}
+  path="/"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section style={{ paddingBlock: "clamp(4rem, 12vh, 8rem)", textAlign: "center" }}>
+    <div class="container">
+      <h1 style={{ marginBottom: "0.5rem" }}>Patricio Betancourt</h1>
+      <p style={{ fontSize: "clamp(1.25rem, 3vw, 2rem)", color: "var(--text-muted)", fontFamily: "var(--font-display)", marginBottom: "2rem" }}>
+        {locale === "es" ? "Fotografía y video" : "Photography and video"}
+      </p>
+      <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", maxWidth: "48ch", marginInline: "auto", marginBottom: "2.5rem", fontStyle: "italic" }}>
+        {locale === "es"
+          ? "Un archivo personal de imágenes y movimiento."
+          : "A personal archive of images and motion."}
+      </p>
+      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+        <a href={`${basePath}/photos`} class="btn btn-primary">{locale === "es" ? "Ver fotos" : "View photos"}</a>
+        <a href={`${basePath}/videos`} class="btn btn-secondary">{locale === "es" ? "Ver videos" : "View videos"}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured (empty state) -->
+  <section class="section" style={{ borderTop: "1px solid var(--border)" }}>
+    <div class="container">
+      <h2 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "var(--text-2xl)" }}>
+        {locale === "es" ? "Trabajos destacados" : "Selected work"}
+      </h2>
+      <EmptyState
+        locale={locale}
+        title={locale === "es" ? "EL ARCHIVO SE ESTÁ PREPARANDO" : "THE ARCHIVE IS BEING PREPARED"}
+        text={locale === "es"
+          ? "Fotografías y videos llegarán pronto.\nMientras tanto, puedes conocer mi trabajo de desarrollo."
+          : "Photographs and videos will arrive soon.\nIn the meantime, you can explore my development work."}
+        actions={[
+          { label: locale === "es" ? "Sobre mí" : "About", href: `${basePath}/about` },
+          { label: locale === "es" ? "Contacto" : "Contact", href: `${basePath}/contact` },
+          { label: locale === "es" ? "Desarrollo" : "Development", href: "https://patriciobet.dev" },
+        ]}
+      />
+    </div>
+  </section>
+
+  <!-- Collections preview (empty state) -->
+  <section class="section" style={{ borderTop: "1px solid var(--border)" }}>
+    <div class="container">
+      <h2 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "var(--text-2xl)" }}>
+        {locale === "es" ? "Colecciones" : "Collections"}
+      </h2>
+      <EmptyState
+        locale={locale}
+        title={locale === "es" ? "LAS COLECCIONES SE ESTÁN ORGANIZANDO" : "COLLECTIONS ARE BEING ORGANIZED"}
+        text={locale === "es"
+          ? "Mientras tanto, puedes ver todas las fotos y videos."
+          : "In the meantime, you can view all photos and videos."}
+        actions={[
+          { label: locale === "es" ? "Ver todas las fotos" : "View all photos", href: `${basePath}/photos` },
+          { label: locale === "es" ? "Ver todos los videos" : "View all videos", href: `${basePath}/videos` },
+        ]}
+      />
+    </div>
+  </section>
+
+  <!-- About preview -->
+  <section class="section" style={{ borderTop: "1px solid var(--border)" }}>
+    <div class="container" style={{ textAlign: "center", maxWidth: "48ch", marginInline: "auto" }}>
+      <h2 style={{ marginBottom: "1rem", fontSize: "var(--text-2xl)" }}>
+        {locale === "es" ? "Sobre mí" : "About"}
+      </h2>
+      <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+        {locale === "es"
+          ? "Soy Patricio Betancourt. Trabajo en desarrollo de software y ciencia de datos, y la fotografía es la otra forma en que miro: composición, luz y tiempo."
+          : "I'm Patricio Betancourt. I work in software development and data science, and photography is the other way I look: composition, light and time."}
+      </p>
+      <a href={`${basePath}/about`} class="btn btn-secondary">
+        {locale === "es" ? "Leer más" : "Read more"}
+      </a>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="section" style={{ borderTop: "1px solid var(--border)" }}>
+    <div class="container" style={{ textAlign: "center", maxWidth: "48ch", marginInline: "auto" }}>
+      <h2 style={{ marginBottom: "1rem", fontSize: "var(--text-2xl)" }}>
+        {locale === "es" ? "¿Trabajamos juntos?" : "Let's work together"}
+      </h2>
+      <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+        {locale === "es"
+          ? "¿Tienes un proyecto o una pregunta? Escríbeme."
+          : "Do you have a project or a question? Write to me."}
+      </p>
+      <a href={`${basePath}/contact`} class="btn btn-primary">
+        {locale === "es" ? "Contacto" : "Contact"}
+      </a>
+    </div>
+  </section>
+</BaseLayout>

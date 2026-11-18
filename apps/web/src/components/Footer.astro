@@ -1,0 +1,103 @@
+---
+/**
+ * Footer — secondary navigation, legal links, RSS, and copyright.
+ */
+import type { Locale } from "@i18n/translations";
+
+export interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const basePath = locale === "en" ? "/en" : "";
+
+const navLinks = [
+  { key: "nav.photos", href: `${basePath}/photos` },
+  { key: "nav.videos", href: `${basePath}/videos` },
+  { key: "nav.collections", href: `${basePath}/collections` },
+  { key: "nav.about", href: `${basePath}/about` },
+  { key: "nav.contact", href: `${basePath}/contact` },
+];
+
+const legalLinks = [
+  { key: "footer.privacy", href: `${basePath}/privacy` },
+  { key: "footer.terms", href: `${basePath}/terms` },
+  { key: "footer.accessibility", href: `${basePath}/accessibility` },
+  { key: "footer.credits", href: `${basePath}/credits` },
+];
+
+function getLabel(key: string): string {
+  const map: Record<string, Record<string, string>> = {
+    "nav.photos": { es: "Fotos", en: "Photos" },
+    "nav.videos": { es: "Videos", en: "Videos" },
+    "nav.collections": { es: "Colecciones", en: "Collections" },
+    "nav.about": { es: "Sobre mí", en: "About" },
+    "nav.contact": { es: "Contacto", en: "Contact" },
+    "footer.privacy": { es: "Privacidad", en: "Privacy" },
+    "footer.terms": { es: "Términos", en: "Terms" },
+    "footer.accessibility": { es: "Accesibilidad", en: "Accessibility" },
+    "footer.credits": { es: "Créditos", en: "Credits" },
+  };
+  return map[key]?.[locale] || key;
+}
+---
+
+<footer class="footer no-print">
+  <div class="container">
+    <div class="footer__grid">
+      <!-- Navigation -->
+      <div>
+        <h3 class="footer__heading">{getLabel("nav.photos")}</h3>
+        <ul class="footer__links">
+          {navLinks.map((link) => (
+            <li>
+              <a href={link.href}>{getLabel(link.key)}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h3 class="footer__heading">{getLabel("footer.privacy")}</h3>
+        <ul class="footer__links">
+          {legalLinks.map((link) => (
+            <li>
+              <a href={link.href}>{getLabel(link.key)}</a>
+            </li>
+          ))}
+          <li>
+            <a href={`${basePath}/rss.xml`}>{getLabel("footer.rss")}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- External -->
+      <div>
+        <h3 class="footer__heading">{getLabel("footer.development")}</h3>
+        <ul class="footer__links">
+          <li>
+            <a href="https://patriciobet.dev" target="_blank" rel="noopener noreferrer">
+              patriciobet.dev
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/patob" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/patricio-betancourt" target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>{getLabel("footer.copyright")}</p>
+    </div>
+  </div>
+</footer>

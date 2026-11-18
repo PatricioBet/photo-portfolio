@@ -1,0 +1,58 @@
+---
+/**
+ * Photos EN — /en/photos/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EmptyState from "@components/EmptyState.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Photos",
+  url: "https://photo.patriciobet.dev/en/photos",
+  description: "Photograph selection by Patricio Betancourt.",
+  isPartOf: { "@type": "WebSite", name: "Patricio Betancourt" },
+};
+---
+
+<BaseLayout
+  title="Photos — Patricio Betancourt"
+  description="Photograph selection by Patricio Betancourt."
+  locale={locale}
+  path="/en/photos"
+  alternates={{ es: "https://photo.patriciobet.dev/fotos", en: "https://photo.patriciobet.dev/en/photos" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Photos</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>Photos</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem", maxWidth: "48ch" }}>
+      A selection of images, without crops or noise.
+    </p>
+
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2rem" }}>
+      <button class="chip" aria-pressed="true" style={{ cursor: "default" }}>All</button>
+      <button class="chip" aria-pressed="false">Collection</button>
+      <button class="chip" aria-pressed="false">Tag</button>
+      <button class="chip" aria-pressed="false">Year</button>
+    </div>
+
+    <EmptyState
+      locale={locale}
+      title="NO PHOTOGRAPHS PUBLISHED YET"
+      text="I'm preparing the first selection. Come back soon or explore the videos."
+      actions={[
+        { label: "View videos", href: "/en/videos" },
+        { label: "About", href: "/en/about" },
+      ]}
+    />
+  </div>
+</BaseLayout>

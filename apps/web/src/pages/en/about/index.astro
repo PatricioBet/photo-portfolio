@@ -1,0 +1,88 @@
+---
+/**
+ * About EN — /en/about/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  name: "About",
+  url: "https://photo.patriciobet.dev/en/about",
+  mainEntity: {
+    "@type": "Person",
+    name: "Patricio Betancourt",
+    url: "https://patriciobet.dev",
+    jobTitle: "Software developer and data scientist",
+    description: "Software developer and data scientist interested in photography and video.",
+  },
+};
+---
+
+<BaseLayout
+  title="About — Patricio Betancourt"
+  description="Who Patricio Betancourt is and how he works."
+  locale={locale}
+  path="/en/about"
+  alternates={{ es: "https://photo.patriciobet.dev/sobre-mi", en: "https://photo.patriciobet.dev/en/about" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section" style={{ maxWidth: "48ch", marginInline: "auto" }}>
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>About</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "2rem" }}>About</h1>
+
+    <div style={{
+      width: "100%",
+      aspectRatio: "1 / 1",
+      maxWidth: "24rem",
+      marginInline: "auto",
+      marginBottom: "2rem",
+      backgroundColor: "var(--surface)",
+      border: "1px solid var(--border)",
+      borderRadius: "var(--radius-md)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "var(--text-muted)",
+      fontSize: "0.875rem",
+    }}>
+      Author portrait
+    </div>
+
+    <div style={{ marginBottom: "2.5rem" }}>
+      <p style={{ marginBottom: "1rem", color: "var(--text-muted)" }}>
+        I'm Patricio Betancourt. I work in software development and data science, and photography is the other way I look: composition, light and time.
+      </p>
+      <p style={{ marginBottom: "1rem", color: "var(--text-muted)" }}>
+        This space gathers images and video pieces I've been keeping. It's not a commercial catalogue or a retrospective: it's an archive that grows when I have something worth showing.
+      </p>
+      <p style={{ color: "var(--text-muted)" }}>
+        When I'm not behind a camera, I'm building software. You can see that work at patriciobet.dev.
+      </p>
+    </div>
+
+    <div style={{ marginBottom: "2.5rem" }}>
+      <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "1rem" }}>Focus</h2>
+      <p style={{ color: "var(--text-muted)" }}>
+        I look for stillness in the everyday: the light that changes a space, the texture of the familiar, moments that go unnoticed. I don't seek the perfect scene; I seek the one that exists.
+      </p>
+    </div>
+
+    <div>
+      <h2 style={{ fontSize: "var(--text-xl)", marginBottom: "1rem" }}>Links</h2>
+      <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <li><a href="https://patriciobet.dev" target="_blank" rel="noopener noreferrer">Development portfolio</a></li>
+        <li><a href="https://github.com/patob" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/patricio-betancourt" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

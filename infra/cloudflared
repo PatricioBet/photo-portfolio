@@ -1,0 +1,39 @@
+# Cloudflare Tunnel — Configuration
+#
+# This file documents the tunnel configuration used by cloudflared.
+# The actual token-based authentication is passed via the
+# CLOUDFLARE_TUNNEL_TOKEN environment variable in docker-compose.yml.
+#
+# For manual setup (non-Docker), create a tunnel with:
+#   cloudflared tunnel create photo-portfolio
+#   cloudflared tunnel route dns photo-portfolio photo.patriciobet.dev
+#   cloudflared tunnel route dns photo-portfolio admin-photo.patriciobet.dev
+#
+# Then configure routes in ~/.cloudflared/config.yml or via the dashboard.
+
+# ── Tunnel Routes ─────────────────────────────────────────────
+# The tunnel routes are configured in the Cloudflare dashboard or via CLI:
+#
+# Route 1: photo.patriciobet.dev → Caddy (:8080)
+# Route 2: admin-photo.patriciobet.dev → Caddy (:8080)
+# Route 3: cdn-photo.patriciobet.dev → R2 public bucket (direct, no tunnel)
+#
+# DNS records in Cloudflare:
+#   photo.patriciobet.dev    CNAME  <tunnel-uuid>.cfargotunnel.com
+#   admin-photo.patriciobet.dev CNAME <tunnel-uuid>.cfargotunnel.com
+#   cdn-photo.patriciobet.dev  CNAME  <r2-public-bucket>.<account-id>.r2.cloudflareresource.com
+#
+# ── Health Check ──────────────────────────────────────────────
+# Cloudflared reports health via the /ready endpoint.
+# docker-compose.yml uses the token-based run command which
+# includes automatic health monitoring and auto-restart.
+#
+# ── Auto-restart ──────────────────────────────────────────────
+# Docker restart policy: unless-stopped
+# Cloudflared internal: --no-autoupdate prevents unexpected version changes
+#
+# ── Troubleshooting ───────────────────────────────────────────
+# View tunnel status: cloudflared tunnel info <tunnel-name>
+# View tunnel logs:   cloudflared tunnel logs <tunnel-name>
+# List routes:        cloudflared tunnel list-routes <tunnel-name>
+# Delete tunnel:      cloudflared tunnel cleanup <tunnel-name>

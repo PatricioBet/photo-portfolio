@@ -1,0 +1,38 @@
+---
+/**
+ * Tag detail EN — /en/tags/{slug}/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const locale: "en" = "en";
+const tag = { name: "Demo tag", count: 0 };
+const isIndexable = tag.count >= 8;
+---
+
+<BaseLayout
+  title={`${tag.name} — Patricio Betancourt`}
+  description={`Tag: ${tag.name}. ${tag.count} pieces.`}
+  locale={locale}
+  path={`/en/tags/${Astro.params?.slug || "demo"}/`}
+  noindex={!isIndexable}
+  alternates={{ es: `https://photo.patriciobet.dev/etiquetas/${Astro.params?.slug || "demo"}/`, en: `https://photo.patriciobet.dev/en/tags/${Astro.params?.slug || "demo"}/` }}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li><a href="/en/tags" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Tags</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>{tag.name}</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>{tag.name}</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      {tag.count} pieces with this tag.
+    </p>
+
+    <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-muted)" }}>
+      <p>Pieces with this tag will appear when published.</p>
+    </div>
+  </div>
+</BaseLayout>

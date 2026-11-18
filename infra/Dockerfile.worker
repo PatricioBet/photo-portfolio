@@ -1,0 +1,69 @@
+# syntax=docker/dockerfile:1.7
+FROM node:22-alpine AS base
+
+# Install sharp/build dependencies and ffmpeg
+RUN apk add --no-cache \
+    build-base \
+    g++ \
+    make \
+    jpeg-turbo-dev \
+    libpng-dev \
+    vips-dev \
+    ffmpeg \
+    ffmpeg-dev \
+    tiff-dev \
+    libwebp-dev \
+    libheif-dev \
+    zlib-dev
+
+WORKDIR /app
+
+# ── Dependencies ──────────────────────────────────────────────
+FROM base AS deps
+COPY package.json pnpm-workspace.yaml ./
+COPY apps/media-worker/package.json ./apps/media-worker/
+COPY packages/media-core/package.json ./packages/media-core/
+RUN corepack enable && pnpm fetch --ignore-scripts
+
+# ── Build ─────────────────────────────────────────────────────
+FROM deps AS build
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/media-worker/node_modules ./apps/media-worker/node_modules
+COPY --from=deps /app/packages/media-core/node_modules ./packages/media-core/node_modules
+COPY apps/media-worker/ ./apps/media-worker/
+COPY packages/media-core/ ./packages/media-core/
+COPY tsconfig.base.json ./
+RUN corepack enable && pnpm --filter media-worker build
+
+# ── Production ────────────────────────────────────────────────
+FROM node:22-alpine AS production
+RUN apk add --no-cache ffmpeg
+
+# sharp prebuilds for alpine
+RUN apk add --no-cache build-base g++ make jpeg-turbo-dev libpng-dev vips-dev tiff-dev libwebp-dev zlib-dev
+
+WORKDIR /app
+
+COPY --from=build /app/apps/media-worker/dist ./dist
+COPY --from=build /app/apps/media-worker/package.json ./
+COPY --from=build /app/packages/media-core/package.json ./packages/media-core/
+
+# Install production deps only
+RUN corepack enable && \
+    pnpm install --prod --ignore-scripts && \
+    rm -rf /root/.npm /root/.node-gyp /tmp/*
+
+# Non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+
+# Memory limit enforced at compose level (2GB)
+# Node max-old-space-size set at runtime via env var
+ENV NODE_OPTIONS="--max-old-space-size=1900"
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:9000/health || exit 1
+
+EXPOSE 9000
+
+CMD ["node", "dist/main.js"]

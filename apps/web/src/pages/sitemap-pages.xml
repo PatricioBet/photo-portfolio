@@ -1,0 +1,66 @@
+---
+/**
+ * Pages sitemap — All indexable pages.
+ */
+import type { APIContext } from "astro";
+
+export async function GET(context: APIContext) {
+  const site = "https://photo.patriciobet.dev";
+  const now = new Date().toISOString();
+
+  // All indexable pages (noindex pages excluded)
+  const pages = [
+    // Spanish
+    { loc: `${site}/`, changefreq: "weekly", priority: 1.0 },
+    { loc: `${site}/fotos/`, changefreq: "weekly", priority: 0.9 },
+    { loc: `${site}/videos/`, changefreq: "weekly", priority: 0.9 },
+    { loc: `${site}/colecciones/`, changefreq: "weekly", priority: 0.8 },
+    { loc: `${site}/etiquetas/`, changefreq: "monthly", priority: 0.7 },
+    { loc: `${site}/sobre-mi/`, changefreq: "monthly", priority: 0.7 },
+    { loc: `${site}/contacto/`, changefreq: "monthly", priority: 0.6 },
+    { loc: `${site}/privacidad/`, changefreq: "yearly", priority: 0.3 },
+    { loc: `${site}/terminos/`, changefreq: "yearly", priority: 0.3 },
+    { loc: `${site}/accesibilidad/`, changefreq: "yearly", priority: 0.3 },
+    { loc: `${site}/creditos/`, changefreq: "yearly", priority: 0.3 },
+    // English
+    { loc: `${site}/en/`, changefreq: "weekly", priority: 1.0 },
+    { loc: `${site}/en/photos/`, changefreq: "weekly", priority: 0.9 },
+    { loc: `${site}/en/videos/`, changefreq: "weekly", priority: 0.9 },
+    { loc: `${site}/en/collections/`, changefreq: "weekly", priority: 0.8 },
+    { loc: `${site}/en/tags/`, changefreq: "monthly", priority: 0.7 },
+    { loc: `${site}/en/about/`, changefreq: "monthly", priority: 0.7 },
+    { loc: `${site}/en/contact/`, changefreq: "monthly", priority: 0.6 },
+    { loc: `${site}/en/privacy/`, changefreq: "yearly", priority: 0.3 },
+    { loc: `${site}/en/terms/`, changefreq: "yearly", priority: 0.3 },
+    { loc: `${site}/en/accessibility/`, changefreq: "yearly", priority: 0.3 },
+    { loc: `${site}/en/credits/`, changefreq: "yearly", priority: 0.3 },
+  ];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${pages.map((p) => `  <url>
+    <loc>${p.loc}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+    ${p.loc.includes("/en/")
+      ? `    <xhtml:link rel="alternate" hreflang="es" href="${p.loc.replace("/en/", "")}" />
+    <xhtml:link rel="alternate" hreflang="en" href="${p.loc}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${p.loc.replace("/en/", "")}" />`
+      : `    <xhtml:link rel="alternate" hreflang="es" href="${p.loc}" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://photo.patriciobet.dev${p.loc.replace("/", "/en/")}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${p.loc}" />`
+    }
+  </url>`).join("\n")}
+</urlset>`;
+
+  return new Response(xml, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
+}
+---

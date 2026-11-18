@@ -1,0 +1,46 @@
+---
+/**
+ * Tags EN — /en/tags/
+ */
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const locale: "en" = "en";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Tags",
+  url: "https://photo.patriciobet.dev/en/tags",
+  description: "All tags in the archive.",
+  isPartOf: { "@type": "WebSite", name: "Patricio Betancourt" },
+};
+---
+
+<BaseLayout
+  title="Tags — Patricio Betancourt"
+  description="All tags in the archive."
+  locale={locale}
+  path="/en/tags"
+  alternates={{ es: "https://photo.patriciobet.dev/etiquetas", en: "https://photo.patriciobet.dev/en/tags" }}
+  jsonLd={jsonLd}
+>
+  <div class="container section">
+    <nav aria-label="Breadcrumbs" style={{ marginBottom: "1.5rem" }}>
+      <ol style={{ display: "flex", flexWrap: "wrap", listStyle: "none", gap: "0.5rem", fontSize: "0.875rem", color: "var(--text-muted)", padding: 0, margin: 0 }}>
+        <li><a href="/en/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</a></li>
+        <li aria-current="page" style={{ color: "var(--text)", fontWeight: 500 }}>Tags</li>
+      </ol>
+    </nav>
+
+    <h1 style={{ marginBottom: "0.5rem" }}>Tags</h1>
+    <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", marginBottom: "2rem" }}>
+      Explore the archive by tags.
+    </p>
+
+    <div style={{ textAlign: "center", padding: "4rem 0", color: "var(--text-muted)" }}>
+      <p style={{ fontSize: "var(--text-lg)" }}>
+        Tags will appear when the first pieces are published.
+      </p>
+    </div>
+  </div>
+</BaseLayout>
