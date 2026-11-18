@@ -28,19 +28,24 @@ actualiza en el mismo PR que el cambio.
 
 ### 01 — Producto
 
-- `01-producto/actores-casos-uso.md` (pendiente)
-- `01-producto/criterios-aceptacion.md` (pendiente)
-- `01-producto/contenido-copy-es-en.md` (pendiente)
-- `01-producto/legal-privacidad.md` (pendiente)
+Estado: **en revisión** (Gate 0 rechazado; ver reporte de sprint 0).
+
+- [Actores y casos de uso](01-producto/actores-casos-uso.md)
+- [Criterios de aceptación y UAT](01-producto/criterios-aceptacion.md)
+- [Contenido y copy ES/EN](01-producto/contenido-copy-es-en.md)
+- [Legal, privacidad y licencias](01-producto/legal-privacidad.md)
 
 ### 02 — UX
 
-- `02-ux/sitemap.md` (pendiente)
-- `02-ux/flujos/` (pendiente)
-- `02-ux/wireframes/` (pendiente)
-- `02-ux/prototipo/` (pendiente)
-- `02-ux/design-system.md` (pendiente)
-- `02-ux/accesibilidad.md` (pendiente)
+Estado: **en revisión**. El prototipo está validado técnicamente, pero el Gate 1
+no se abre hasta cerrar el Gate 0.
+
+- [Sitemap](02-ux/sitemap.md)
+- [Flujos](02-ux/flujos/README.md)
+- [Wireframes](02-ux/wireframes/README.md)
+- [Prototipo navegable](02-ux/prototipo/README.md)
+- [Design system](02-ux/design-system.md)
+- [Accesibilidad](02-ux/accesibilidad.md)
 
 ### 03 — Arquitectura
 
@@ -63,7 +68,9 @@ actualiza en el mismo PR que el cambio.
 - `04-calidad/presupuestos-rendimiento.md` (pendiente)
 - `04-calidad/checklist-seguridad.md` (pendiente)
 - `04-calidad/plan-uat.md` (pendiente)
-- `04-calidad/reportes/` (se generan por sprint)
+- [Revisión independiente SRS v1.1](04-calidad/reportes/sprint-0-revision-srs.md) —
+  **rechazado para Gate 0**
+- `04-calidad/reportes/` (el resto se genera por sprint)
 
 ### 05 — Operación
 
@@ -76,7 +83,7 @@ actualiza en el mismo PR que el cambio.
 ### 06 — Fases
 
 - [Fase 00 — Gestión](06-fases/fase-00-gestion.md)
-- `06-fases/fase-01-ux.md` (pendiente)
+- [Fase 01 — Producto y UX](06-fases/fase-01-ux.md)
 - `06-fases/fase-02-arquitectura.md` (pendiente)
 
 ### Assets
