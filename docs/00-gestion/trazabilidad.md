@@ -1,9 +1,9 @@
 # Matriz de trazabilidad
 
 **Estado:** en revisión
-**Versión:** 1.0
+**Versión:** 1.2
 **Fecha:** 17 de noviembre de 2026
-**Fuente:** [`srs-v1.1.md`](srs-v1.1.md) y [`plan-sprints.md`](plan-sprints.md)
+**Fuente:** [`srs-v1.2.md`](srs-v1.2.md) y [`plan-sprints.md`](plan-sprints.md)
 
 ---
 
@@ -50,9 +50,10 @@
 | Host y red | SEG-11–SEG-24 | S9 | AC-16, AC-17 | `nmap`, UFW, revisión. |
 | Auditoría e incidentes | SEG-41–SEG-47 | S9 | AC-16, AC-35 | Alertas, runbook, simulación. |
 | Backups y DR | BCK-01–BCK-20 | S9 | AC-30, AC-31, AC-32 | `restic check`, restore medido. |
+| Object Lock | BCK-21–BCK-23 | S9 | AC-30, AC-31 | Object Lock config, restore test. |
 | SEO | SEO-01–SEO-25 | S6/S9 | AC-26, AC-27, AC-28 | Crawl, validadores, Search Console. |
 | Privacidad | PRIV-01–PRIV-15 | S8/S10 | AC-21 | Auditoría de red, legal review. |
-| Accesibilidad | A11Y-01–A11Y-22 | S6/S8 | AC-22, AC-23, AC-37 | axe, teclado, lector. |
+| Accesibilidad | A11Y-01–A11Y-28 | S6/S8 | AC-22, AC-23, AC-37 | axe, teclado, lector. |
 | Legal | LEG-01–LEG-18 | S10 | AC-39, AC-40 | Checklist legal, manifest. |
 | Observabilidad | OPS-01–OPS-30 | S9 | AC-31, AC-32, AC-33, AC-34 | Dashboard, alertas, runbooks. |
 | Despliegue | DEP-01–DEP-30 | S9 | AC-08, AC-09, AC-16, AC-31 | Prueba de apagón, restore, headers. |
@@ -75,7 +76,7 @@
 | AC-08 | Apagón durante procesamiento. | RF-M30, RF-M48–RF-M51, BCK-12–BCK-15 | S9 |
 | AC-09 | Apagón durante build. | RF-A37, DEP-13–DEP-15, BCK-15 | S7/S9 |
 | AC-10 | Rollback. | RF-A36, DEP-14 | S7 |
-| AC-11 | Despublicar. | RF-A34, RF-P38, SEO-10 | S7 |
+| AC-11 | Despublicar. | RF-A34, RF-P38, SEO-10, DAT-18 | S7 |
 | AC-12 | Login sin Access/passkey. | SEG-01–SEG-05, RF-A02 | S3 |
 | AC-13 | JWT inválido. | SEG-03, RF-A06 | S3 |
 | AC-14 | Sesión expirada. | SEG-06–SEG-08, RF-A04 | S3 |
@@ -87,8 +88,8 @@
 | AC-20 | FFmpeg playlist remota. | RF-M21, SEG-32 | S5 |
 | AC-21 | Contacto spam. | RF-P71–RF-P73, SEG-33, SEG-38 | S8 |
 | AC-22 | Lightbox teclado/SR. | RF-P34, A11Y-08 | S6 |
-| AC-23 | Video teclado/captions. | RF-P50–RF-P54, A11Y-07 | S6 |
-| AC-24 | Reduced motion/Save-Data/WebGL. | RF-P10, RF-P13, RF-P56, RF-V07, RF-V13 | S6/S8 |
+| AC-23 | Video teclado/captions. | RF-P50–RF-P54, A11Y-07, A11Y-23 | S6 |
+| AC-24 | Reduced motion/Save-Data/WebGL. | RF-P10, RF-P13, RF-V07, RF-V13 | S6/S8 |
 | AC-25 | Lighthouse móvil. | RNF-R01–RNF-R13 | S6/S8 |
 | AC-26 | SEO. | SEO-01–SEO-25 | S6 |
 | AC-27 | Tag < 8. | RF-P24, SEO-13 | S6 |
@@ -104,7 +105,7 @@
 | AC-37 | Accesibilidad. | A11Y-01–A11Y-22 | S8 |
 | AC-38 | Impresión. | RF-P39, A11Y-19 | S6 |
 | AC-39 | Assets demo. | RF-P90–RF-P93, RF-M46–RF-M47, LEG-08–LEG-09 | S7 |
-| AC-40 | Lanzamiento. | RF-A48, LEG-01–LEG-18, DEP-22–DEP-30 | S10 |
+| AC-40 | Lanzamiento. | RF-A48, RF-P91, RF-P92, LEG-01–LEG-18, DEP-22–DEP-30 | S10 |
 
 ---
 
@@ -138,7 +139,7 @@
 | RF-P24 | M | 4.3 Galerías y listados | S6 | Test de meta robots. |
 | RF-P25 | M | 4.3 Galerías y listados | S6 | E2E + inspección. |
 | RF-P26 | S | 4.3 Galerías y listados | S6 | Test visual. |
-| RF-P27 | M | 4.3 Galerías y listados | S6 | E2E. |
+| RF-P27 | S | 4.3 Galerías y listados | S6 | E2E. |
 | RF-P28 | M | 4.3 Galerías y listados | S6 | Test de borde. |
 | RF-P29 | S | 4.3 Galerías y listados | S6 | Lighthouse. |
 | RF-P30 | M | 4.4 Detalle de foto | S6 | Lighthouse + HTML + visual. |
@@ -154,18 +155,18 @@
 | RF-P50 | M | 4.5 Detalle de video | S6 | E2E + a11y. |
 | RF-P51 | M | 4.5 Detalle de video | S6 | HTML + E2E. |
 | RF-P52 | M | 4.5 Detalle de video | S6 | E2E + red. |
-| RF-P53 | S | 4.5 Detalle de video | S6 | E2E. |
+| RF-P53 | M | 4.5 Detalle de video | S6 | E2E. |
 | RF-P54 | S | 4.5 Detalle de video | S6 | Test de duración. |
 | RF-P55 | M | 4.5 Detalle de video | S6 | E2E. |
 | RF-P56 | C | 4.5 Detalle de video | S6 | Futuro. |
 | RF-P57 | M | 4.5 Detalle de video | S6 | Test de error. |
 | RF-P58 | M | 4.5 Detalle de video | S6 | Network test. |
-| RF-P60 | S | 4.6 Búsqueda | S6 | E2E. |
+| RF-P60 | M | 4.6 Búsqueda | S6 | E2E. |
 | RF-P61 | M | 4.6 Búsqueda | S6 | E2E. |
-| RF-P62 | S | 4.6 Búsqueda | S6 | Meta robots. |
-| RF-P63 | S | 4.6 Búsqueda | S6 | Test sin JS. |
+| RF-P62 | M | 4.6 Búsqueda | S6 | Meta robots. |
+| RF-P63 | M | 4.6 Búsqueda | S6 | Test sin JS. |
 | RF-P70 | M | 4.7 Sobre mí, contacto y privacidad | S8 | Visual + contenido. |
-| RF-P71 | M | 4.7 Sobre mí, contacto y privacidad | S8 | E2E + security. |
+| RF-P71 | M* | 4.7 Sobre mí, contacto y privacidad | S8 | E2E + security. |
 | RF-P72 | M | 4.7 Sobre mí, contacto y privacidad | S8 | E2E + a11y. |
 | RF-P73 | M | 4.7 Sobre mí, contacto y privacidad | S8 | Test de rate limit. |
 | RF-P74 | M | 4.7 Sobre mí, contacto y privacidad | S8 | Legal review. |
@@ -176,11 +177,11 @@
 | RF-P43 | M | 4.8 Idioma, navegación y compatibilidad | S6 | a11y. |
 | RF-P44 | S | 4.8 Idioma, navegación y compatibilidad | S6 | Feature detection. |
 | RF-P45 | M | 4.8 Idioma, navegación y compatibilidad | S6 | Matriz de pruebas. |
-| RF-P46 | S | 4.8 Idioma, navegación y compatibilidad | S6 | Validación XML. |
+| RF-P46 | M | 4.8 Idioma, navegación y compatibilidad | S6 | Validación XML. |
 | RF-P47 | M | 4.8 Idioma, navegación y compatibilidad | S6 | Test sin JS. |
-| RF-P90 | M | 4.9 Assets y contenido demo | S6 | Inspección. |
-| RF-P91 | M | 4.9 Assets y contenido demo | S6 | Revisión. |
-| RF-P92 | M | 4.9 Assets y contenido demo | S6 | E2E. |
+| RF-P90 | M* | 4.9 Assets y contenido demo | S6 | Inspección. |
+| RF-P91 | M* | 4.9 Assets y contenido demo | S6 | Revisión. |
+| RF-P92 | M* | 4.9 Assets y contenido demo | S6 | E2E. |
 | RF-P93 | S | 4.9 Assets y contenido demo | S6 | E2E. |
 | RF-A01 | M | 5.1 Acceso y sesión | S3 | Headers + crawl. |
 | RF-A02 | M | 5.1 Acceso y sesión | S3 | E2E de login. |
@@ -203,10 +204,10 @@
 | RF-A21 | M | 5.3 Metadatos y organización | S4 | Test de dos pestañas. |
 | RF-A22 | M | 5.3 Metadatos y organización | S4 | E2E. |
 | RF-A23 | M | 5.3 Metadatos y organización | S4 | E2E. |
-| RF-A24 | S | 5.3 Metadatos y organización | S4 | Decisión + test. |
+| RF-A24 | C | 5.3 Metadatos y organización | S4 | Decisión + test. |
 | RF-A25 | M | 5.3 Metadatos y organización | S4 | Visual + pipeline. |
 | RF-A26 | M | 5.3 Metadatos y organización | S4 | E2E. |
-| RF-A27 | S | 5.3 Metadatos y organización | S4 | E2E. |
+| RF-A27 | M | 5.3 Metadatos y organización | S4 | E2E. |
 | RF-A28 | M | 5.3 Metadatos y organización | S4 | Formulario + DB. |
 | RF-A29 | M | 5.3 Metadatos y organización | S4 | Test. |
 | RF-A30 | M | 5.4 Publicación | S7 | E2E. |
@@ -361,7 +362,7 @@
 | SEG-37 | M | 10.4 Seguridad de aplicación | S3/S8 | Tests. |
 | SEG-38 | M | 10.4 Seguridad de aplicación | S3/S8 | Test. |
 | SEG-39 | M | 10.4 Seguridad de aplicación | S3/S8 | CI. |
-| SEG-40 | M | 10.4 Seguridad de aplicación | S3/S8 | CI. |
+| SEG-40 | M | 10.4 Seguridad de aplicación | S3/S8 | CI. **Bloqueado** hasta configurar remoto. |
 | SEG-41 | M | 10.5 Monitoreo, auditoría e incidentes | S9 | Test de alerta. |
 | SEG-42 | M | 10.5 Monitoreo, auditoría e incidentes | S9 | Test. |
 | SEG-43 | M | 10.5 Monitoreo, auditoría e incidentes | S9 | Revisión. |
@@ -389,6 +390,9 @@
 | BCK-18 | M | 11.3 Requisitos | S9 | Simulacro. |
 | BCK-19 | S | 11.3 Requisitos | S9 | Test. |
 | BCK-20 | M | 11.3 Requisitos | S9 | Inspección. |
+| BCK-21 | M | 11.3 Object Lock | S9 | Config de bucket + test. |
+| BCK-22 | M | 11.3 Object Lock | S9 | Credenciales separadas. |
+| BCK-23 | M | 11.3 Object Lock | S9 | Custodia off-host. |
 | SEO-01 | M | 12.1 Requisitos | S6/S9 | Crawl + meta. |
 | SEO-02 | M | 12.1 Requisitos | S6/S9 | Crawl. |
 | SEO-03 | M | 12.1 Requisitos | S6/S9 | Test. |
@@ -449,14 +453,20 @@
 | A11Y-18 | M | Sección 14 | S10 | axe. |
 | A11Y-19 | M | Sección 14 | S10 | Print. |
 | A11Y-20 | M | Sección 14 | S10 | Reporte. |
-| A11Y-21 | S | Sección 14 | S10 | Página. |
+| A11Y-21 | M | Sección 14 | S10 | Página + crawl. |
 | A11Y-22 | M | Sección 14 | S10 | Revisión. |
+| A11Y-23 | M | Sección 14 | S10 | E2E + revisión de contenido. |
+| A11Y-24 | M | Sección 14 | S10 | Test de foco + inspección. |
+| A11Y-25 | M | Sección 14 | S10 | E2E + teclado. |
+| A11Y-26 | M | Sección 14 | S10 | Revisión. |
+| A11Y-27 | M | Sección 14 | S10 | Revisión. |
+| A11Y-28 | M | Sección 14 | S10 | E2E + revisión de flujos. |
 | LEG-01 | M | Sección 15 | S10 | Footer. |
 | LEG-02 | M | Sección 15 | S10 | Test. |
 | LEG-03 | M | Sección 15 | S10 | Test. |
 | LEG-04 | M | Sección 15 | S10 | Inspección. |
-| LEG-05 | M | Sección 15 | S10 | Checklist. |
-| LEG-06 | M | Sección 15 | S10 | Checklist. |
+| LEG-05 | M* | Sección 15 | S10 | Checklist. |
+| LEG-06 | M* | Sección 15 | S10 | Checklist. |
 | LEG-07 | M | Sección 15 | S10 | Checklist. |
 | LEG-08 | M | Sección 15 | S10 | Manifest + revisión. |
 | LEG-09 | M | Sección 15 | S10 | Manifest + UI. |
@@ -544,19 +554,32 @@
 
 ---
 
-## 5. Requisitos sin cobertura conocida
+## 5. Requisitos condicionados y bloqueados
 
 Al cierre de este documento no hay requisitos `M` sin al menos una prueba o
 evidencia planificada. Las decisiones abiertas del SRS (hardware, correo,
 licencia, personas identificables, colecciones y demo) bloquean la aprobación
 final, no la trazabilidad.
 
-| Requisito | Bloqueo | Acción |
+| Requisito | Condición/Bloqueo | Acción |
 |---|---|---|
-| RF-P71, PRIV-05, SEG-38 | Falta confirmar correo/proveedor. | Decidir antes de S8. |
+| RF-P71, PRIV-05, SEG-38 | Falta confirmar correo/proveedor (`D-10`). | Decidir antes de S8. |
 | DEP-01–DEP-04 | Falta inventario del servidor. | Completar antes de S9. |
 | LEG-01–LEG-18 | Falta decisión de licencia y personas identificables. | Resolver antes de S10. |
-| RF-P90–RF-P93 | Falta decidir si se lanza con demo. | Resolver antes de S6. |
+| RF-P90–RF-P93 | Falta decidir si se lanza con demo (`D-11`). | Resolver antes de S6. |
+| LEG-05, LEG-06 | Condicionado a `D-27` (personas identificables). | Resolver antes de publicar. |
+| SEG-40 | gitleaks planificado, no activo (`D-30`). | Configurar remoto y `.gitleaks.toml`. |
+
+## 5b. Requisitos condicionados a decisión abierta
+
+| ID | Condición | Decisión | Estado |
+|---|---|---|---|
+| RF-P71 | Confirmar correo/proveedor | `D-10` | Abierta |
+| LEG-05 | Personas identificables | `D-27` | Abierta |
+| LEG-06 | Menores: autorización tutor | `D-27` | Abierta |
+| RF-P90 | Decidir demo/licencia | `D-11` | Propuesta |
+| RF-P91 | Decidir demo/licencia | `D-11` | Propuesta |
+| RF-P92 | Decidir demo/licencia | `D-11` | Propuesta |
 
 ---
 
