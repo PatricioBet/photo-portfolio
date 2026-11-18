@@ -1,0 +1,135 @@
+# ============================================================
+# Secrets and environment
+# Never commit real credentials, tokens, keys or certificates.
+# ============================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+secrets/
+.secrets/
+.dev.vars
+.wrangler/
+cloudflared/*.json
+cloudflared/*.yml
+cloudflared/*.yaml
+!cloudflared/*.example.yml
+
+# ============================================================
+# Node / package managers
+# ============================================================
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+.pnp.*
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# ============================================================
+# Build output
+# ============================================================
+dist/
+build/
+out/
+.astro/
+.next/
+.nuxt/
+.svelte-kit/
+.turbo/
+.cache/
+.parcel-cache/
+.vite/
+coverage/
+.nyc_output/
+
+# ============================================================
+# Tests and reports
+# ============================================================
+playwright-report/
+test-results/
+blob-report/
+allure-results/
+lighthouse-report/
+.size-limit/
+
+# ============================================================
+# Runtime data (never commit)
+# ============================================================
+data/
+backups/
+uploads/
+incoming/
+originals/
+tmp/
+temp/
+.media-cache/
+postgres-data/
+redis-data/
+minio-data/
+restic-cache/
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+
+# Real/original media is private; demo assets are committed separately.
+assets/originals/
+assets/private/
+assets/raw/
+assets/exports/
+
+# ============================================================
+# Logs
+# ============================================================
+logs/
+*.log
+!docs/**/*.log.example
+
+# ============================================================
+# OS / editors
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.example.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================================
+# Local tooling
+# ============================================================
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+.angular/
+.eslintcache
+.stylelintcache
+
+# ============================================================
+# Generated / temporary
+# ============================================================
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.pid
+*.seed
