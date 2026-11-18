@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://photo.patriciobet.dev/schemas/demo-manifest.schema.json",
+  "title": "Demo asset manifest",
+  "description": "Provenance and license record for demo assets. Demo assets are never real work of the author.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "updated_at", "policy", "assets"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "integer", "minimum": 1 },
+    "updated_at": { "type": "string", "format": "date" },
+    "policy": { "type": "string", "minLength": 1 },
+    "assets": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/asset" }
+    }
+  },
+  "$defs": {
+    "nullableString": {
+      "type": ["string", "null"]
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "file",
+        "sha256",
+        "mime",
+        "width",
+        "height",
+        "status",
+        "source",
+        "license",
+        "digital_source_type",
+        "replaced_by",
+        "notes"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^demo-[0-9]{3}$" },
+        "file": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "mime": {
+          "type": "string",
+          "enum": [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/avif",
+            "video/mp4",
+            "video/webm"
+          ]
+        },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "duration_seconds": { "type": "number", "minimum": 0 },
+        "codec": { "type": "string" },
+        "poster": { "type": "string" },
+        "status": { "type": "string", "enum": ["demo", "retired"] },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["provider", "url", "creator", "creator_url", "retrieved_at"],
+          "properties": {
+            "provider": { "type": "string", "minLength": 1 },
+            "url": { "$ref": "#/$defs/nullableString" },
+            "creator": { "$ref": "#/$defs/nullableString" },
+            "creator_url": { "$ref": "#/$defs/nullableString" },
+            "retrieved_at": { "type": "string", "format": "date" }
+          }
+        },
+        "license": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "url", "attribution_required", "attribution_text"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "url": { "type": "string", "format": "uri" },
+            "attribution_required": { "type": "boolean" },
+            "attribution_text": { "$ref": "#/$defs/nullableString" }
+          }
+        },
+        "generation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["model", "prompt", "seed", "generated_at", "tool_version"],
+          "properties": {
+            "model": { "type": "string", "minLength": 1 },
+            "prompt": { "type": "string", "minLength": 1 },
+            "seed": { "type": ["integer", "null"] },
+            "generated_at": { "type": "string", "format": "date" },
+            "tool_version": { "type": "string", "minLength": 1 }
+          }
+        },
+        "digital_source_type": {
+          "type": "string",
+          "enum": [
+            "trainedAlgorithmicMedia",
+            "compositeWithTrainedAlgorithmicMedia",
+            "digitalCapture",
+            "compositeSynthetic"
+          ]
+        },
+        "replaced_by": {
+          "type": ["string", "null"],
+          "pattern": "^demo-[0-9]{3}$"
+        },
+        "notes": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

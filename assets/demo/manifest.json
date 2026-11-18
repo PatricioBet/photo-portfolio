@@ -1,0 +1,7 @@
+{
+  "$schema": "./manifest.schema.json",
+  "version": 1,
+  "updated_at": "2026-11-17",
+  "policy": "Demo assets only. Never attributed to Patricio Betancourt as real work. Remove or replace before launch.",
+  "assets": []
+}
