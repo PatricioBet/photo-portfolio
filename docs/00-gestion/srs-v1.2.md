@@ -521,7 +521,7 @@ Reglas:
 | ID | P | Requisito | Verificación |
 |---|---|---|---|
 | RF-P70 | M | Sobre mí: retrato, bio ES/EN, enfoque artístico, equipo opcional, exposiciones/publicaciones opcionales y enlaces. | Visual + contenido. |
-| RF-P71 | M | Formulario: nombre, correo, mensaje y consentimiento. Anti-spam con Turnstile y honeypot. Validación en cliente y Worker. Alternativa visible con enlace de correo. | E2E + security. |
+| RF-P71 | M* | Formulario: nombre, correo, mensaje y consentimiento. Anti-spam con Turnstile y honeypot. Validación en cliente y Worker. Alternativa visible con enlace de correo. Condicionado a `D-10` (correo/proveedor). | E2E + security. |
 | RF-P72 | M | Mensajes de éxito/error accesibles (`aria-live`), sin recargar la página. | E2E + a11y. |
 | RF-P73 | M | Límite: 3 mensajes por IP por hora y 5 000 caracteres por mensaje. | Test de rate limit. |
 | RF-P74 | M | Página de privacidad con finalidad, base legal, retención, derechos y contacto. | Legal review. |
@@ -544,9 +544,9 @@ Reglas:
 
 | ID | P | Requisito | Verificación |
 |---|---|---|---|
-| RF-P90 | M | Los assets demo tienen procedencia, licencia, hash y prompt/fuente en `assets/demo/manifest.json`. | Inspección. |
-| RF-P91 | M | Los assets demo no se atribuyen a Patricio ni se presentan como fotografías reales. El build de producción rechaza cualquier elemento con `is_demo=true`; en staging se marcan visiblemente como “demo”. | Revisión + test de build. |
-| RF-P92 | M | Se pueden eliminar todos los demo y el sitio sigue funcionando (vuelve al estado vacío). | E2E. |
+| RF-P90 | M* | Los assets demo tienen procedencia, licencia, hash y prompt/fuente en `assets/demo/README.md` (reemplaza `manifest.json`). Condicionado a `D-11` (licencia). | Inspección. |
+| RF-P91 | M* | Los assets demo no se atribuyen a Patricio ni se presentan como fotografías reales. El build de producción rechaza cualquier elemento con `is_demo=true`; en staging se marcan visiblemente como "demo". Condicionado a `D-11`. | Revisión + test de build. |
+| RF-P92 | M* | Se pueden eliminar todos los demo y el sitio sigue funcionando (vuelve al estado vacío). Condicionado a `D-11`. | E2E. |
 | RF-P93 | S | Los demo se pueden cargar/descargar desde un comando del admin, sin tocar la base de producción real. | E2E. |
 ---
 
@@ -938,7 +938,7 @@ Contacto → Worker → email
 | SEG-37 | M | Errores genéricos al cliente; logs internos con `traceId`; sin stack traces ni rutas. | Tests. |
 | SEG-38 | M | Email: validar destinatario, evitar header injection, SPF/DKIM/DMARC, no rebotar contenido arbitrario. | Test. |
 | SEG-39 | M | Dependencias: lockfile, `pnpm --frozen-lockfile`, OSV/Trivy/Semgrep, SBOM, pin de digests. | CI. |
-| SEG-40 | M | Secret scanning: gitleaks pre-commit + CI + GitHub push protection. | CI. |
+| SEG-40 | M | Secret scanning: gitleaks pre-commit + CI + GitHub push protection. | CI. **Bloqueado** hasta configurar remoto y `.gitleaks.toml`. |
 
 ### 10.5 Monitoreo, auditoría e incidentes
 
@@ -1092,7 +1092,7 @@ Contacto → Worker → email
 | PRIV-10 | M | Derechos de acceso/rectificación/supresión: procedimiento documentado y plazo. | Runbook. |
 | PRIV-11 | M | Datos de menores: no se publican sin autorización; formulario no dirigido a menores. | Legal. |
 | PRIV-12 | M | Proveedores (Cloudflare, email, backups) con DPA y región razonable; documentado. | Legal. |
-| PRIV-13 | M | No se envían imágenes a servicios de IA sin decisión explícita y consentimiento. | Config. |
+| PRIV-13 | M | No se envían imágenes a servicios de IA sin decisión explícita y consentimiento documentado (`D-26`). En v1 está desactivado; `RF-A24` es `C`. | Config + inspección. |
 | PRIV-14 | M | El admin puede exportar/borrar datos de contacto si el proveedor lo permite. | Runbook. |
 | PRIV-15 | M | Cambios de privacidad se registran en el changelog y se comunican si afectan derechos. | Proceso. |
 
@@ -1105,12 +1105,12 @@ Objetivo: **WCAG 2.2 nivel AA** en sitio público y admin.
 | ID | P | Requisito | Verificación |
 |---|---|---|---|
 | A11Y-01 | M | Todo el sitio es navegable por teclado, sin trampas de foco. | Teclado manual + axe. |
-| A11Y-02 | M | Foco visible con contraste suficiente; no se elimina el outline sin reemplazo. | Inspección. |
+| A11Y-02 | M | Foco visible con contraste suficiente; no se elimina el outline sin reemplazo. El foco no queda oculto por cabeceras fijas (scroll padding / inset). | Inspección + test de foco. |
 | A11Y-03 | M | Enlace “saltar al contenido” y landmarks (`header`, `nav`, `main`, `footer`). | axe. |
 | A11Y-04 | M | Jerarquía de encabezados correcta; un `h1` por página. | axe. |
 | A11Y-05 | M | Contraste de texto ≥ 4,5:1 (grande ≥ 3:1) en ambos temas. | axe + manual. |
 | A11Y-06 | M | Imágenes con alt significativo; decorativas con alt vacío. | Revisión. |
-| A11Y-07 | M | Videos con subtítulos/transcripción cuando haya voz; controles etiquetados. | E2E + manual. |
+| A11Y-07 | M | Videos con voz: subtítulos `.vtt` obligatorios antes de publicar. Si hay información visual no conveyida en el audio, se ofrece audiodescripción o texto alternativo (1.2.5 AA). Controles etiquetados. | E2E + manual. |
 | A11Y-08 | M | Lightbox: `<dialog>`/role correcto, foco atrapado, Esc, flechas, anuncio SR y retorno de foco. | E2E + SR. |
 | A11Y-09 | M | Formularios con labels, instrucciones, errores asociados y `aria-live`. | axe + E2E. |
 | A11Y-10 | M | Mensajes de éxito/error no dependen solo del color. | Inspección. |
@@ -1124,8 +1124,14 @@ Objetivo: **WCAG 2.2 nivel AA** en sitio público y admin.
 | A11Y-18 | M | Tablas/listas de datos con encabezados y relaciones correctas. | axe. |
 | A11Y-19 | M | Impresión accesible: ficha y foto legibles en blanco y negro. | Print. |
 | A11Y-20 | M | Pruebas con axe en CI y revisión manual con NVDA/VoiceOver por release. | Reporte. |
-| A11Y-21 | S | Declaración de accesibilidad con limitaciones conocidas. | Página. |
+| A11Y-21 | M | Declaración de accesibilidad con limitaciones conocidas, enlazada en el footer y en `/accesibilidad/`. | Página + crawl. |
 | A11Y-22 | M | No se usan CAPTCHA inaccesibles; Turnstile tiene alternativa/contacto. | Revisión. |
+| A11Y-23 | M | Audiodescripción o texto alternativo para información visual no conveyida en el audio (WCAG 1.2.5 AA). | E2E + revisión de contenido. |
+| A11Y-24 | M | El foco no queda oculto por cabeceras fijas o paneles; `scroll-padding` o equivalente asegura que el elemento enfocado sea visible. (WCAG 2.4.11 AA) | Test de foco + inspección. |
+| A11Y-25 | M | Toda interacción por arrastre tiene alternativa con botones o teclado (WCAG 2.5.7 AA). | E2E + teclado. |
+| A11Y-26 | M | Los mecanismos de ayuda son consistentes en todas las páginas y aparecen en el mismo orden relativo (WCAG 3.2.6 A). | Revisión. |
+| A11Y-27 | M | No se pide al usuario que ingrese la misma información dos veces salvo que sea esencial para el resultado (WCAG 3.3.7 A). | Revisión. |
+| A11Y-28 | M | La autenticación no exige capacidades cognitivas de prueba (memoria, cálculo, secuencia); las passkeys y recovery codes cumplen (WCAG 3.3.8 AA). | E2E + revisión de flujos. |
 
 ---
 
@@ -1137,8 +1143,8 @@ Objetivo: **WCAG 2.2 nivel AA** en sitio público y admin.
 | LEG-02 | M | Licencia por elemento (todos los derechos reservados / CC) editable y visible en la ficha. | Test. |
 | LEG-03 | M | Sin marca de agua visible por defecto; autoría en metadatos y página de créditos. | Test. |
 | LEG-04 | M | No se publican originales ni RAW; solo derivados. | Inspección. |
-| LEG-05 | M | Personas identificables: modelo de autorización/consentimiento antes de publicar. | Checklist. |
-| LEG-06 | M | Menores: autorización de tutor; sin datos sensibles. | Checklist. |
+| LEG-05 | M* | Personas identificables: modelo de autorización/consentimiento antes de publicar. Condicionado a `D-27` (personas identificables). | Checklist. |
+| LEG-06 | M* | Menores: autorización de tutor; sin datos sensibles. Condicionado a `D-27`. | Checklist. |
 | LEG-07 | M | Lugares privados/propiedad: permiso cuando corresponda. | Checklist. |
 | LEG-08 | M | Assets demo: licencia verificada, atribución si aplica, y no se presentan como obra del autor. | Manifest + revisión. |
 | LEG-09 | M | Contenido generado por IA: se declara cuando la ley/plataforma lo requiera y no se atribuye como fotografía real. | Manifest + UI. |
@@ -1221,7 +1227,7 @@ Objetivo: **WCAG 2.2 nivel AA** en sitio público y admin.
   Core Web Vitals.
 - W3C: WCAG 2.2, HTML, ARIA.
 - MDN: WebAuthn, CSP, cookies, `__Host-`.
-- IPTC/C2PA para procedencia de assets (ver informe de assets).
+- IPTC/C2PA para procedencia de assets (ver `assets/demo/README.md`).
 - Unsplash/Pexels/Pixabay/Coverr/Mixkit/Openverse: licencias y términos; verificar
   clip por clip.
 
@@ -1233,9 +1239,9 @@ Objetivo: **WCAG 2.2 nivel AA** en sitio público y admin.
 
 | ID | P | Requisito | Verificación |
 |---|---|---|---|
-| DEP-01 | M | Servidor: laptop antigua, mínimo 2 vCPU, 4 GB RAM, 60 GB SSD; ideal 4 vCPU/8 GB/SSD. | Inventario. |
-| DEP-02 | M | Ubuntu Server LTS sin escritorio; Windows solo si el hardware no permite Linux, con advertencia. | `lsb_release`. |
-| DEP-03 | M | Disco con LUKS si es posible; ext4; volumen separado para datos; `noatime`. | `lsblk`. |
+| DEP-01 | M | Servidor: mínimo 4 vCPU, **8 GB RAM** (ideal 16 GB), 60 GB SSD; 4 GB o menos impide el pipeline de video (`D-23`). | Inventario. |
+| DEP-02 | M | **Ubuntu Server LTS único objetivo**; Windows no soportado en v1 (`D-24`). | `lsb_release`. |
+| DEP-03 | M | Disco con **LUKS2 + TPM2 auto-unlock** (`D-28`); ext4; volumen separado para datos; `noatime`. | `lsblk`, `systemd-cryptenroll`. |
 | DEP-04 | M | Batería del laptop en buen estado; si existe, actúa como UPS temporal y permite shutdown limpio al 10 %. | Test. |
 | DEP-05 | M | BIOS: “Restore on AC power loss” = Power On; arranque desde disco interno; password de BIOS. | Test de corte. |
 | DEP-06 | M | Red por Ethernet si es posible; IP local fija; NTP; DNS interno. | `ip a`, `timedatectl`. |
@@ -1244,7 +1250,7 @@ Objetivo: **WCAG 2.2 nivel AA** en sitio público y admin.
 | DEP-09 | M | Cloudflare Tunnel como servicio systemd/contenedor con token; reconexión automática. | `systemctl status`. |
 | DEP-10 | M | DNS: `photo`, `admin-photo`, `cdn-photo` proxied; TLS válido; HSTS. | `dig`, curl. |
 | DEP-11 | M | El servidor no depende de la laptop de desarrollo para arrancar ni servir. | Test. |
-| DEP-12 | M | El servidor arranca sin login manual y sin intervención tras un corte. | Test de corte. |
+| DEP-12 | M | El servidor arranca sin login manual; LUKS auto-desbloquea por TPM2. Fallback manual documentado (indisponibilidad hasta 5 min; `D-28`). | Test de corte + test TPM. |
 | DEP-13 | M | El sitio público se sirve desde `releases/` con `current` atómico; Caddy no sirve una release incompleta. | Test. |
 | DEP-14 | M | Se conservan las 3 últimas releases; rollback en un comando y en el admin. | Test. |
 | DEP-15 | M | Si no hay release válida, Caddy sirve una página 503 de mantenimiento, no un directorio vacío. | Test. |
@@ -1349,20 +1355,20 @@ Un requisito está terminado cuando:
 | AC-08 | Apagón durante procesamiento. | Job reconciliado; sin variante parcial. |
 | AC-09 | Apagón durante build. | `current` intacto; build fallido visible. |
 | AC-10 | Rollback. | 3 releases; un clic; sitio vuelve. |
-| AC-11 | Despublicar. | 410/301; fuera de listados/sitemap/RSS. |
+| AC-11 | Despublicar. | 410/301; fuera de listados/sitemap/RSS; contenido `trashed` oculto. |
 | AC-12 | Login sin Access o sin passkey. | Rechazado; no hay bypass. |
 | AC-13 | JWT Access inválido/expirado. | 401; no se confía en Tunnel. |
 | AC-14 | Sesión inactiva 30 min / absoluta 12 h. | Expira; reauth para destructivo. |
 | AC-15 | Pérdida de passkey. | Recovery code; registrar nueva; revocar vieja. |
-| AC-16 | Escaneo externo de puertos. | Solo 443 Cloudflare; IP directa no responde. |
+| AC-16 | Escaneo externo de puertos. | Solo 443 Cloudflare; 80 bloqueado; IP directa no responde ni banner. |
 | AC-17 | Headers/TLS. | A/A+ securityheaders/Observatory; HSTS. |
 | AC-18 | Admin noindex/no enlazado. | `X-Robots-Tag`, sin links, no en robots. |
 | AC-19 | Upload malicioso. | Rechazado; sin ejecución; log. |
 | AC-20 | FFmpeg con playlist remota. | Rechazado; sin red. |
 | AC-21 | Contacto spam/rate limit. | Turnstile/honeypot; 3/IP/h; mensaje claro. |
 | AC-22 | Lightbox teclado/SR. | Foco atrapado, Esc, flechas, retorno. |
-| AC-23 | Video teclado/captions. | Controles accesibles; subtítulos. |
-| AC-24 | Reduced motion/Save-Data/WebGL ausente. | Estático; sin autoplay/3D. |
+| AC-23 | Video teclado/captions. Controles accesibles; `.vtt` presentes y sincronizados; `prefers-reduced-motion` respetado. | E2E + manual. |
+| AC-24 | Reduced motion/Save-Data/WebGL. Estático; sin autoplay/3D; `prefers-reduced-motion` desactiva transiciones; sin WebGL. | E2E. |
 | AC-25 | Lighthouse móvil. | Home ≥ 90; galerías/detalle ≥ 95; CWV. |
 | AC-26 | SEO. | Sitemap imágenes/videos, hreflang, JSON-LD válidos. |
 | AC-27 | Tag < 8. | `noindex,follow`. |
@@ -1378,7 +1384,7 @@ Un requisito está terminado cuando:
 | AC-37 | Accesibilidad. | axe + teclado + SR sin P1/P2. |
 | AC-38 | Impresión. | Foto + ficha legibles. |
 | AC-39 | Assets demo. | Manifest, licencia, reemplazo, sin atribución falsa. |
-| AC-40 | Lanzamiento. | Checklist completo; contenido real; demo fuera; backups. |
+| AC-40 | Lanzamiento. | Checklist completo; contenido real; **sitio vacío** (sin demo); backups verificados; sin `is_demo=true` en build. |
 
 ### 19.4 Evidencia
 
@@ -1394,9 +1400,11 @@ Cada AC se registra en `docs/04-calidad/reportes/` con:
 ### 19.5 Pruebas mínimas por release
 
 - Unit + integración + E2E.
-- Seguridad: gitleaks, OSV, Trivy, Semgrep, ZAP baseline, escaneo externo.
+- Seguridad: OSV, Trivy, Semgrep, ZAP baseline, escaneo externo.
+  - `gitleaks` pre-commit + CI: **planificado, no activo** (`SEG-40`); pendiente
+    de configuración de remoto y `.gitleaks.toml`.
 - Rendimiento: Lighthouse, bundle, imágenes, video, TTFB.
-- Accesibilidad: axe, teclado, lector.
+- Accesibilidad: axe, teclado, lector, `prefers-reduced-motion`.
 - SEO: crawl, sitemap, hreflang, JSON-LD, 404/410.
 - Resiliencia: apagón, restore, rollback, disco lleno.
 - UAT de flujos principales y estados vacíos.
@@ -1408,26 +1416,30 @@ Cada AC se registra en `docs/04-calidad/reportes/` con:
 ### 20.1 Prioridades
 
 - **v1:** todos los M; S seleccionados si no comprometen M.
-- **S candidatos:** Pagefind, share, RSS, HLS, hover preview, programar publicación,
+- **S candidatos:** Pagefind, share, HLS, hover preview, programar publicación,
   export, mantenimiento, View Transitions, PWA? (no), PiP.
-- **C diferidos:** zoom por teselas, AV1/VP9, P3, galería 3D `/explorar/`, cursor
-  personalizado, página de estado pública, IA de metadatos.
+- **M elevados a S:** RSS (`RF-P46`); galería 3D (`RF-P53`); hover preview (`RF-P60`),
+  programar (`RF-P62`), export (`RF-P63`).
+- **M movidos a S:** Pagefind (`RF-P27`); cursor personalizado (`RF-A27`).
+- **C diferidos:** zoom por teselas, AV1/VP9, P3, IA de metadatos (`RF-A24`).
+- **Requisitos condicionados a decisión abierta:** ver tabla §1.7 y matriz de
+  condicionales (`D-10`, `D-11`, `D-27`).
 
 ### 20.2 Fases
 
 | Fase | Entregable | Gate |
 |---|---|---|
-| 0 | SRS v1.1, decisiones, riesgos, plan, repo | Aprobación del usuario |
+| 0 | SRS v1.2, decisiones (D-23–D-30), riesgos, plan, repo | Aprobación del usuario |
 | 1 | UX: sitemap, flujos, wireframes, prototipo, design system | Prototipo aprobado |
 | 2 | Arquitectura, datos, OpenAPI, seguridad, backups, test plan | Revisión técnica/seguridad |
-| 3 | Fundaciones, auth, CI, Docker | Login/passkey E2E |
+| 3 | Fundaciones, auth (passkey CLI+UI), CI, Docker | Login/passkey E2E |
 | 4 | Fotos | Pipeline + presupuestos |
-| 5 | Videos | Pipeline + sandbox |
-| 6 | Sitio público | Lighthouse/SEO/E2E |
-| 7 | Admin/publicación | ≤ 3 min + concurrencia |
-| 8 | 3D/contacto/hardening | Fallbacks + WCAG |
-| 9 | Despliegue/backups/monitorización | Producción + restore |
-| 10 | UAT/manuales/release | `v1.0.0` |
+| 5 | Videos | Pipeline + sandbox (worker 2 GB RAM) |
+| 6 | Sitio público | Lighthouse/SEO/E2E + WCAG AA |
+| 7 | Admin/publicación | ≤ 3 min + concurrencia + trashed |
+| 8 | Contacto/hardening | Fallbacks + WCAG + CSP |
+| 9 | Despliegue/backups/monitorización | Producción + Object Lock + restore |
+| 10 | UAT/manuales/release | `v1.0.0` + lanzamiento vacío |
 
 ### 20.3 Riesgos
 
@@ -1438,8 +1450,9 @@ alcance.
 ### 20.4 Decisiones abiertas
 
 Ver sección 1.7 y [`decisiones.md`](decisiones.md). Las bloqueantes para
-implementar: hardware/OS del servidor, correo y proveedor, licencia, personas
-identificables, colecciones y si se lanza con demo.
+implementar: hardware/OS (`D-23/24`), correo y proveedor (`D-10`), licencia
+(`D-11`), personas identificables (`D-27`), colecciones y demo al lanzar (`D-25`).
+Las decisiones D-23 a D-30 están registradas y pendientes de aprobación del usuario.
 
 ### 20.5 Control de cambios
 
@@ -1454,13 +1467,14 @@ identificables, colecciones y si se lanza con demo.
 
 ### 20.6 Aprobación
 
-Este SRS v1.1 se considera aprobado cuando:
+Este SRS v1.2 se considera aprobado cuando:
 
-- el usuario confirma las correcciones y las decisiones abiertas bloqueantes;
+- el usuario aprueba las decisiones D-23 a D-30 y confirma las correcciones del Gate 0;
 - no hay contradicciones entre secciones;
-- la matriz de trazabilidad cubre todos los M;
+- la matriz de trazabilidad cubre los 438 requisitos (429 originales + 9 nuevos);
 - arquitectura y UX pueden derivarse sin ambigüedad;
-- security y QA revisan la versión.
+- security y QA revisan la versión;
+- re-revisión independiente confirma cierre de P1 y P2.
 
 Firma: ______________________  Fecha: __________
 
