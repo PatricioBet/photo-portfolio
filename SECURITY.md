@@ -42,8 +42,9 @@ compartir un secreto para demostrar el problema, primero coordina el canal.
 - Los tokens de Cloudflare/R2 son de mínimo privilegio y separados por función.
 - Si un secreto se filtra: se rota inmediatamente, se revocan sesiones/tokens y
   se limpia el historial si ya se publicó.
-- `gitleaks` corre en pre-commit y en CI. GitHub push protection debe estar
-  activado.
+- `gitleaks` en pre-commit y CI: **planificado, no activo** (`D-30`, `SEG-40`
+  bloqueado). Se activará cuando el remoto de GitHub esté configurado y el
+  archivo `.gitleaks.toml` exista. Mientras tanto, revisión manual de PRs.
 
 ## Controles de seguridad del proyecto
 

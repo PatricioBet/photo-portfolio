@@ -1,8 +1,78 @@
-# Cambios del SRS v1.0 → v1.1
+# Cambios del SRS v1.0 → v1.1 → v1.2
 
 Este documento registra las correcciones y adiciones introducidas en el SRS
 v1.1. El SRS v1.0 es el borrador pegado en la conversación del 17 de noviembre
 de 2026; el texto original terminaba en la sección 8.3.
+
+---
+
+## 1.1 Correcciones del SRS v1.1 → v1.2 (Gate 0)
+
+El SRS v1.1 fue rechazado en el Gate 0 por 4 P1 y 14 P2. El SRS v1.2 aplica las
+correcciones y registra 7 decisiones (D-23 a D-30). Se añaden 9 requisitos nuevos
+(BCK-21–23, A11Y-23–28) y se corrigen prioridades, estados y referencias.
+
+### P1 cerrados
+
+| P1 | Corrección en v1.2 | Decisión |
+|---|---|---|
+| RAM/`tmpfs` insuficiente | DEP-01: mínimo 8 GB RAM (ideal 16 GB). | D-23 |
+| LUKS vs arranque desatendido | DEP-03: LUKS2 + TPM2 auto-unlock; DEP-12: fallback manual documentado. | D-28 |
+| Backup "inmutable" sin Object Lock | BCK-21–23: Object Lock, credenciales separadas, custodia de claves. | D-29 |
+| Fallback Windows contradictorio | DEP-02: Ubuntu Server LTS único; Windows no soportado. | D-24 |
+
+### P2 cerrados (principales)
+
+| P2 | Corrección en v1.2 |
+|---|---|
+| Rutas incompletas | §4.1.1: inventario de 26 rutas públicas con ES/EN. |
+| Prioridades contradictorias | RF-P46/P53/P60/P62/P63 M→S; RF-A27 M→S; RF-P46/P53 S→M. |
+| RF-A24 IA de metadatos | M→C; PRIV-13 desactivado; D-26. |
+| Doble identidad Access | SEG-02: una sola identidad Access. |
+| Passkeys CLI vs UI | RF-A03: bootstrap CLI + enrollment UI con reauth. |
+| Demo al lanzar | RF-P91/RF-P92/RF-A48: lanzamiento vacío; D-25. |
+| gitleaks inexistente | SEG-40: planificado, no activo; D-30. |
+| Brechas WCAG | A11Y-23–28: 6 nuevos requisitos AA. |
+| Riesgos incompletos | R-26 a R-33 añadidos; R-06 marcado planificado. |
+| RF-A30 sin `trashed` | Añadido estado `trashed` con transiciones. |
+| AC-16 mapeado a RF-P56 | Corregido: puertos, no RF-P56. |
+| AC-24 mapeado a RF-P56 | Corregido: reduced motion/WebGL. |
+| AC-40 demo al lanzar | Corregido: lanzamiento vacío. |
+| AC-23 captions | Actualizado: subtítulos `.vtt` obligatorios. |
+
+### Requisitos nuevos
+
+| ID | Requisito |
+|---|---|
+| BCK-21 | Object Lock en bucket de backups. |
+| BCK-22 | Credenciales separadas para escritura sin borrado. |
+| BCK-23 | Custodia de claves de cifrado off-host. |
+| A11Y-23 | Audiodescripción o texto alternativo (WCAG 1.2.5 AA). |
+| A11Y-24 | Foco no oculto por cabecera fija (WCAG 2.4.11 AA). |
+| A11Y-25 | Alternativa a arrastre (WCAG 2.5.7 AA). |
+| A11Y-26 | Mecanismos de ayuda consistentes (WCAG 3.2.6 A). |
+| A11Y-27 | No repetir información (WCAG 3.3.7 A). |
+| A11Y-28 | Autenticación sin capacidades cognitivas de prueba (WCAG 3.3.8 AA). |
+
+### Prioridades corregidas
+
+| ID | Antes | Después | Motivo |
+|---|---|---|---|
+| RF-P46 | S | M | RSS es esencial para SEO. |
+| RF-P53 | S | M | Galería 3D esencial para experiencia. |
+| RF-P60 | S | M | Hover preview esencial para UX. |
+| RF-P62 | S | M | Programar publicación esencial. |
+| RF-P63 | S | M | Export esencial para portabilidad. |
+| RF-A27 | S | M | Cursor personalizado esencial. |
+| RF-P46 (Pagefind) | M | S | Pagefind es nice-to-have. |
+| RF-A24 | M | C | IA fuera de v1. |
+
+### Decisiones nuevas (D-23 a D-30)
+
+Ver [`decisiones.md`](decisiones.md). Las 7 decisiones bloqueantes para el
+re-diseño de arquitectura y despliegue.
+
+---
 
 ## 1. Correcciones del usuario
 
@@ -72,7 +142,7 @@ de 2026; el texto original terminaba en la sección 8.3.
 | OPS-* | Observabilidad y operación (ver sección 16). |
 | AC-* | Escenarios de aceptación (ver sección 19). |
 
-## 4. Decisiones que siguen abiertas
+## 5. Decisiones que siguen abiertas
 
 1. Correo público de contacto y proveedor de envío.
 2. Confirmación del hardware del servidor (CPU, RAM, disco, batería, BIOS).
@@ -83,7 +153,7 @@ de 2026; el texto original terminaba en la sección 8.3.
 7. Proveedor de backups externo (R2/B2) y RPO/RTO definitivos.
 8. Si se quiere una página de estado externa.
 
-## 5. Interpretación de “sin backup”
+## 6. Interpretación de "sin backup"
 
 En este documento “sin backup” significa **sin respaldo eléctrico (UPS)**. Los
 backups de datos siguen siendo obligatorios: PostgreSQL, originales, configuración

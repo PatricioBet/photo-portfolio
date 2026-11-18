@@ -3,7 +3,7 @@
 **Estado:** borrador para aprobación
 **Versión:** 1.0
 **Fecha:** 17 de noviembre de 2026
-**Fuente de verdad:** [`srs-v1.1.md`](srs-v1.1.md)
+**Fuente de verdad:** [`srs-v1.2.md`](srs-v1.2.md)
 
 ---
 
@@ -34,7 +34,7 @@ Un sprint puede empezar cuando:
 
 - Criterios de aceptación cumplidos, incluidos vacío y error.
 - Pruebas unitarias, integración y E2E según corresponda.
-- CI verde: lint, tipos, unit, integración, build, e2e, gitleaks, SBOM.
+- CI verde: lint, tipos, unit, integración, build, e2e (gitleaks planificado, no activo).
 - Revisión independiente y QA de aceptación.
 - Accesibilidad, i18n, rendimiento y SEO verificados si aplica.
 - Documentación y trazabilidad actualizadas.
@@ -83,17 +83,17 @@ de su propio trabajo. Para cada gate se elige un revisor distinto al autor.
 
 | Sprint | Fase | Objetivo | Gate |
 |---|---|---|---|
-| S0 | 0 — Gestión | SRS v1.1, decisiones, riesgos, plan, repo y skills. | SRS aprobado; cero secretos. |
+| S0 | 0 — Gestión | SRS v1.2, decisiones (D-23–D-30), riesgos, plan, repo y skills. | SRS aprobado; cero secretos. |
 | S1 | 1 — UX | Sitemap, flujos, wireframes, prototipo y design system. | Prototipo navegable aprobado. |
 | S2 | 2 — Arquitectura | SAD/C4, ADR, datos, OpenAPI, pipeline, seguridad, backups, pruebas. | Revisión técnica y de seguridad. |
-| S3 | 3 — Fundaciones | Monorepo, CI, Docker, DB, auth, Access, passkeys, salud. | Login E2E; CI verde. |
+| S3 | 3 — Fundaciones | Monorepo, CI, Docker, DB, auth (passkey CLI+UI), Access, salud. | Login E2E; CI verde. |
 | S4 | 4 — Fotos | Subida, pipeline, variantes, metadatos, lightbox. | Foto publicada E2E. |
-| S5 | 5 — Videos | ffprobe, transcodificación, poster, HLS, reproductor. | Video publicado E2E. |
-| S6 | 6 — Sitio público | Home, listados, detalle, búsqueda, SEO, estados vacíos. | Lighthouse/SEO/E2E vacío y lleno. |
-| S7 | 7 — Publicación y admin | Builds, releases, rollback, operación, demo. | Publicar ≤ 3 min; rollback. |
-| S8 | 8 — Experiencia y hardening | 3D, animaciones, contacto, accesibilidad, CSP. | Fallbacks + WCAG AA. |
-| S9 | 9 — Producción | Servidor, Tunnel, backups, monitorización, apagón. | Producción + restore. |
-| S10 | 10 — UAT y release | UAT, manuales, auditorías, tag `v1.0.0`. | Aprobación del usuario. |
+| S5 | 5 — Videos | ffprobe, transcodificación, poster, HLS, reproductor (worker 2 GB). | Video publicado E2E. |
+| S6 | 6 — Sitio público | Home, listados, detalle, búsqueda, SEO, estados vacíos. | Lighthouse/SEO/E2E vacío y lleno + WCAG AA. |
+| S7 | 7 — Publicación y admin | Builds, releases, rollback, operación, trashed, demo. | Publicar ≤ 3 min; rollback; trashed. |
+| S8 | 8 — Experiencia y hardening | Contacto, accesibilidad, CSP Report-Only → enforce. | Fallbacks + WCAG AA. |
+| S9 | 9 — Producción | Servidor, Tunnel, backups (Object Lock), monitorización, apagón. | Producción + restore + Object Lock. |
+| S10 | 10 — UAT y release | UAT, manuales, auditorías, tag `v1.0.0`, lanzamiento vacío. | Aprobación del usuario. |
 
 Cada sprint tiene una rama corta y un PR. La rama se borra tras el merge por
 rebase. `main` solo recibe commits revisados.
@@ -104,28 +104,28 @@ rebase. `main` solo recibe commits revisados.
 
 ### Sprint 0 — Gestión
 
-**Rama:** `docs/srs-v1.1`
+**Rama:** `docs/srs-v1.2`
 
 **Objetivo:** dejar el proyecto listo para diseñar sin ambigüedades.
 
 **Entregables:**
 
-- SRS v1.1 completo y revisado.
-- Decisiones, riesgos, glosario y cambios.
+- SRS v1.2 completo y revisado (438 requisitos: 429 + 9 nuevos).
+- Decisiones (D-01 a D-30), riesgos (R-01 a R-33), glosario y cambios.
 - Plan de sprints, trazabilidad y registro de skills.
 - `README.md`, `AGENTS.md`, `SECURITY.md`, `.env.example`, `.gitignore`.
 - Repositorio Git inicializado con commits atómicos.
-- Assets demo: política y manifest vacío.
+- Assets demo: política y `assets/demo/README.md`.
 
 **Agentes:** orquestador, product analyst, security (revisión), tech writer,
 revisor independiente.
 
 **Gate:**
 
-- [ ] El SRS cubre las correcciones del usuario.
+- [ ] El SRS v1.2 cubre las correcciones del Gate 0.
 - [ ] No hay IDs duplicados ni referencias rotas.
 - [ ] No hay secretos ni datos personales.
-- [ ] El usuario aprueba el alcance y las decisiones abiertas.
+- [ ] El usuario aprueba las decisiones D-23 a D-30 y el alcance.
 
 ### Sprint 1 — UX
 
@@ -187,14 +187,15 @@ aprobado; ningún P1 abierto.
 - Docker Compose de desarrollo y producción.
 - PostgreSQL, Redis, migraciones y seeds mínimos.
 - API NestJS con healthchecks, logs y errores.
-- Cloudflare Access + passkey WebAuthn + recovery codes.
+- Cloudflare Access + passkey WebAuthn (bootstrap CLI, enrollment UI) + recovery codes.
 - Sesiones, CSRF, CORS, headers y rate limits base.
 - Admin shell con login, logout y estado vacío.
 - Backups locales de prueba.
 
 **Agentes:** backend, frontend, DevOps, security, QA, revisor independiente.
 
-**Gate:** login E2E con y sin Access; sesión expira; CI verde; escaneo sin P1.
+**Gate:** login E2E con y sin Access; sesión expira; CI verde; escaneo sin P1;
+una sola identidad Access.
 
 ### Sprint 4 — Fotos
 
@@ -229,15 +230,15 @@ lightbox accesible.
 - ffprobe, validación y límites.
 - Transcodificación 1080p/720p/480p, poster y preview.
 - HLS para videos largos.
-- Reproductor accesible con subtítulos.
-- Cola con concurrencia 1 y backpressure.
+- Reproductor accesible con subtítulos `.vtt` y `prefers-reduced-motion`.
+- Cola con concurrencia 1 y backpressure (worker 2 GB RAM).
 - Pruebas de duración, formato, red y apagón.
 
 **Agentes:** media, frontend, backend, QA, performance, accessibility, revisor
 independiente.
 
 **Gate:** video 2 min ≤ 10 min de proceso; reproducción en Safari/Chrome; sin
-autoplay con sonido; sin red en FFmpeg.
+autoplay con sonido; sin red en FFmpeg; subtítulos presentes si hay voz.
 
 ### Sprint 6 — Sitio público
 
@@ -256,12 +257,13 @@ contenido.
 - i18n ES/EN y temas.
 - Presupuestos de rendimiento y Lighthouse CI.
 - E2E con 0 medios y con contenido.
+- `/etiquetas/` indexable con ≥ 8 elementos.
 
 **Agentes:** frontend, product analyst, SEO, performance, accessibility, QA,
 revisor independiente.
 
 **Gate:** Lighthouse ≥ 95 en galerías/detalle; ≥ 90 en home; sitemap válido con
-0 y con N medios; sin JS funciona el contenido.
+0 y con N medios; sin JS funciona el contenido; WCAG AA sin P1/P2.
 
 ### Sprint 7 — Publicación y administración
 
@@ -273,16 +275,17 @@ revisor independiente.
 
 - Builder Astro y releases atómicas.
 - Estado de build, logs y rollback.
-- Publicar/despublicar/borrar con 301/410.
-- Checklist de lanzamiento y onboarding del admin.
-- Carga/descarga de contenido demo.
+- Publicar/despublicar/borrar/trash con 301/410.
+- Checklist de lanzamiento vacío y onboarding del admin.
+- Carga/descarga de contenido demo (solo staging).
 - Panel de estado y auditoría.
 - Pruebas de concurrencia y fallo de build.
+- Build de producción rechaza `is_demo=true`.
 
 **Agentes:** backend, frontend, DevOps, QA, security, revisor independiente.
 
 **Gate:** publicar ≤ 3 min; rollback de 3 releases; build fallido no toca
-`current`; demo no contamina producción.
+`current`; demo no contamina producción; trashed oculto.
 
 ### Sprint 8 — Experiencia y hardening
 
@@ -295,9 +298,9 @@ velocidad.
 
 - Three.js del hero con fallbacks y degradación.
 - GSAP/ScrollTrigger, reduced-motion y presupuesto de JS.
-- Contacto con Turnstile, honeypot y rate limit.
+- Contacto con Turnstile, honeypot y rate limit (condicionado a `D-10`).
 - CSP Report-Only → enforce, headers y escaneo.
-- Auditoría WCAG 2.2 AA y correcciones.
+- Auditoría WCAG 2.2 AA y correcciones (A11Y-23 a A11Y-28).
 - Pruebas con lector de pantalla y teclado.
 
 **Agentes:** frontend, media, security, accessibility, performance, QA, revisor
@@ -314,9 +317,9 @@ violaciones críticas.
 
 **Entregables:**
 
-- Ubuntu Server, LUKS, UFW, Docker, Tunnel y Caddy.
+- Ubuntu Server LTS (`D-24`), LUKS2 + TPM2 (`D-28`), UFW, Docker, Tunnel y Caddy.
 - DNS, Access, R2, Turnstile y cache rules.
-- Backups restic + offsite + restore probado.
+- Backups restic + Object Lock + offsite + restore probado (`D-29`).
 - Monitorización externa, alertas y dashboard.
 - Prueba de apagón y de recuperación en hardware nuevo.
 - Runbooks de operación e incidentes.
@@ -326,7 +329,7 @@ violaciones críticas.
 revisor independiente.
 
 **Gate:** sitio y admin en producción; restore ≤ 4 h; apagón documentado; sin
-puertos abiertos; backup verificado.
+puertos abiertos; backup con Object Lock verificado.
 
 ### Sprint 10 — UAT y release
 
@@ -342,12 +345,13 @@ puertos abiertos; backup verificado.
 - Corrección de hallazgos y regresión.
 - Release notes, tag y checklist firmado.
 - Plan de mantenimiento y próximos pasos.
+- **Lanzamiento vacío** (sin demo en producción).
 
 **Agentes:** QA, product analyst, tech writer, security, performance,
 accessibility, SEO, release manager, revisor independiente.
 
 **Gate:** aprobación del usuario; cero P1/P2; manuales entregados; tag
-`v1.0.0`.
+`v1.0.0`; **sitio vacío verificado** (sin `is_demo=true`).
 
 ---
 

@@ -3,7 +3,7 @@
 **Estado:** borrador para aprobación
 **Fase:** 01 — Producto
 **Fecha:** 17 de noviembre de 2026
-**Fuente:** [`SRS v1.1`](../00-gestion/srs-v1.1.md), secciones 19 y 20
+**Fuente:** [`SRS v1.2`](../00-gestion/srs-v1.2.md), secciones 19 y 20
 **Uso:** gate de sprint, QA de aceptación, UAT y release.
 
 ---
@@ -27,7 +27,7 @@ Sin evidencia, el criterio queda **no verificado** y bloquea el release si es `M
 
 - [ ] Criterios de aceptación del sprint cumplidos, incluidos vacío y error.
 - [ ] Pruebas unitarias, de integración y E2E según corresponda.
-- [ ] CI verde: lint, tipos, unit, integración, build, e2e, `gitleaks`, SBOM.
+- [ ] CI verde: lint, tipos, unit, integración, build, e2e (`gitleaks` planificado, no activo), SBOM.
 - [ ] Revisión independiente aprobada (autor ≠ revisor).
 - [ ] QA de aceptación aprobado.
 - [ ] Accesibilidad, i18n, rendimiento y SEO verificados si aplica.
@@ -73,7 +73,7 @@ cuándo debe pasar por primera vez. Todos son `M` salvo los marcados `S`.
 | AC-08 | Apagón durante procesamiento. | Job reconciliado; ninguna variante parcial publicada. | Prueba de corte + logs. | S7/S9 |
 | AC-09 | Apagón durante build. | `current` intacto; build fallido visible. | Prueba de corte + admin. | S7 |
 | AC-10 | Rollback. | Con 3 releases, un clic vuelve a la anterior. | E2E + verificación HTTP. | S7 |
-| AC-11 | Despublicar. | Responde 410 o 301; fuera de listados, sitemap, RSS y búsqueda. | E2E + crawl. | S7 |
+| AC-11 | Despublicar. | Responde 410 o 301; fuera de listados, sitemap, RSS, búsqueda y contenido `trashed`. | E2E + crawl. | S7 |
 | AC-12 | Login sin Access o sin passkey. | Rechazado; no existe bypass. | Tests negativos. | S3 |
 | AC-13 | JWT de Access inválido o expirado. | 401; la API no confía solo en el Tunnel. | Test con JWT manipulado. | S3 |
 | AC-14 | Sesión inactiva 30 min / absoluta 12 h. | Expira; acciones destructivas piden reauth. | Test de tiempo + E2E. | S3 |
@@ -85,8 +85,8 @@ cuándo debe pasar por primera vez. Todos son `M` salvo los marcados `S`.
 | AC-20 | FFmpeg con playlist remota. | Rechazado; el worker no tiene red. | Test de sandbox. | S5 |
 | AC-21 | Contacto con spam o rate limit. | Turnstile/honeypot; 3/IP/h; mensaje claro. | Test de carga + E2E. | S8 |
 | AC-22 | Lightbox con teclado y lector. | Foco atrapado, Esc, flechas, retorno al disparador. | E2E + NVDA/VoiceOver. | S4/S6 |
-| AC-23 | Video con teclado y captions. | Controles accesibles; subtítulos sincronizados. | E2E + lector. | S5 |
-| AC-24 | Reduced-motion, Save-Data o sin WebGL. | Versión estática; sin autoplay ni 3D. | Emulación + E2E. | S8 |
+| AC-23 | Video con teclado y captions. Controles accesibles; `.vtt` presentes y sincronizados; `prefers-reduced-motion` respetado. | E2E + lector. | S5 |
+| AC-24 | Reduced-motion, Save-Data, sin WebGL. Estático; sin autoplay ni 3D; `prefers-reduced-motion` desactiva transiciones. | Emulación + E2E. | S8 |
 | AC-25 | Lighthouse móvil. | Home ≥ 90; galerías y detalle ≥ 95; CWV en verde. | Lighthouse CI. | S6 |
 | AC-26 | SEO. | Sitemaps de imágenes/videos, hreflang y JSON-LD válidos. | Validadores + crawl. | S6 |
 | AC-27 | Etiqueta con < 8 elementos. | `noindex,follow`. | Test de meta robots. | S6 |
@@ -102,7 +102,7 @@ cuándo debe pasar por primera vez. Todos son `M` salvo los marcados `S`.
 | AC-37 | Accesibilidad. | axe + teclado + lector sin P1/P2. | Reporte de a11y. | S8 |
 | AC-38 | Impresión. | Foto y ficha legibles en blanco y negro. | Print a PDF. | S6 |
 | AC-39 | Assets demo. | Manifest, licencia, reemplazo y borrado; sin atribución falsa. | Validación de esquema + E2E. | S7 |
-| AC-40 | Lanzamiento. | Checklist completo; contenido real; demo fuera; backups verificados. | Reporte de release. | S10 |
+| AC-40 | Lanzamiento. | Checklist completo; contenido real; **sitio vacío** (sin demo); backups verificados; sin `is_demo=true` en build. | Reporte de release. | S10 |
 
 ---
 
@@ -131,7 +131,7 @@ Un release se rechaza sin discusión si:
 | Unitarias | `pnpm test:unit` | Cada PR. | Sí |
 | Integración | `pnpm test:integration` | Cada PR que toque DB/cola/R2/FFmpeg. | Sí |
 | E2E | `pnpm test:e2e` | Cada PR funcional. | Sí |
-| Seguridad | `gitleaks`, `pnpm audit`, headers | Cada PR / release. | Sí |
+| Seguridad | `gitleaks` (planificado, no activo), `pnpm audit`, headers | Cada PR / release. | Sí |
 | A11y | `axe` + teclado | Cada PR / release. | Sí (P1/P2) |
 | Rendimiento | Lighthouse CI | Cada PR de frontend. | Sí (presupuesto) |
 | SEO | Crawl + validadores | Cada release. | Sí |

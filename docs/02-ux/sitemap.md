@@ -3,7 +3,7 @@
 **Estado:** borrador para aprobación
 **Fase:** 01 — UX
 **Fecha:** 17 de noviembre de 2026
-**Fuente:** [`SRS v1.1`](../00-gestion/srs-v1.1.md)
+**Fuente:** [`SRS v1.2`](../00-gestion/srs-v1.2.md)
 
 ---
 
@@ -58,7 +58,8 @@ flowchart TD
 | `/videos/{slug}/` | Detalle de video | sí | sí | Reproductor, poster, ficha, transcripción. |
 | `/colecciones/` | Listado de colecciones | sí | sí | Tarjetas con portada y conteo. |
 | `/colecciones/{slug}/` | Detalle de colección | sí | sí | Descripción + cuadrícula. |
-| `/etiquetas/{slug}/` | Etiqueta | condicional | condicional | `noindex,follow` con menos de 8 elementos. |
+| `/etiquetas/` | Index de etiquetas | sí | sí | Listado de todas las etiquetas; `noindex,follow` con < 8 elementos. |
+| `/etiquetas/{slug}/` | Etiqueta | condicional | condicional | `noindex,follow` con menos de 8 elementos; `index,follow` con ≥ 8. |
 | `/buscar/` | Búsqueda | no | no | `noindex,follow`; Pagefind en cliente. |
 | `/sobre-mi/` | Sobre mí | sí | sí | Bio, retrato, enfoque, enlaces. |
 | `/contacto/` | Contacto | sí | sí | Formulario + alternativa. |
@@ -86,6 +87,7 @@ flowchart TD
 | `/videos/{slug}/` | `/en/videos/{slug}/` |
 | `/colecciones/` | `/en/collections/` |
 | `/colecciones/{slug}/` | `/en/collections/{slug}/` |
+| `/etiquetas/` | `/en/tags/` |
 | `/etiquetas/{slug}/` | `/en/tags/{slug}/` |
 | `/buscar/` | `/en/search/` |
 | `/sobre-mi/` | `/en/about/` |

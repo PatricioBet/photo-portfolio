@@ -30,3 +30,12 @@ es el rol que debe vigilarlo, no necesariamente quien lo ejecuta.
 | R-23 | Alcance excesivo (S/C) retrasa v1. | alta | alto | v1 = todos los M; S solo con capacidad; C diferido; revisión en cada sprint. | Orquestador | abierto |
 | R-24 | Falta de aprobación del usuario bloquea merges. | media | medio | Aprobación por sprint/release, no por PR; PRs pequeños y demos. | Orquestador | abierto |
 | R-25 | El servidor no tiene backup eléctrico y el sitio público cae; impacto reputacional/SEO. | alta | medio | Aceptado en v1; monitorización, cache de Cloudflare, página de estado y plan de UPS futuro. | DevOps | abierto |
+| R-26 | RAM insuficiente para el pipeline de video (worker 2 GB + `tmpfs` 2 GB + sistema). | media | alto | Mínimo 8 GB (`D-23`); worker con límites de concurrencia; monitorizar uso. | Media/DevOps | abierto |
+| R-27 | LUKS2 con TPM2 falla y el servidor queda inaccesible tras corte; recovery manual requiere 5 min de indisponibilidad. | baja | alto | TPM2 en hardware compatible; recovery key off-host; runbook documentado (`D-28`). | DevOps | abierto |
+| R-28 | Object Lock mal configurado impide restaurar backups por error de credenciales. | baja | alto | Credenciales separadas, test de restore mensual, política de retención configurable (`D-29`). | DevOps | abierto |
+| R-29 | Cloudflare Access + passkeys bloquean al admin si no hay recovery codes accesibles. | media | crítico | 10 recovery codes off-host; CLI bootstrap; break-glass documentado (`D-27`). | Security | abierto |
+| R-30 | Assets demo se filtran a producción por error de build. | baja | alto | Build de producción rechaza `is_demo=true` (`D-25`); AC-40 checklist. | Frontend/QA | abierto |
+| R-31 | gitleaks no detecta secretos porque no está configurado; fuga en PR. | media | alto | Escaneo manual en PRs; configurar `.gitleaks.toml` y CI cuando el remoto esté listo (`D-30`). | Security | abierto |
+| R-32 | IA de metadatos generada sin consentimiento viola privacidad o derechos de terceros. | baja | alto | `RF-A24` es C; `PRIV-13` desactivado; cualquier futura IA requiere DPA (`D-26`). | Security/Product | abierto |
+| R-33 | Demo al lanzar confunde al usuario final y genera desconfianza. | media | alto | Lanzamiento vacío (`D-25`); demo solo en staging; AC-40. | Product/QA | abierto |
+| R-06 | Fuga de secretos en git, logs, capturas o PRs. | media | crítico | Gitleaks, push protection, `.env` ignorado, tokens acotados, rotación, revisión de PRs. | Security | **planificado** (no activo) |

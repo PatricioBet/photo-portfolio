@@ -2,7 +2,7 @@
 
 Portfolio de fotografía y video de **Patricio Betancourt**.
 
-> **Estado:** Fase 0 — SRS v1.1 en revisión. Este repositorio todavía no contiene
+> **Estado:** Fase 0 — SRS v1.2 en re-revisión independiente. Este repositorio todavía no contiene
 > código de producción. La documentación es la fuente de verdad hasta que el SRS,
 > la UX y la arquitectura estén aprobados.
 
@@ -65,8 +65,9 @@ Internet
 
 | Documento | Contenido |
 |---|---|
-| [SRS v1.1](docs/00-gestion/srs-v1.1.md) | Requisitos completos, correcciones y criterios de aceptación |
-| [Cambios v1.1](docs/00-gestion/cambios-srs.md) | Qué cambió respecto al borrador v1.0 |
+| [SRS v1.2](docs/00-gestion/srs-v1.2.md) | Requisitos completos (438), correcciones Gate 0 y criterios de aceptación |
+| [SRS v1.1 (rechazado)](docs/00-gestion/srs-v1.1.md) | Versión revisada rechazada en Gate 0 |
+| [Cambios v1.0→v1.1→v1.2](docs/00-gestion/cambios-srs.md) | Qué cambió en cada versión |
 | [Decisiones](docs/00-gestion/decisiones.md) | Decisiones de arquitectura, producto y operación |
 | [Riesgos](docs/00-gestion/riesgos.md) | Registro de riesgos y mitigaciones |
 | [Plan de sprints](docs/00-gestion/plan-sprints.md) | Fases, agentes y gates |
@@ -101,7 +102,8 @@ evitar mover archivos en cada sprint.
 - El admin se protege con Cloudflare Access + passkey WebAuthn; no hay registro
   público ni contraseñas.
 - El servidor no expone puertos de entrada: todo entra por Cloudflare Tunnel.
-- Antes de cada push se ejecutan `gitleaks` y las pruebas de CI.
+- Antes de cada push se ejecutan las pruebas de CI. `gitleaks` está **planificado,
+  no activo** (`D-30`); se activará cuando el remoto de GitHub esté configurado.
 
 Si encuentras una vulnerabilidad, no abras un issue público: usa el canal privado
 del repositorio o el formulario de contacto del sitio.
@@ -119,7 +121,7 @@ del repositorio o el formulario de contacto del sitio.
 
 ## Hoja de ruta
 
-1. **Fase 0:** SRS v1.1, decisiones, riesgos, plan y repositorio.
+1. **Fase 0:** SRS v1.2 (438 requisitos), decisiones (D-01–D-30), riesgos (R-01–R-33), plan y repositorio.
 2. **Fase 1:** UX — sitemap, flujos, wireframes, prototipo y design system.
 3. **Fase 2:** Arquitectura — SAD/C4, ADR, modelo de datos, OpenAPI, seguridad,
    backups, observabilidad y plan de pruebas.
