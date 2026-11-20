@@ -4,6 +4,7 @@ export interface AuthSession {
   userId: string;
   token: string;
   expiresAt: string;
+  displayName?: string;
 }
 
 export interface ApiError {
@@ -43,6 +44,9 @@ export enum MediaStatus {
   TRASHED = "trashed",
 }
 
+// Allow string literals for compatibility
+export type MediaStatusValue = MediaStatus | "draft" | "published" | "archived" | "trashed";
+
 export enum MediaUploadStatus {
   PENDING = "pending",
   UPLOADING = "uploading",
@@ -50,6 +54,9 @@ export enum MediaUploadStatus {
   COMPLETED = "completed",
   FAILED = "failed",
   SELECTED = "selected",
+  READY = "ready",
+  DUPLICATE = "duplicate",
+  PAUSED = "paused",
 }
 
 export interface MediaUploadItem {
@@ -62,6 +69,18 @@ export interface MediaUploadItem {
 }
 
 export interface MediaMetadata {
+  es?: {
+    title?: string;
+    alt?: string;
+    description?: string;
+    slug?: string;
+  };
+  en?: {
+    title?: string;
+    alt?: string;
+    description?: string;
+    slug?: string;
+  };
   title_es: string;
   title_en: string;
   description_es: string;
@@ -70,6 +89,12 @@ export interface MediaMetadata {
   license: string | null;
   focalPointX: number | null;
   focalPointY: number | null;
+  captureDate: string | null;
+  credit: string | null;
+  location: string | null;
+  isFeatured: boolean;
+  collectionId: string | null;
+  [key: string]: unknown;
 }
 
 export interface MediaItem {
@@ -93,7 +118,13 @@ export interface MediaItem {
   focalPointX: number | null;
   focalPointY: number | null;
   isDemo: boolean;
+  isFeatured: boolean;
   version: number;
+  originalFilename: string;
+  metadata: Record<string, unknown>;
+  captureDate: string | null;
+  credit: string | null;
+  location: string | null;
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -159,6 +190,7 @@ export interface Collection {
   coverId: string | null;
   sortOrder: number;
   mediaCount: number;
+  elementCount: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -175,6 +207,7 @@ export interface CollectionCreatePayload {
 export interface CollectionUpdatePayload {
   name?: string;
   slug?: string;
+  version?: number;
   title_es?: string;
   title_en?: string;
   description_es?: string;
@@ -228,9 +261,13 @@ export interface Build {
   status: BuildStatus;
   commit: string;
   branch: string;
+  number: number;
   durationMs: number | null;
+  createdAt: string;
   startedAt: string | null;
   finishedAt: string | null;
+  releaseId: string | null;
+  error: string | null;
 }
 
 export interface Release {
@@ -240,6 +277,9 @@ export interface Release {
   deployedAt: string;
   deployedBy: string;
   status: string;
+  isActive: boolean;
+  error: string | null;
+  createdAt: string;
 }
 
 // ── Audit ─────────────────────────────────────────────────────────
@@ -283,6 +323,7 @@ export interface DashboardStats {
   photosPublished: number;
   videosPublished: number;
   drafts: number;
+  trashed: number;
   jobsFailed: number;
   jobsQueued: number;
   jobsProcessing: number;
@@ -297,7 +338,8 @@ export interface DashboardStats {
 
 export interface BackupStatus {
   lastBackupAt: string | null;
+  lastRun: string | null;
   nextBackupAt: string | null;
-  status: "ok" | "warning" | "error";
+  status: "ok" | "warning" | "error" | "failed";
   size: number;
 }

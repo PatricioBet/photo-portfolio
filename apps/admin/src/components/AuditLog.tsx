@@ -188,9 +188,9 @@ export default function AuditLog() {
                     <code className="text-muted">{entry.ip}</code>
                   </td>
                   <td>
-                    <span className="text-muted" title={entry.userAgent}>
-                      {entry.userAgent.slice(0, 30)}
-                      {entry.userAgent.length > 30 ? "…" : ""}
+                    <span className="text-muted" title={entry.ua ?? ""}>
+                      {(entry.ua ?? "").slice(0, 30)}
+                      {(entry.ua ?? "").length > 30 ? "…" : ""}
                     </span>
                   </td>
                 </tr>

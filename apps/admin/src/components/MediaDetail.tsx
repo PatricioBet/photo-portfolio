@@ -38,7 +38,7 @@ export default function MediaDetail() {
 
   useEffect(() => {
     if (item) {
-      setMetadata(item.metadata);
+      setMetadata(item.metadata as Partial<MediaMetadata>);
     }
   }, [item]);
 

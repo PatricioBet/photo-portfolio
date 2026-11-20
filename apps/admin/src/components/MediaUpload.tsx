@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { useMediaUpload } from "../hooks/useMedia";
+import { MediaUploadStatus } from "../types";
 
 const ACCEPTED_TYPES = {
   "image/jpeg": true,
@@ -89,10 +90,9 @@ export default function MediaUpload() {
   };
 
   const selectedCount = uploads.filter(
-    (u) => u.status === "selected"
+    (u) => u.status === MediaUploadStatus.SELECTED
   ).length;
-  const readyCount = uploads.filter((u) => u.status === "ready").length;
-  const _failedCount = uploads.filter((u) => u.status === "failed").length;
+  const readyCount = uploads.filter((u) => u.status === MediaUploadStatus.COMPLETED || u.status === MediaUploadStatus.READY).length;
 
   return (
     <div className="media-upload">
@@ -167,17 +167,17 @@ export default function MediaUpload() {
               )}
 
               {/* Status */}
-              {upload.status === "processing" && (
+              {upload.status === MediaUploadStatus.PROCESSING && (
                 <span className="upload-status upload-status-processing">
                   → en cola
                 </span>
               )}
-              {upload.status === "ready" && (
+              {upload.status === MediaUploadStatus.READY && (
                 <span className="upload-status upload-status-ready">
                   ✓ subido
                 </span>
               )}
-              {upload.status === "failed" && (
+              {upload.status === MediaUploadStatus.FAILED && (
                 <span className="upload-status upload-status-failed">
                   ⚠ {upload.error || "Error"}
                 </span>

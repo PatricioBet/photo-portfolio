@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { PasskeyInfo, SessionInfo } from "../types";
 import * as api from "../api/client";
@@ -13,7 +13,7 @@ export default function SecuritySettings() {
   const [showReauth, setShowReauth] = useState(false);
   const [reauthLoading, setReauthLoading] = useState(false);
 
-  const fetch = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -31,8 +31,8 @@ export default function SecuritySettings() {
   }, []);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    fetchData();
+  }, [fetchData]);
 
   const handleReauth = useCallback(async () => {
     if (!reauthCode.trim()) return;

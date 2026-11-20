@@ -7,9 +7,12 @@ export default function Releases() {
 
   const statusBadge = (status: BuildStatus) => {
     const map: Record<BuildStatus, string> = {
+      pending: "default",
       queued: "warning",
       building: "accent",
+      running: "accent",
       published: "success",
+      success: "success",
       failed: "danger",
     };
     return (

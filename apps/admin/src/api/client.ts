@@ -1,3 +1,23 @@
+import type {
+  ApiError,
+  ApiPaginatedResponse,
+  MediaItem,
+  MediaUpdatePayload,
+  MediaCreatePayload,
+  Collection,
+  CollectionCreatePayload,
+  CollectionUpdatePayload,
+  Tag,
+  JobListResponse,
+  Build,
+  Release,
+  AuditFilters,
+  AuditListResponse,
+  DashboardStats,
+  PasskeyInfo,
+  SessionInfo,
+} from "../types";
+
 const API_BASE =
   import.meta.env.VITE_API_URL ||
   (window.location.hostname === "localhost"

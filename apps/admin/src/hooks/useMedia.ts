@@ -290,9 +290,9 @@ export function useMediaUpload() {
     setUploads((prev) =>
       prev.filter(
         (u) =>
-          u.status !== "ready" &&
-          u.status !== "failed" &&
-          u.status !== "duplicate"
+          u.status !== MediaUploadStatus.READY &&
+          u.status !== MediaUploadStatus.FAILED &&
+          u.status !== MediaUploadStatus.DUPLICATE
       )
     );
   }, []);

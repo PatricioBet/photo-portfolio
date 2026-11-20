@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useMedia } from "../hooks/useMedia";
-import { MediaFilters, MediaStatus } from "../types";
+import { MediaFilters, MediaStatus, MediaStatusValue } from "../types";
 
-const STATUS_OPTIONS: { value: MediaStatus | ""; label: string }[] = [
+const STATUS_OPTIONS: { value: MediaStatusValue | ""; label: string }[] = [
   { value: "", label: "Todo" },
-  { value: "published", label: "Publicados" },
-  { value: "draft", label: "Borradores" },
-  { value: "archived", label: "Archivados" },
-  { value: "trashed", label: "Papelera" },
+  { value: MediaStatus.PUBLISHED, label: "Publicados" },
+  { value: MediaStatus.DRAFT, label: "Borradores" },
+  { value: MediaStatus.ARCHIVED, label: "Archivados" },
+  { value: MediaStatus.TRASHED, label: "Papelera" },
 ];
 
 export default function MediaLibrary() {
@@ -56,11 +56,6 @@ export default function MediaLibrary() {
       else next.add(id);
       return next;
     });
-  };
-
-  const _toggleSelectAll = () => {
-    if (selected.size === items.length) setSelected(new Set());
-    else setSelected(new Set(items.map((i) => i.id)));
   };
 
   const handleBulkAction = async (action: string) => {
@@ -220,7 +215,10 @@ export default function MediaLibrary() {
                 to={`/media/${item.id}`}
                 className={`media-card${selected.has(item.id) ? " media-card-selected" : ""}`}
                 role="listitem"
-                aria-label={`${item.metadata.es.title || item.originalFilename}`}
+                aria-label={
+                  (item.metadata as { es?: { title?: string } })?.es?.title ||
+                  item.originalFilename
+                }
               >
                 <div className="media-card-checkbox">
                   <input
@@ -231,7 +229,10 @@ export default function MediaLibrary() {
                       toggleSelect(item.id);
                     }}
                     onClick={(e) => e.stopPropagation()}
-                    aria-label={`Seleccionar ${item.metadata.es.title || item.originalFilename}`}
+                    aria-label={
+                      (item.metadata as { es?: { title?: string } })?.es?.title ||
+                      item.originalFilename
+                    }
                   />
                 </div>
                 <div className="media-card-image">
@@ -250,18 +251,19 @@ export default function MediaLibrary() {
                 </div>
                 <div className="media-card-info">
                   <span className="media-card-title">
-                    {item.metadata.es.title || item.originalFilename}
+                    (item.metadata as { es?: { title?: string } })?.es?.title ||
+                    item.originalFilename
                   </span>
                   <span className="media-card-type">
                     {item.type === "photo" ? "Foto" : "Video"}
                   </span>
                   <span
                     className={`badge badge-${
-                      item.status === "published"
+                      item.status === MediaStatus.PUBLISHED
                         ? "success"
-                        : item.status === "draft"
+                        : item.status === MediaStatus.DRAFT
                           ? "warning"
-                          : item.status === "trashed"
+                          : item.status === MediaStatus.TRASHED
                             ? "danger"
                             : "default"
                     }`}
