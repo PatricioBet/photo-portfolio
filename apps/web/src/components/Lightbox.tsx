@@ -1,4 +1,3 @@
----
 /**
  * Lightbox — Accessible image lightbox with trapped focus, keyboard nav, SR announcements.
  * Props: photos (array of { src, thumb, title, alt }), initialIndex

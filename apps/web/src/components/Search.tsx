@@ -1,4 +1,3 @@
----
 /**
  * Search island — client-side search with Pagefind integration.
  * Props: locale
@@ -33,34 +32,38 @@ export default function Search({ locale }: Props) {
     }
 
     setLoading(true);
-
     try {
-      // @ts-expect-error Pagefind global
-      if (typeof window.pagefind === "undefined") {
-        setResults([]);
-        setLoading(false);
-        return;
-      }
+      // @ts-expect-error Pagefind may not be loaded yet
+      const pagefind = window.__pagefind;
+      if (!pagefind) return;
 
-      // @ts-expect-error Pagefind global
-      const res = await window.pagefind.query(q, {
-        // @ts-expect-error Pagefind options
-        filter: type === "all" ? undefined : `type:${type}`,
+      // @ts-expect-error Pagefind API
+      const res = await pagefind.search(q, {
+        data: ["title", "description", "term"],
       });
 
-      if (res && res.results) {
-        setResults(
-          res.results.map((r: any) => ({
-            id: r.id,
-            title: r.data?.title || "",
-            description: r.data?.description || "",
-            url: r.data?.url || "",
-            term: q,
-          }))
-        );
-      }
-    } catch {
-      setResults([]);
+      const searchResults: SearchResult[] = (res.data.results || []).map(
+        (r: any) => ({
+          id: r.id,
+          title: r.data.title || "",
+          description: r.data.description || "",
+          url: r.url || "#",
+          term: q,
+        })
+      );
+
+      // Filter by type
+      const filtered = searchResults.filter((r) => {
+        if (type === "all") return true;
+        if (type === "photos") return r.url.includes("/fotos/");
+        if (type === "videos") return r.url.includes("/videos/");
+        if (type === "collections") return r.url.includes("/colecciones/");
+        return true;
+      });
+
+      setResults(filtered);
+    } catch (err) {
+      console.error("Search error:", err);
     } finally {
       setLoading(false);
     }
@@ -70,13 +73,8 @@ export default function Search({ locale }: Props) {
     const value = e.target.value;
     setQuery(value);
 
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
-    debounceRef.current = setTimeout(() => {
-      search(value);
-    }, 300);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => search(value), 300);
   };
 
   const handleClear = () => {
@@ -86,38 +84,20 @@ export default function Search({ locale }: Props) {
     inputRef.current?.focus();
   };
 
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-    };
-  }, []);
-
-  const translations = {
-    es: {
-      placeholder: "Busca por título, descripción, colección o etiqueta…",
-      all: "Todo",
-      photos: "Fotos",
-      videos: "Videos",
-      collections: "Colecciones",
-      noResults: `No encontramos resultados para «${query}»`,
-      noResultsHint: "Prueba con otra palabra o quita los filtros.",
-      loading: "Buscando…",
-    },
-    en: {
-      placeholder: "Search by title, description, collection or tag…",
-      all: "All",
-      photos: "Photos",
-      videos: "Videos",
-      collections: "Collections",
-      noResults: `No results for "${query}"`,
-      noResultsHint: "Try another word or clear the filters.",
-      loading: "Searching…",
-    },
+  const t = {
+    all: locale === "es" ? "Todo" : "All",
+    photos: locale === "es" ? "Fotos" : "Photos",
+    videos: locale === "es" ? "Videos" : "Videos",
+    collections: locale === "es" ? "Colecciones" : "Collections",
+    placeholder:
+      locale === "es" ? "Buscar en el archivo…" : "Search the archive…",
+    loading: locale === "es" ? "Buscando…" : "Searching…",
+    noResults: locale === "es" ? "Sin resultados" : "No results",
+    noResultsHint:
+      locale === "es"
+        ? "Intenta con otros términos de búsqueda."
+        : "Try different search terms.",
   };
-
-  const t = translations[locale];
 
   const typeOptions: { value: typeof type; label: string }[] = [
     { value: "all", label: t.all },

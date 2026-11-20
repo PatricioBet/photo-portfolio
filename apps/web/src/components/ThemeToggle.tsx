@@ -1,8 +1,6 @@
----
 /**
  * Theme toggle island — saves preference to localStorage, no cookies.
  */
----
 import { useState, useEffect } from "react";
 
 export default function ThemeToggle() {

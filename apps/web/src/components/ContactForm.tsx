@@ -1,4 +1,3 @@
----
 /**
  * ContactForm — Client-side validated contact form with Turnstile and honeypot.
  * Props: locale

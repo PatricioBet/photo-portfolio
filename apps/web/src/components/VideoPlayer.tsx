@@ -1,4 +1,3 @@
----
 /**
  * VideoPlayer — Accessible HTML5 video player with HLS support.
  * Props: src, poster, title, locale, captions, qualities
