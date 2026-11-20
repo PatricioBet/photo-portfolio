@@ -161,14 +161,14 @@ export class AuthService {
       },
     });
 
-    if (!verification.verification.verified) {
+    if (!verification.verified) {
       throw new UnauthorizedException("Authentication failed");
     }
 
     await this.db
       .update(schema.user)
       .set({
-        passkeyCounter: verification.verification.authenticationInfo?.counter ?? 0,
+        passkeyCounter: verification.authenticationInfo?.counter ?? 0,
         updatedAt: new Date(),
       })
       .where(eq(schema.user.email, email));

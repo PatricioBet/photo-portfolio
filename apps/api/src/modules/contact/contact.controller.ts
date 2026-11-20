@@ -3,10 +3,10 @@ import {
   Post,
   Body,
   BadRequestException,
-  TooManyRequestsException,
+  HttpException,
 } from "@nestjs/common";
 import { ContactService } from "./contact.service";
-import { createDbClient, schema } from "../db/client";
+import { createDbClient, schema } from "../../db/client";
 import { nanoid } from "nanoid";
 
 @Controller("contact")
@@ -35,8 +35,9 @@ export class ContactController {
       .where(schema.contactMessage.createdAt.gte(oneHourAgo));
 
     if (recentCount.length >= 3) {
-      throw new TooManyRequestsException(
-        "Too many messages. Try again later."
+      throw new HttpException(
+        "Too many messages. Try again later.",
+        429
       );
     }
 

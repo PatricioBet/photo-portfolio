@@ -32,8 +32,8 @@ export class MediaController {
 
   @Get()
   async list(@Query() query: ListMediaDto) {
-    const page = Math.max(1, parseInt(query.page ?? "1", 10));
-    const limit = Math.min(100, Math.max(1, parseInt(query.limit ?? "36", 10)));
+    const page = Math.max(1, query.page ?? 1);
+    const limit = Math.min(100, Math.max(1, query.limit ?? 36));
     const offset = (page - 1) * limit;
     const status = query.status === "published" ? "published" : undefined;
     const type = query.type === "photo" || query.type === "video" ? query.type : undefined;
