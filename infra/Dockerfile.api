@@ -43,7 +43,7 @@ RUN apk add --no-cache ffmpeg
 WORKDIR /app
 
 # Copy workspace structure for pnpm resolution
-COPY package.json pnpm-workspace.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/db/package.json ./packages/db/
 COPY packages/contracts/package.json ./packages/contracts/
