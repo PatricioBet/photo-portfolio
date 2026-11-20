@@ -23,7 +23,7 @@ export class QueueService {
     }
 
     const state = await job.getState();
-    const progress = job.progress?.() ?? 0;
+    const progress = (job.progress as number) ?? 0;
     const failedReason = job.failedReason;
 
     return { id: String(job.id), state, progress: Number(progress), failedReason };
