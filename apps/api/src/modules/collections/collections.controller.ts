@@ -12,7 +12,7 @@ import {
 import { CollectionsService } from "./collections.service";
 import { AccessJwtGuard } from "../auth/guards/access-jwt.guard";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
-import { createDbClient, schema } from "@photo-portfolio/db";
+import { createDbClient, schema } from "../../db/client";
 import { eq, asc } from "drizzle-orm";
 import { nanoid } from "nanoid";
 

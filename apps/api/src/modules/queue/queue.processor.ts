@@ -1,6 +1,6 @@
 import { Processor } from "@nestjs/bullmq";
 import { Job } from "bullmq";
-import { createDbClient, schema } from "@photo-portfolio/db";
+import { createDbClient, schema } from "../../db/client";
 import { eq } from "drizzle-orm";
 
 @Processor("media-processing")

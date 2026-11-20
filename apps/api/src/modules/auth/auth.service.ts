@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JWTVerifyResult, generateAuthenticationOptions, generateRegistrationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } from "@simplewebauthn/server";
 import { Buffer } from "buffer";
-import { createDbClient, schema } from "@photo-portfolio/db";
+import { createDbClient, schema } from "../../db/client";
 import { eq } from "drizzle-orm";
 import { JwtService } from "@nestjs/jwt";
 

@@ -6,7 +6,7 @@ import {
   TooManyRequestsException,
 } from "@nestjs/common";
 import { ContactService } from "./contact.service";
-import { createDbClient, schema } from "@photo-portfolio/db";
+import { createDbClient, schema } from "../db/client";
 import { nanoid } from "nanoid";
 
 @Controller("contact")

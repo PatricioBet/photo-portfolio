@@ -16,7 +16,7 @@ import { MediaService } from "./media.service";
 import { CreateMediaDto, UpdateMediaDto, ListMediaDto } from "./dto/media.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { AccessJwtGuard } from "../auth/guards/access-jwt.guard";
-import { createDbClient, schema } from "@photo-portfolio/db";
+import { createDbClient, schema } from "../../db/client";
 import { eq, sql, asc, desc, like, and, or, isNull } from "drizzle-orm";
 import { nanoid } from "nanoid";
 

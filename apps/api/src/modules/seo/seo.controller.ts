@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from "@nestjs/common";
 import { SeoService } from "./seo.service";
 import { AccessJwtGuard } from "../auth/guards/access-jwt.guard";
-import { createDbClient, schema } from "@photo-portfolio/db";
+import { createDbClient, schema } from "../../db/client";
 import { eq, and, sql } from "drizzle-orm";
 
 @Controller()
