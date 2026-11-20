@@ -2,7 +2,7 @@ import { Controller, Get, Query, UseGuards } from "@nestjs/common";
 import { AuditService } from "./audit.service";
 import { AccessJwtGuard } from "../auth/guards/access-jwt.guard";
 import { createDbClient, schema } from "../../db/client";
-import { desc, like, gte } from "drizzle-orm";
+import { desc, eq, like, gte } from "drizzle-orm";
 
 @Controller("audit")
 @UseGuards(AccessJwtGuard)

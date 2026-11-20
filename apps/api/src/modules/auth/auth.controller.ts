@@ -57,7 +57,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async createSession(
     @Headers("x-auth-request-email") email: string
-  ): Promise<{ token: string; expiresIn: "12h" }> {
+  ): Promise<{ token: string; expiresIn: string }> {
     return this.authService.createSessionFromAccess(email);
   }
 

@@ -98,6 +98,9 @@ importers:
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.2
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
@@ -108,6 +111,9 @@ importers:
       '@types/compression':
         specifier: ^1.7.5
         version: 1.8.1
+      '@types/express':
+        specifier: ^5.0.0
+        version: 5.0.6
       '@types/fluent-ffmpeg':
         specifier: ^2.1.27
         version: 2.1.28

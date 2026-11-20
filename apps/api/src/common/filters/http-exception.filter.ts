@@ -1,9 +1,18 @@
-import { HttpException, HttpStatus, Injectable, NestFilter } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  ExceptionFilter,
+  ArgumentsHost,
+} from "@nestjs/common";
 import { Request, Response } from "express";
 
 @Injectable()
-export class HttpExceptionFilter implements NestFilter {
-  catch(exception: unknown, host: any, response: Response, request: Request) {
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
     const traceId = (request as any).traceId ?? "unknown";
 
     if (exception instanceof HttpException) {
