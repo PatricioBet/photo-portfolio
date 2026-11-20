@@ -10,7 +10,6 @@ import {
   primaryKey,
   index,
   pgEnum,
-  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // ── Enums ──────────────────────────────────────────────────────────
@@ -76,57 +75,55 @@ export const session = pgTable(
   ]
 );
 
-export const collection = pgTable(
-  "collection",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    slug: text("slug").notNull().unique(),
-    titleEs: text("title_es").notNull(),
-    titleEn: text("title_en").notNull(),
-    descriptionEs: text("description_es").notNull(),
-    descriptionEn: text("description_en").notNull(),
-    coverId: uuid("cover_id").references(() => media.id),
-    sortOrder: integer("sort_order").notNull().default(0),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  },
-  (t) => [index("idx_collection_sort").on(t.sortOrder)]
+export const collection = pgTable("collection", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  slug: text("slug").notNull().unique(),
+  titleEs: text("title_es").notNull(),
+  titleEn: text("title_en").notNull(),
+  descriptionEs: text("description_es").notNull(),
+  descriptionEn: text("description_en").notNull(),
+  coverId: uuid("cover_id").references(() => media.id),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const idxCollectionSort = index("idx_collection_sort").on(
+  collection.sortOrder
 );
 
-export const media = pgTable(
-  "media",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    slug: text("slug").notNull().unique(),
-    type: mediaTypeEnum("type").notNull(),
-    status: mediaStatusEnum("status").notNull().default("draft"),
-    titleEs: text("title_es").notNull(),
-    titleEn: text("title_en").notNull(),
-    descriptionEs: text("description_es").notNull(),
-    descriptionEn: text("description_en").notNull(),
-    collectionId: uuid("collection_id").references(() => collection.id),
-    focalPointX: real("focal_point_x"),
-    focalPointY: real("focal_point_y"),
-    duration: integer("duration"),
-    width: integer("width"),
-    height: integer("height"),
-    originalHash: text("original_hash").unique(),
-    isDemo: boolean("is_demo").notNull().default(false),
-    isDemoSource: text("is_demo_source"),
-    demoManifestRef: text("demo_manifest_ref"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-    publishedAt: timestamp("published_at"),
-    trashedAt: timestamp("trashed_at"),
-  },
-  (t) => [
-    index("idx_media_type").on(t.type),
-    index("idx_media_status").on(t.status),
-    index("idx_media_collection").on(t.collectionId),
-    index("idx_media_published").on(t.publishedAt),
-    index("idx_media_slug").on(t.slug),
-  ]
+export const media = pgTable("media", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  slug: text("slug").notNull().unique(),
+  type: mediaTypeEnum("type").notNull(),
+  status: mediaStatusEnum("status").notNull().default("draft"),
+  titleEs: text("title_es").notNull(),
+  titleEn: text("title_en").notNull(),
+  descriptionEs: text("description_es").notNull(),
+  descriptionEn: text("description_en").notNull(),
+  collectionId: uuid("collection_id").references(() => collection.id),
+  focalPointX: real("focal_point_x"),
+  focalPointY: real("focal_point_y"),
+  duration: integer("duration"),
+  width: integer("width"),
+  height: integer("height"),
+  originalHash: text("original_hash").unique(),
+  isDemo: boolean("is_demo").notNull().default(false),
+  isDemoSource: text("is_demo_source"),
+  demoManifestRef: text("demo_manifest_ref"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  publishedAt: timestamp("published_at"),
+  trashedAt: timestamp("trashed_at"),
+});
+
+export const idxMediaType = index("idx_media_type").on(media.type);
+export const idxMediaStatus = index("idx_media_status").on(media.status);
+export const idxMediaCollection = index("idx_media_collection").on(
+  media.collectionId
 );
+export const idxMediaPublished = index("idx_media_published").on(media.publishedAt);
+export const idxMediaSlug = index("idx_media_slug").on(media.slug);
 
 export const mediaVariant = pgTable(
   "media_variant",

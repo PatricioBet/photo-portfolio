@@ -1,4 +1,4 @@
-import { createDbClient, schema } from "./index";
+import { createDbClient, schema } from "./index.js";
 import { eq } from "drizzle-orm";
 
 async function seed() {
