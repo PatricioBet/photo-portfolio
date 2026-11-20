@@ -84,7 +84,7 @@ export async function processPhoto(input: Buffer, originalKey: string): Promise<
     if (size > width) continue // Don't upscale
 
     // AVIF with budget enforcement
-    const avifBody = await generateAvif(pipeline.clone(), size, metadata)
+    const avifBody = await generateAvif(pipeline.clone(), size)
     originals.push({
       key: `${originalKey}/avif/${size}w.avif`,
       body: avifBody,
@@ -127,7 +127,7 @@ export async function processPhoto(input: Buffer, originalKey: string): Promise<
 
   const dominantColor =
     result.info.channels === 3 && result.data.length >= 3
-      ? `#${result.data[0].toString(16).padStart(2, '0')}${result.data[1].toString(16).padStart(2, '0')}${result.data[2].toString(16).padStart(2, '0')}`
+      ? `#${result.data[0]!.toString(16).padStart(2, '0')}${result.data[1]!.toString(16).padStart(2, '0')}${result.data[2]!.toString(16).padStart(2, '0')}`
       : '#000000';
 
   logger.info(`Photo processed: ${originalKey}, variants: ${originals.length}`)

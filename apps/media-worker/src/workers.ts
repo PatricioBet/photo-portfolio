@@ -43,19 +43,19 @@ export async function startWorkers() {
   );
 
   photoWorker.on("error", (err) => {
-    logger.error({ err }, "Photo worker error");
+    logger.error("Photo worker error", { err });
   });
 
   videoWorker.on("error", (err) => {
-    logger.error({ err }, "Video worker error");
+    logger.error("Video worker error", { err });
   });
 
   photoWorker.on("completed", (job) => {
-    logger.info({ jobId: job.id }, "Photo processing completed");
+    logger.info("Photo processing completed", { jobId: job.id });
   });
 
   videoWorker.on("completed", (job) => {
-    logger.info({ jobId: job.id }, "Video processing completed");
+    logger.info("Video processing completed", { jobId: job.id });
   });
 
   logger.info("Workers started");

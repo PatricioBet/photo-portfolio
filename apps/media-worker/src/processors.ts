@@ -75,9 +75,6 @@ export async function processVideoJob(job: Job<VideoJobData>): Promise<void> {
   logger.info(`Processing video job ${id}: ${filePath}`)
 
   try {
-    // Read original from local storage
-    const input = downloadFile(filePath)
-
     // Validate with ffprobe
     const videoInfo: VideoInfo = await validateVideo(filePath)
 
