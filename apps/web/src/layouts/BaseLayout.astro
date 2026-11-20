@@ -2,8 +2,6 @@
 /**
  * BaseLayout — Shared layout with Header, Footer, SEO, and hreflang.
  */
-import fs from "node:fs";
-import path from "node:path";
 import type { Locale } from "@i18n/translations";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
@@ -55,18 +53,6 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : undefined;
 
 // OG Image
 const ogImage = image || `${site}/og-default.png`;
-
-// Read CSS files for inline injection (SSR-compatible)
-// process.cwd() = /app in the Docker container (WORKDIR)
-const stylesDir = path.resolve(process.cwd(), "src/styles");
-let tokensCSS = "";
-let globalCSS = "";
-try {
-  tokensCSS = fs.readFileSync(path.join(stylesDir, "tokens.css"), "utf-8");
-  globalCSS = fs.readFileSync(path.join(stylesDir, "global.css"), "utf-8");
-} catch {
-  // Fallback: empty strings — page won't crash, just no inline CSS
-}
 ---
 
 <!doctype html>
@@ -125,8 +111,7 @@ try {
     </noscript>
 
     <!-- Inline CSS for fast first paint -->
-    <style set:html={tokensCSS} />
-    <style set:html={globalCSS} />
+    <link rel="stylesheet" href="/api/styles.css" />
 
     <!-- JSON-LD -->
     {jsonLdString && <script type="application/ld+json">{jsonLdString}</script>}
