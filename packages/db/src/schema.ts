@@ -86,7 +86,7 @@ export const collection = pgTable("collection", {
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}) satisfies Record<string, unknown>;
 
 export const idxCollectionSort = index("idx_collection_sort").on(
   collection.sortOrder
@@ -115,7 +115,7 @@ export const media = pgTable("media", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   publishedAt: timestamp("published_at"),
   trashedAt: timestamp("trashed_at"),
-});
+}) satisfies Record<string, unknown>;
 
 export const idxMediaType = index("idx_media_type").on(media.type);
 export const idxMediaStatus = index("idx_media_status").on(media.status);
