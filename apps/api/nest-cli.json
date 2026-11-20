@@ -1,16 +1,14 @@
-import { defineConfig } from "@nestjs/cli/config";
-
-export default defineConfig({
-  projects: [
+{
+  "projects": [
     {
-      name: "api",
-      root: "apps/api",
-      entryFile: "src/main",
-      sourceRoot: "apps/api/src",
-      compilerOptions: {
-        webpack: true,
-        tsConfigPath: "apps/api/tsconfig.json",
-      },
-    },
-  ],
-});
+      "name": "api",
+      "root": "apps/api",
+      "entryFile": "src/main",
+      "sourceRoot": "apps/api/src",
+      "compilerOptions": {
+        "webpack": true,
+        "tsConfigPath": "apps/api/tsconfig.json"
+      }
+    }
+  ]
+}
