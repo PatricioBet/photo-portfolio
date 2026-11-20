@@ -26,7 +26,7 @@ export class QueueService {
     const progress = job.progress ?? 0;
     const failedReason = job.failedReason;
 
-    return { id: String(job.id), state, progress, failedReason };
+    return { id: String(job.id), state, progress: Number(progress), failedReason };
   }
 
   async getQueueLength(queueName: "media-processing" | "default"): Promise<number> {
