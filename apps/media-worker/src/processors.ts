@@ -1,13 +1,10 @@
 import { Job } from 'bullmq'
 import { createLogger } from './logger.js'
-import { s3Client, PRIVATE_BUCKET, getObject } from './r2.js'
-import { GetObjectCommand } from '@aws-sdk/client-s3'
+import { uploadFile, downloadFile, deleteFile } from './storage.js'
 import { processPhoto, ImageVariants } from './image-processor.js'
-import { uploadVariants } from './r2-client.js'
 import { validateVideo, transcodeVideo, generatePosters, generateHoverPreview, generateLoop, VideoInfo } from './video-processor.js'
 import { createHash } from 'crypto'
-import { mkdirSync, existsSync, rmSync } from 'fs'
-import { tmpdir } from 'os'
+import { mkdirSync, existsSync, rmSync, readFileSync } from 'fs'
 import { join } from 'path'
 
 const logger = createLogger('job-processor')
@@ -16,174 +13,113 @@ const logger = createLogger('job-processor')
 export interface PhotoJobData {
   type: 'process-photo'
   id: string
-  originalKey: string
-  mimeType: string
-  fileSize: number
+  filePath: string
 }
 
 export interface VideoJobData {
   type: 'process-video'
   id: string
-  originalKey: string
-  mimeType: string
-  fileSize: number
-}
-
-export interface VariantsJobData {
-  type: 'generate-variants'
-  id: string
-  originalKey: string
-}
-
-// ── Download from R2 ──────────────────────────────────────────
-async function downloadFromR2(key: string): Promise<Buffer> {
-  logger.info(`Downloading from R2: ${key}`)
-  const response = await s3Client.send(new GetObjectCommand({
-    Bucket: PRIVATE_BUCKET,
-    Key: key,
-  }))
-
-  const chunks: Buffer[] = []
-  if (response.Body) {
-    for await (const chunk of response.Body) {
-      chunks.push(Buffer.from(chunk))
-    }
-  }
-
-  return Buffer.concat(chunks)
+  filePath: string
 }
 
 // ── Process photo job ─────────────────────────────────────────
 export async function processPhotoJob(job: Job<PhotoJobData>): Promise<void> {
-  const { id, originalKey, mimeType } = job.data
+  const { id, filePath } = job.data
 
-  logger.info(`Processing photo job ${id}: ${originalKey}`)
-
-  // Create a unique temp directory for this job
-  const tempDir = join(tmpdir(), `worker-${id}-${Date.now()}`)
-  mkdirSync(tempDir, { recursive: true })
+  logger.info(`Processing photo job ${id}: ${filePath}`)
 
   try {
-    // Download original from R2
-    const input = await downloadFromR2(originalKey)
+    // Read original from local storage
+    const input = downloadFile(filePath)
 
     // Validate magic bytes (basic polyglot detection)
     validateImageMagicBytes(input)
 
     // Process with Sharp
-    const variants: ImageVariants = await processPhoto(input, originalKey)
+    const variants: ImageVariants = await processPhoto(input, filePath)
 
-    // Upload all variants atomically
+    // Upload all variants to local storage
     const allVariants = [
       ...variants.originals,
       variants.social,
     ]
-    await uploadVariants(allVariants)
+    for (const variant of allVariants) {
+      uploadFile(variant.key, variant.body)
+      logger.info(`Uploaded variant: ${variant.key}`)
+    }
 
-    logger.info(`Photo job ${id} complete: ${allVariants.length} variants uploaded`)
+    logger.info(`Photo job ${id} complete: ${allVariants.length} variants saved`)
   } catch (err) {
     logger.error(`Photo job ${id} failed: ${err}`)
     throw err
-  } finally {
-    // Clean up temp files
-    if (existsSync(tempDir)) {
-      rmSync(tempDir, { recursive: true, force: true })
-    }
   }
 }
 
 // ── Process video job ─────────────────────────────────────────
 export async function processVideoJob(job: Job<VideoJobData>): Promise<void> {
-  const { id, originalKey, mimeType } = job.data
+  const { id, filePath } = job.data
 
-  logger.info(`Processing video job ${id}: ${originalKey}`)
-
-  const tempDir = join(tmpdir(), `worker-${id}-${Date.now()}`)
-  mkdirSync(tempDir, { recursive: true })
+  logger.info(`Processing video job ${id}: ${filePath}`)
 
   try {
-    // Download original
-    const input = await downloadFromR2(originalKey)
-    const inputPath = join(tempDir, 'input.mp4')
-    import('fs').then(({ writeFileSync }) => writeFileSync(inputPath, input))
+    // Read original from local storage
+    const input = downloadFile(filePath)
+    const inputPath = join('/tmp', `input-${id}.mp4`)
+    uploadFile(filePath, input) // ensure it's in storage path
 
     // Validate with ffprobe
-    const videoInfo: VideoInfo = await validateVideo(inputPath)
+    const videoInfo: VideoInfo = await validateVideo(filePath)
 
     // Transcode to multiple resolutions
-    const transcodes = await transcodeVideo(inputPath, tempDir, videoInfo)
+    const tempDir = join('/tmp', `worker-${id}`)
+    mkdirSync(tempDir, { recursive: true })
+
+    const transcodes = await transcodeVideo(filePath, tempDir, videoInfo)
 
     // Generate posters
-    const posters = await generatePosters(inputPath, tempDir, videoInfo.duration)
+    const posters = await generatePosters(filePath, tempDir, videoInfo.duration)
 
     // Generate hover preview
-    const preview = await generateHoverPreview(inputPath, tempDir, videoInfo.duration)
+    const preview = await generateHoverPreview(filePath, tempDir, videoInfo.duration)
 
     // Generate loop for hero
-    const loop = await generateLoop(inputPath, tempDir, videoInfo.duration)
+    const loop = await generateLoop(filePath, tempDir, videoInfo.duration)
 
     // Upload all results
-    const uploadPromises: Promise<void>[] = []
-
     for (const t of transcodes) {
-      const data = import('fs').then(({ readFileSync }) => readFileSync(t.path))
-      uploadPromises.push(
-        import('./r2-client.js').then(({ uploadToPublic }) =>
-          data.then((buf) => uploadToPublic(t.key, buf, 'video/mp4'))
-        )
-      )
+      const data = readFileSync(t.path)
+      uploadFile(t.key, data)
+      logger.info(`Uploaded transcode: ${t.key}`)
     }
 
     for (const p of posters) {
-      const data = import('fs').then(({ readFileSync }) => readFileSync(p.path))
-      uploadPromises.push(
-        import('./r2-client.js').then(({ uploadToPublic }) =>
-          data.then((buf) => uploadToPublic(p.key, buf, 'image/avif'))
-        )
-      )
+      const data = readFileSync(p.path)
+      uploadFile(p.key, data)
+      logger.info(`Uploaded poster: ${p.key}`)
     }
 
     if (preview) {
-      const data = import('fs').then(({ readFileSync }) => readFileSync(preview.path))
-      uploadPromises.push(
-        import('./r2-client.js').then(({ uploadToPublic }) =>
-          data.then((buf) => uploadToPublic(preview.key, buf, 'video/mp4'))
-        )
-      )
+      const data = readFileSync(preview.path)
+      uploadFile(preview.key, data)
+      logger.info(`Uploaded preview: ${preview.key}`)
     }
 
     if (loop) {
-      const data = import('fs').then(({ readFileSync }) => readFileSync(loop.path))
-      uploadPromises.push(
-        import('./r2-client.js').then(({ uploadToPublic }) =>
-          data.then((buf) => uploadToPublic(loop.key, buf, 'video/mp4'))
-        )
-      )
+      const data = readFileSync(loop.path)
+      uploadFile(loop.key, data)
+      logger.info(`Uploaded loop: ${loop.key}`)
     }
 
-    await Promise.all(uploadPromises)
+    // Clean up temp files
+    if (existsSync(tempDir)) {
+      rmSync(tempDir, { recursive: true, force: true })
+    }
 
     logger.info(`Video job ${id} complete: ${transcodes.length} transcodes, ${posters.length} posters`)
   } catch (err) {
     logger.error(`Video job ${id} failed: ${err}`)
     throw err
-  } finally {
-    if (existsSync(tempDir)) {
-      rmSync(tempDir, { recursive: true, force: true })
-    }
   }
-}
-
-// ── Generate variants job (reprocessing) ──────────────────────
-export async function generateVariantsJob(job: Job<VariantsJobData>): Promise<void> {
-  const { id, originalKey } = job.data
-
-  logger.info(`Generating variants for ${id}: ${originalKey}`)
-
-  // This job is for reprocessing with new settings
-  // It follows the same flow as process-photo but can be extended
-  // with new format/quality options
-  await processPhotoJob(job as unknown as Job<PhotoJobData>)
 }
 
 // ── Magic byte validation ─────────────────────────────────────

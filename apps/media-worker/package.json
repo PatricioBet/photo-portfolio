@@ -15,10 +15,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.600.0",
-    "@aws-sdk/lib-storage": "^3.600.0",
     "@bull-board/api": "^5.20.0",
-    "@bull-board/caddy": "^5.20.0",
     "@bull-board/express": "^5.20.0",
     "bullmq": "^5.8.0",
     "sharp": "^0.33.4",

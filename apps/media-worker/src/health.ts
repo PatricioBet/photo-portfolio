@@ -10,9 +10,8 @@ export async function checkHealth(): Promise<{
   status: "ok" | "error";
   db: boolean;
   redis: boolean;
-  r2: boolean;
 }> {
-  const result = { status: "ok" as const, db: false, redis: false, r2: false };
+  const result = { status: "ok" as const, db: false, redis: false };
 
   try {
     const db = getDbClient();

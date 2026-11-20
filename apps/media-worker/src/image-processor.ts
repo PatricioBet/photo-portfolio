@@ -1,6 +1,5 @@
 import sharp from 'sharp'
 import { createLogger } from './logger.js'
-import { uploadVariants, uploadToPublic, UploadResult } from './r2-client.js'
 
 const logger = createLogger('image-processor')
 

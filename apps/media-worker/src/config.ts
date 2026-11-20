@@ -7,14 +7,10 @@ export const workerConfig = {
   postgres: {
     url:
       process.env.POSTGRES_URL ??
-      "postgresql://photo:photo@localhost:5432/photo",
+      "postgresql://patriciobet:patriciobet@localhost:5432/photo",
   },
-  r2: {
-    accountId: process.env.R2_ACCOUNT_ID ?? "",
-    accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
-    bucket: process.env.R2_BUCKET ?? "photo-portfolio",
-    region: process.env.R2_REGION ?? "auto",
+  storage: {
+    path: process.env.LOCAL_STORAGE_PATH ?? "/data/media",
   },
   concurrency: {
     photo: Number(process.env.WORKER_CONCURRENCY_PHOTO) ?? 4,

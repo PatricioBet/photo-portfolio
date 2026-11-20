@@ -1,7 +1,6 @@
 import { Worker } from 'bullmq'
 import { createLogger } from './logger.js'
 import { processPhotoJob, processVideoJob, generateVariantsJob } from './processors.js'
-import { reconcileIncomingFiles } from './reconciliation.js'
 import { createHealthServer } from './health.js'
 import { IORedisConnection } from './connection.js'
 
@@ -55,11 +54,6 @@ async function main() {
   // Health check server
   const healthServer = createHealthServer()
   await healthServer.start()
-
-  // Reconciliation on startup
-  logger.info('Running reconciliation check...')
-  await reconcileIncomingFiles(connection)
-  logger.info('Reconciliation complete.')
 
   // Event listeners
   for (const worker of [photoWorker, videoWorker, variantsWorker]) {

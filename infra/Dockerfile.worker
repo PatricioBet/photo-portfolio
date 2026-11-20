@@ -22,16 +22,13 @@ WORKDIR /app
 FROM base AS deps
 COPY package.json pnpm-workspace.yaml ./
 COPY apps/media-worker/package.json ./apps/media-worker/
-COPY packages/media-core/package.json ./packages/media-core/
 RUN corepack enable && pnpm fetch --ignore-scripts
 
 # ── Build ─────────────────────────────────────────────────────
 FROM deps AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/media-worker/node_modules ./apps/media-worker/node_modules
-COPY --from=deps /app/packages/media-core/node_modules ./packages/media-core/node_modules
 COPY apps/media-worker/ ./apps/media-worker/
-COPY packages/media-core/ ./packages/media-core/
 COPY tsconfig.base.json ./
 RUN corepack enable && pnpm --filter media-worker build
 
@@ -46,7 +43,6 @@ WORKDIR /app
 
 COPY --from=build /app/apps/media-worker/dist ./dist
 COPY --from=build /app/apps/media-worker/package.json ./
-COPY --from=build /app/packages/media-core/package.json ./packages/media-core/
 
 # Install production deps only
 RUN corepack enable && \
