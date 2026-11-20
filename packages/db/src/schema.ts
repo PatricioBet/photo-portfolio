@@ -10,7 +10,6 @@ import {
   primaryKey,
   pgEnum,
 } from "drizzle-orm/pg-core";
-import { index } from "drizzle-orm/pg-core";
 
 // ── Enums ──────────────────────────────────────────────────────────
 
@@ -56,7 +55,6 @@ export const user = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   }
 );
-export const idxUserEmail = index("idx_user_email").on(user.email);
 
 export const session = pgTable(
   "session",
@@ -70,8 +68,6 @@ export const session = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   }
 );
-export const idxSessionUser = index("idx_session_user").on(session.userId);
-export const idxSessionExpires = index("idx_session_expires").on(session.expiresAt);
 
 // @ts-expect-error Circular reference between collection and media tables
 export const collection = pgTable("collection", {
@@ -87,10 +83,6 @@ export const collection = pgTable("collection", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }) as const;
-
-export const idxCollectionSort = index("idx_collection_sort").on(
-  collection.sortOrder
-);
 
 // @ts-expect-error Circular reference between collection and media tables
 export const media = pgTable("media", {
@@ -119,14 +111,6 @@ export const media = pgTable("media", {
   trashedAt: timestamp("trashed_at"),
 }) as const;
 
-export const idxMediaType = index("idx_media_type").on(media.type);
-export const idxMediaStatus = index("idx_media_status").on(media.status);
-export const idxMediaCollection = index("idx_media_collection").on(
-  media.collectionId
-);
-export const idxMediaPublished = index("idx_media_published").on(media.publishedAt);
-export const idxMediaSlug = index("idx_media_slug").on(media.slug);
-
 export const mediaVariant = pgTable(
   "media_variant",
   {
@@ -143,7 +127,6 @@ export const mediaVariant = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   }
 );
-export const idxVariantMedia = index("idx_variant_media").on(mediaVariant.mediaId);
 
 export const tag = pgTable(
   "tag",
@@ -168,8 +151,6 @@ export const mediaTag = pgTable(
   },
   (t) => [primaryKey({ columns: [t.mediaId, t.tagId] })]
 );
-export const idxMediaTagMedia = index("idx_mediatag_media").on(mediaTag.mediaId);
-export const idxMediaTagTag = index("idx_mediatag_tag").on(mediaTag.tagId);
 
 export const contactMessage = pgTable(
   "contact_message",
@@ -195,9 +176,6 @@ export const auditLog = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   }
 );
-export const idxAuditAction = index("idx_audit_action").on(auditLog.action);
-export const idxAuditResource = index("idx_audit_resource").on(auditLog.resource);
-export const idxAuditCreated = index("idx_audit_created").on(auditLog.createdAt);
 
 export const job = pgTable(
   "job",
@@ -215,8 +193,6 @@ export const job = pgTable(
     finishedAt: timestamp("finished_at"),
   }
 );
-export const idxJobTypeStatus = index("idx_job_type_status").on(job.type, job.status);
-export const idxJobCreated = index("idx_job_created").on(job.createdAt);
 
 // ── Exports ────────────────────────────────────────────────────────
 
