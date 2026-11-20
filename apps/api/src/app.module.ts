@@ -6,7 +6,9 @@ import { TagsModule } from "./modules/tags/tags.module";
 import { SeoModule } from "./modules/seo/seo.module";
 import { ContactModule } from "./modules/contact/contact.module";
 import { AuditModule } from "./modules/audit/audit.module";
-import { QueueModule } from "./modules/queue/queue.module";
+// Temporarily disabled: QueueModule has BullMQ v5 compatibility issues with @nestjs/bullmq@10
+// The media-worker container handles queue processing independently.
+// import { QueueModule } from "./modules/queue/queue.module";
 import { HealthModule } from "./modules/health/health.module";
 
 @Module({
@@ -18,7 +20,7 @@ import { HealthModule } from "./modules/health/health.module";
     SeoModule,
     ContactModule,
     AuditModule,
-    QueueModule,
+    // QueueModule, // Disabled: BullMQ v5 + @nestjs/bullmq@10 incompatibility
     HealthModule,
   ],
 })
