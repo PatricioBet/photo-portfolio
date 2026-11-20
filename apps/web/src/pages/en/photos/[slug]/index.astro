@@ -5,6 +5,12 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Lightbox from "@components/Lightbox";
 
+export function getStaticPaths() {
+  return [
+    { params: { slug: "demo" } },
+  ];
+}
+
 const locale: "en" = "en";
 
 const { slug } = Astro.params;

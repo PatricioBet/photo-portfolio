@@ -4,6 +4,12 @@
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
 
+export function getStaticPaths() {
+  return [
+    { params: { slug: "demo" } },
+  ];
+}
+
 const locale: "en" = "en";
 ---
 

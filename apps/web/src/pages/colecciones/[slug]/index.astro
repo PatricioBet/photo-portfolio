@@ -7,8 +7,8 @@ import type { Locale } from "@i18n/translations";
 
 export function getStaticPaths() {
   return [
-    { params: { locale: "es" } },
-    { params: { locale: "en" } },
+    { params: { locale: "es", slug: "demo" } },
+    { params: { locale: "en", slug: "demo" } },
   ];
 }
 
