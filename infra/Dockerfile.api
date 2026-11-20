@@ -30,9 +30,6 @@ RUN corepack enable && pnpm install --frozen-lockfile --ignore-scripts
 # ── Build ─────────────────────────────────────────────────────
 FROM deps AS build
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=deps /app/packages/db/node_modules ./packages/db/node_modules
-COPY --from=deps /app/packages/contracts/node_modules ./packages/contracts/node_modules
 COPY apps/api/ ./apps/api/
 COPY packages/db/ ./packages/db/
 COPY packages/contracts/ ./packages/contracts/
@@ -50,11 +47,8 @@ COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/packages/db/dist ./packages/db/dist
 COPY --from=build /app/packages/contracts/dist ./packages/contracts/dist
 
-# Copy node_modules from deps stage (includes all workspace links)
+# Copy full node_modules from deps stage (preserves workspace links)
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=deps /app/packages/db/node_modules ./packages/db/node_modules
-COPY --from=deps /app/packages/contracts/node_modules ./packages/contracts/node_modules
 
 # Non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
