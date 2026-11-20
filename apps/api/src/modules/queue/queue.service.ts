@@ -23,7 +23,7 @@ export class QueueService {
     }
 
     const state = await job.getState();
-    const progress = job.progress ?? 0;
+    const progress = job.progress?.() ?? 0;
     const failedReason = job.failedReason;
 
     return { id: String(job.id), state, progress: Number(progress), failedReason };
@@ -31,9 +31,9 @@ export class QueueService {
 
   async getQueueLength(queueName: "media-processing" | "default"): Promise<number> {
     const queue = queueName === "media-processing" ? this.mediaQueue : this.defaultQueue;
-    const active = await queue.getActiveCount();
-    const waiting = await queue.getWaitingCount();
-    const delayed = await queue.getDelayedCount();
-    return active + waiting + delayed;
+    const active = await queue.getActive();
+    const waiting = await queue.getWaiting();
+    const delayed = await queue.getDelayed();
+    return active.length + waiting.length + delayed.length;
   }
 }

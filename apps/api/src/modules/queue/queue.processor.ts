@@ -1,4 +1,4 @@
-import { Processor } from "@nestjs/bullmq";
+import { Processor, Process } from "@nestjs/bullmq";
 import { Job } from "bullmq";
 import { createDbClient, schema } from "../../db/client";
 import { eq } from "drizzle-orm";
@@ -10,6 +10,7 @@ export class QueueProcessor {
       "postgresql://patriciobet:patriciobet@localhost:5432/photo"
   );
 
+  @Process("process-photo")
   async processPhoto(job: Job) {
     const { mediaId, filePath } = job.data;
 
@@ -26,6 +27,7 @@ export class QueueProcessor {
       .where(eq(schema.media.id, mediaId));
   }
 
+  @Process("process-video")
   async processVideo(job: Job) {
     const { mediaId, filePath } = job.data;
 
@@ -42,6 +44,7 @@ export class QueueProcessor {
       .where(eq(schema.media.id, mediaId));
   }
 
+  @Process("generate-sitemap")
   async generateSitemap(job: Job) {
     // Regenerate sitemap.xml from published media
   }
