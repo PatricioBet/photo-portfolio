@@ -1,5 +1,5 @@
 import ffprobe from "fluent-ffmpeg";
-import { logger } from "./logger";
+import { logger } from "./logger.js";
 
 export function validateVideo(filePath: string): Promise<{
   valid: boolean;

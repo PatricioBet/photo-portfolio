@@ -20,15 +20,19 @@ WORKDIR /app
 
 # ── Dependencies ──────────────────────────────────────────────
 FROM base AS deps
+WORKDIR /app
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/media-worker/package.json ./apps/media-worker/
+COPY packages/db/package.json ./packages/db/
 RUN corepack enable && pnpm install --frozen-lockfile --ignore-scripts
 
 # ── Build ─────────────────────────────────────────────────────
 FROM deps AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/media-worker/node_modules ./apps/media-worker/node_modules
+COPY --from=deps /app/packages/db/node_modules ./packages/db/node_modules
 COPY apps/media-worker/ ./apps/media-worker/
+COPY packages/db/ ./packages/db/
 COPY tsconfig.base.json ./
 RUN corepack enable && pnpm --filter media-worker build
 
@@ -43,6 +47,8 @@ WORKDIR /app
 
 COPY --from=build /app/apps/media-worker/dist ./dist
 COPY --from=build /app/apps/media-worker/package.json ./
+COPY --from=build /app/packages/db/dist ./packages/db/dist
+COPY --from=build /app/packages/db/package.json ./packages/db/
 
 # Install production deps only
 RUN corepack enable && \

@@ -1,17 +1,19 @@
-import Bull from "bull";
-import { workerConfig } from "./config";
+import { Queue } from "bullmq";
+import { workerConfig } from "./config.js";
 
-export function createQueue(name: string): Bull.Queue {
-  return new Bull(name, {
-    redis: {
-      host: workerConfig.redis.host,
-      port: workerConfig.redis.port,
-      password: workerConfig.redis.password,
-    },
+const redisOpts = {
+  host: workerConfig.redis.host,
+  port: workerConfig.redis.port,
+  password: workerConfig.redis.password || undefined,
+};
+
+export function createQueue(name: string): Queue {
+  return new Queue(name, {
+    connection: redisOpts,
     defaultJobOptions: {
       attempts: 3,
       backoff: {
-        type: "exponential",
+        type: "exponential" as const,
         delay: 2000,
       },
     },

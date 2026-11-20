@@ -1,7 +1,7 @@
-import { Worker } from "bull";
-import { createQueue } from "./queue";
-import { processPhotoJob, processVideoJob } from "./processors";
-import { logger } from "./logger";
+import { Worker } from "bullmq";
+import { createQueue } from "./queue.js";
+import { processPhotoJob, processVideoJob } from "./processors.js";
+import { logger } from "./logger.js";
 
 export async function startWorkers() {
   const photoQueue = createQueue("media-processing");
@@ -10,6 +10,11 @@ export async function startWorkers() {
     "media-processing",
     processPhotoJob,
     {
+      connection: {
+        host: process.env.REDIS_HOST ?? "localhost",
+        port: Number(process.env.REDIS_PORT) ?? 6379,
+        password: process.env.REDIS_PASSWORD ?? undefined,
+      },
       concurrency: Number(process.env.WORKER_CONCURRENCY_PHOTO) ?? 4,
       limiter: {
         max: Number(process.env.WORKER_CONCURRENCY_PHOTO) ?? 4,
@@ -22,6 +27,11 @@ export async function startWorkers() {
     "media-processing",
     processVideoJob,
     {
+      connection: {
+        host: process.env.REDIS_HOST ?? "localhost",
+        port: Number(process.env.REDIS_PORT) ?? 6379,
+        password: process.env.REDIS_PASSWORD ?? undefined,
+      },
       concurrency: Number(process.env.WORKER_CONCURRENCY_VIDEO) ?? 1,
       limiter: {
         max: Number(process.env.WORKER_CONCURRENCY_VIDEO) ?? 1,

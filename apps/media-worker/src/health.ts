@@ -1,6 +1,5 @@
-import { createClient } from "pg";
 import { createDbClient } from "@photo-portfolio/db";
-import { workerConfig } from "./config";
+import { workerConfig } from "./config.js";
 
 export function getDbClient() {
   return createDbClient(workerConfig.postgres.url);
@@ -24,7 +23,7 @@ export async function checkHealth(): Promise<{
 
   // Redis check
   try {
-    const { createQueue } = await import("./queue");
+    const { createQueue } = await import("./queue.js");
     const queue = createQueue("health-check");
     await queue.getJobCount("active");
     await queue.close();

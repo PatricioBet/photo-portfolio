@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { logger } from "./logger";
+import { logger } from "./logger.js";
 
 export async function validateImage(buffer: Buffer): Promise<{
   valid: boolean;

@@ -1,11 +1,24 @@
-import { Job } from 'bullmq'
-import { createLogger } from './logger.js'
-import { uploadFile, downloadFile, deleteFile } from './storage.js'
-import { processPhoto, ImageVariants } from './image-processor.js'
-import { validateVideo, transcodeVideo, generatePosters, generateHoverPreview, generateLoop, VideoInfo } from './video-processor.js'
-import { createHash } from 'crypto'
-import { mkdirSync, existsSync, rmSync, readFileSync } from 'fs'
-import { join } from 'path'
+import { Job } from "bullmq";
+import { createLogger } from "./logger.js";
+import { uploadFile, downloadFile } from "./storage.js";
+import {
+  processPhoto,
+  ImageVariants,
+  validateImageMagicBytes,
+} from "./image-processor.js";
+import {
+  validateVideo,
+  transcodeVideo,
+  generatePosters,
+  generateHoverPreview,
+  generateLoop,
+  VideoInfo,
+} from "./video-processor.js";
+import { mkdirSync, existsSync, rmSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
+// Re-export for tests
+export { validateImageMagicBytes };
 
 const logger = createLogger('job-processor')
 
@@ -120,26 +133,4 @@ export async function processVideoJob(job: Job<VideoJobData>): Promise<void> {
     logger.error(`Video job ${id} failed: ${err}`)
     throw err
   }
-}
-
-// ── Magic byte validation ─────────────────────────────────────
-function validateImageMagicBytes(data: Buffer): void {
-  // JPEG: FF D8 FF
-  if (data.length >= 3 && data[0] === 0xFF && data[1] === 0xD8 && data[2] === 0xFF) {
-    return
-  }
-  // PNG: 89 50 4E 47
-  if (data.length >= 4 && data[0] === 0x89 && data[1] === 0x50 && data[2] === 0x4E && data[3] === 0x47) {
-    return
-  }
-  // WebP: 52 49 46 46 ... 57 45 42 50
-  if (data.length >= 12 && data[0] === 0x52 && data[1] === 0x49 && data[2] === 0x46 && data[3] === 0x46 && data[8] === 0x57 && data[9] === 0x45 && data[10] === 0x42 && data[11] === 0x50) {
-    return
-  }
-  // AVIF: check for ftyp box
-  if (data.length >= 12 && data[4] === 0x66 && data[5] === 0x74 && data[6] === 0x79 && data[7] === 0x70) {
-    return
-  }
-
-  throw new Error('Invalid image file: magic bytes do not match any supported format')
 }
