@@ -1,6 +1,14 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { JWTVerifyResult, generateAuthenticationOptions, generateRegistrationOptions, verifyAuthenticationResponse, verifyRegistrationResponse } from "@simplewebauthn/server";
-import { Buffer } from "buffer";
+import {
+  generateAuthenticationOptions,
+  generateRegistrationOptions,
+  verifyAuthenticationResponse,
+  verifyRegistrationResponse,
+} from "@simplewebauthn/server";
+import type {
+  VerifiedRegistrationResponse,
+  VerifiedAuthenticationResponse,
+} from "@simplewebauthn/server";
 import { createDbClient, schema } from "../../db/client";
 import { eq } from "drizzle-orm";
 import { JwtService } from "@nestjs/jwt";
@@ -8,16 +16,6 @@ import { JwtService } from "@nestjs/jwt";
 const RP_ID = process.env.RP_ID || "photo.patriciobet.dev";
 const ORIGIN = process.env.WEB_URL || "https://photo.patriciobet.dev";
 const ADMIN_ORIGIN = process.env.ADMIN_URL || "https://admin-photo.patriciobet.dev";
-
-interface PasskeyVerificationData {
-  verification: {
-    verified: boolean;
-    registrationInfo?: { credentialId: Buffer; publicKey: Buffer; counter: number };
-    authenticationInfo?: { counter: number };
-  };
-  base64PublicKey?: string;
-  credentialId?: string;
-}
 
 @Injectable()
 export class AuthService {
@@ -49,10 +47,10 @@ export class AuthService {
       throw new UnauthorizedException("Passkey already registered");
     }
 
-    const options: any = await generateRegistrationOptions({
+    const options = await generateRegistrationOptions({
       rpId: RP_ID,
       rpName: "Photo Portfolio",
-      userID: Buffer.from(user[0].id, "hex"),
+      userId: Buffer.from(user[0].id, "hex"),
       userName: email,
       userDisplayName: email,
       timeout: 60000,
@@ -89,28 +87,31 @@ export class AuthService {
       throw new UnauthorizedException("User not found");
     }
 
-    const verification: PasskeyVerificationData = await verifyRegistrationResponse({
-      response: {
-        id: credentialId,
-        rawId: Buffer.from(credentialId, "base64"),
-        response: { attestationObject: Buffer.from(attestationObject, "base64") },
-        clientExtensionResults: JSON.parse(clientExtensionResults || "{}"),
-      },
-      expectedChallenge: "",
-      expectedOrigin: ORIGIN,
-      expectedRPID: RP_ID,
-    });
+    const verification: VerifiedRegistrationResponse =
+      await verifyRegistrationResponse({
+        response: {
+          id: credentialId,
+          rawId: credentialId,
+          response: { attestationObject: attestationObject },
+          clientExtensionResults: JSON.parse(clientExtensionResults || "{}"),
+        },
+        expectedChallenge: "",
+        expectedOrigin: ORIGIN,
+        expectedRPID: RP_ID,
+      });
 
-    if (!verification.verification.verified) {
+    if (!verification.verified) {
       throw new UnauthorizedException("Passkey verification failed");
     }
+
+    const regInfo = verification.registrationInfo;
 
     await this.db
       .update(schema.user)
       .set({
         passkeyHandle: credentialId,
         passkeyPublicKey: verification.base64PublicKey,
-        passkeyCounter: verification.verification.authenticationInfo?.counter ?? 0,
+        passkeyCounter: regInfo?.counter ?? 0,
         updatedAt: new Date(),
       })
       .where(eq(schema.user.email, email));
@@ -149,26 +150,28 @@ export class AuthService {
       throw new UnauthorizedException("User not found or no passkey registered");
     }
 
-    const verification = await verifyAuthenticationResponse({
-      response,
-      expectedChallenge: "",
-      expectedOrigin: ORIGIN,
-      expectedRPID: RP_ID,
-      authenticator: {
-        credentialID: Buffer.from(user[0].passkeyHandle, "base64"),
-        credentialPublicKey: Buffer.from(user[0].passkeyPublicKey || "", "base64"),
-        counter: user[0].passkeyCounter ?? 0,
-      },
-    });
+    const verification: VerifiedAuthenticationResponse =
+      await verifyAuthenticationResponse({
+        response,
+        expectedChallenge: "",
+        expectedOrigin: ORIGIN,
+        expectedRPID: RP_ID,
+        advancedFIDOConfig: {
+          credentialID: user[0].passkeyHandle,
+          credentialCounter: user[0].passkeyCounter ?? 0,
+        },
+      });
 
     if (!verification.verified) {
       throw new UnauthorizedException("Authentication failed");
     }
 
+    const authInfo = verification.authenticationInfo;
+
     await this.db
       .update(schema.user)
       .set({
-        passkeyCounter: verification.authenticationInfo?.counter ?? 0,
+        passkeyCounter: authInfo?.newCounter ?? user[0].passkeyCounter ?? 0,
         updatedAt: new Date(),
       })
       .where(eq(schema.user.email, email));
