@@ -122,7 +122,7 @@ const ogImage = image || `${site}/og-default.png`;
   <body>
     <a href="#main-content" class="skip-link">{locale === "es" ? "Saltar al contenido" : "Skip to content"}</a>
 
-    <Header locale={locale} currentPage={title} currentPath={currentPage} />
+    <Header locale={locale} currentPage={currentPage} currentPath={currentPage} />
 
     <main id="main-content">
       <slot />

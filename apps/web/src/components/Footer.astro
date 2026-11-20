@@ -1,16 +1,17 @@
 ---
 /**
- * Footer — secondary navigation, legal links, RSS, and copyright.
+ * Footer — secondary navigation, legal links, RSS, language switcher, and copyright.
  */
 import type { Locale } from "@i18n/translations";
 
 export interface Props {
   locale: Locale;
+  currentPath: string;
 }
 
-const { locale } = Astro.props;
+const { locale, currentPath } = Astro.props;
 
-const navLinks = [
+const mainLinks = [
   { key: "nav.photos", href: locale === "en" ? "/en/photos" : "/fotos" },
   { key: "nav.videos", href: locale === "en" ? "/en/videos" : "/videos" },
   { key: "nav.collections", href: locale === "en" ? "/en/collections" : "/colecciones" },
@@ -36,61 +37,90 @@ function getLabel(key: string): string {
     "footer.terms": { es: "Términos", en: "Terms" },
     "footer.accessibility": { es: "Accesibilidad", en: "Accessibility" },
     "footer.credits": { es: "Créditos", en: "Credits" },
+    "footer.rss": { es: "RSS", en: "RSS" },
+    "footer.development": { es: "Desarrollo", en: "Development" },
+    "footer.copyright": {
+      es: "© Patricio Betancourt. Todos los derechos reservados.",
+      en: "© Patricio Betancourt. All rights reserved.",
+    },
+    "footer.selfhosted": { es: "Sitio autoalojado", en: "Self-hosted site" },
   };
   return map[key]?.[locale] || key;
+}
+
+function getLanguageHref(): string {
+  const stripLocale = currentPath.replace(/^\/en(\/|$)/, "/");
+  return locale === "en" ? `/${stripLocale}` : `/en${stripLocale}`;
+}
+
+function getLanguageLabel(): string {
+  return locale === "en" ? "Español" : "English";
 }
 ---
 
 <footer class="footer no-print">
   <div class="container">
     <div class="footer__grid">
-      <!-- Navigation -->
+      <!-- Main navigation -->
       <div>
-        <h3 class="footer__heading">{getLabel("nav.photos")}</h3>
-        <ul class="footer__links">
-          {navLinks.map((link) => (
-            <li>
-              <a href={link.href}>{getLabel(link.key)}</a>
-            </li>
-          ))}
-        </ul>
+        <nav aria-label="Navegación principal">
+          <ul class="footer__links">
+            {mainLinks.map((link) => (
+              <li>
+                <a href={link.href}>{getLabel(link.key)}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
 
       <!-- Legal -->
       <div>
-        <h3 class="footer__heading">{getLabel("footer.privacy")}</h3>
-        <ul class="footer__links">
-          {legalLinks.map((link) => (
+        <nav aria-label="Enlaces legales">
+          <ul class="footer__links">
+            {legalLinks.map((link) => (
+              <li>
+                <a href={link.href}>{getLabel(link.key)}</a>
+              </li>
+            ))}
             <li>
-              <a href={link.href}>{getLabel(link.key)}</a>
+              <a href={locale === "en" ? "/en/rss.xml" : "/rss.xml"}>{getLabel("footer.rss")}</a>
             </li>
-          ))}
-          <li>
-            <a href={locale === "en" ? "/en/rss.xml" : "/rss.xml"}>{getLabel("footer.rss")}</a>
-          </li>
-        </ul>
+          </ul>
+        </nav>
       </div>
 
-      <!-- External -->
+      <!-- External + Language -->
       <div>
-        <h3 class="footer__heading">{getLabel("footer.development")}</h3>
-        <ul class="footer__links">
-          <li>
-            <a href="https://patriciobet.dev" target="_blank" rel="noopener noreferrer">
-              patriciobet.dev
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com/patob" target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>
-          </li>
-          <li>
-            <a href="https://www.linkedin.com/in/patricio-betancourt" target="_blank" rel="noopener noreferrer">
-              LinkedIn
-            </a>
-          </li>
-        </ul>
+        <nav aria-label="Enlaces externos">
+          <ul class="footer__links">
+            <li>
+              <a href="https://patriciobet.dev" target="_blank" rel="noopener noreferrer">
+                patriciobet.dev
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/patob" target="_blank" rel="noopener noreferrer">
+                GitHub
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/patricio-betancourt" target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <div style={{ marginTop: "1rem" }}>
+          <a
+            href={getLanguageHref()}
+            class="btn btn-ghost"
+            style={{ fontSize: "var(--text-sm)", padding: "0.4rem 0.75rem" }}
+            aria-label={getLanguageLabel()}
+          >
+            {locale === "en" ? "ES" : "EN"}
+          </a>
+        </div>
       </div>
     </div>
 
