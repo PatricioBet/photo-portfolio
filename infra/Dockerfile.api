@@ -25,7 +25,7 @@ COPY package.json pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/db/package.json ./packages/db/
 COPY packages/contracts/package.json ./packages/contracts/
-RUN corepack enable && pnpm fetch --ignore-scripts
+RUN corepack enable && pnpm install --frozen-lockfile --ignore-scripts
 
 # ── Build ─────────────────────────────────────────────────────
 FROM deps AS build

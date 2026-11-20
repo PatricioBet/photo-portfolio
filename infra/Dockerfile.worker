@@ -22,7 +22,7 @@ WORKDIR /app
 FROM base AS deps
 COPY package.json pnpm-workspace.yaml ./
 COPY apps/media-worker/package.json ./apps/media-worker/
-RUN corepack enable && pnpm fetch --ignore-scripts
+RUN corepack enable && pnpm install --frozen-lockfile --ignore-scripts
 
 # ── Build ─────────────────────────────────────────────────────
 FROM deps AS build
