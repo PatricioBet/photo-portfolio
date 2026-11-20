@@ -3,7 +3,7 @@
  * Contact EN — /en/contact/
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
-import ContactForm from "@components/ContactForm.astro";
+import ContactForm from "@components/ContactForm";
 
 const locale: "en" = "en";
 
@@ -37,7 +37,7 @@ const jsonLd = {
       Do you have a project or a question? Write to me.
     </p>
 
-    <ContactForm locale={locale} />
+    <ContactForm locale={locale} client:load />
 
     <div style={{ marginTop: "2.5rem", paddingBlockStart: "1.5rem", borderTop: "1px solid var(--border)" }}>
       <p style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>

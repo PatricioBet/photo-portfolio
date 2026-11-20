@@ -3,7 +3,7 @@
  * Contact page — Contact form with Turnstile and honeypot.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
-import ContactForm from "@components/ContactForm.astro";
+import ContactForm from "@components/ContactForm";
 import type { Locale } from "@i18n/translations";
 
 export function getStaticPaths() {
@@ -57,7 +57,7 @@ const jsonLd = {
         : "Do you have a project or a question? Write to me."}
     </p>
 
-    <ContactForm locale={locale} />
+    <ContactForm locale={locale} client:load />
 
     <!-- Alternative contact -->
     <div style={{ marginTop: "2.5rem", paddingBlockStart: "1.5rem", borderTop: "1px solid var(--border)" }}>
