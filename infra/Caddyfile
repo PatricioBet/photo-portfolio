@@ -1,132 +1,85 @@
 # Photo Portfolio — Caddy Configuration
 #
 # Reverse proxy for the portfolio site, admin panel, and API.
-# Security headers, gzip compression, and static file serving.
+# Served behind Cloudflare Tunnel (HTTPS termination at Cloudflare).
+# Caddy handles HTTP only — auto_https is disabled.
 #
 # Domains:
-#   photo.patriciobet.dev       → public site (web:4321)
-#   admin-photo.patriciobet.dev → admin panel (admin:3000)
-#
-# How it works:
-#   Caddy routes based on the Host header.
-#   When a browser requests https://photo.patriciobet.dev,
-#   Caddy receives Host: photo.patriciobet.dev and proxies to web:4321.
-#   When a browser requests https://admin-photo.patriciobet.dev,
-#   Caddy receives Host: admin-photo.patriciobet.dev and proxies to admin:3000.
-#   Both subdomains go through the same Caddy container (port 8080),
-#   but Caddy distinguishes them by the Host header.
+#   http://photo.patriciobet.dev:8080  → public site (web:4321)
+#   http://admin-photo.patriciobet.dev:8080 → admin panel (admin:3000)
+#   http://:8081 → direct API access (internal)
+
+{
+	auto_https off
+}
 
 (health) {
-    @health path /health
-    respond @health "OK" 200
+	@health path /health
+	respond @health "OK" 200
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		Cross-Origin-Opener-Policy "same-origin"
+		Cross-Origin-Resource-Policy "cross-origin"
+		X-Frame-Options "DENY"
+	}
+}
+
+(proxy_headers) {
+	header_up X-Real-IP {http.request.header.CF-Connecting-IP}
+	header_up X-Forwarded-For {http.request.header.CF-Connecting-IP}
+	header_up X-Forwarded-Proto https
 }
 
 # ── Public Site ───────────────────────────────────────────────
-photo.patriciobet.dev {
-    import health
+http://photo.patriciobet.dev:8080 {
+	import health
+	import security_headers
+	header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
+	encode gzip
 
-    # Security headers
-    header {
-        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
-        X-Content-Type-Options "nosniff"
-        Referrer-Policy "strict-origin-when-cross-origin"
-        Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
-        Cross-Origin-Opener-Policy "same-origin"
-        Cross-Origin-Resource-Policy "cross-origin"
-        X-Frame-Options "DENY"
-    }
+	@assets path /assets/* /images/* /videos/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
 
-    # Content-Security-Policy
-    header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' ${API_URL:-http://api:3000}; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
-
-    # Gzip compression
-    encode gzip
-
-    # Reverse proxy to Astro
-    reverse_proxy web:4321 {
-        header_up Host {upstream_hostport}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
-        header_up X-Forwarded-Port {server_port}
-    }
-
-    # Static assets caching
-    @assets path /assets/* /images/* /videos/*
-    header @assets Cache-Control "public, max-age=31536000, immutable"
-
-    # API proxy (for server-side API calls from Astro)
-    @api path /api/*
-    reverse_proxy @api api:3000 {
-        header_up Host {upstream_hostport}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
-    }
-
-    # Health check
-    handle_path /health {
-        respond "OK" 200
-    }
+	handle /api/* {
+		reverse_proxy api:3000 {
+			import proxy_headers
+		}
+	}
+	handle {
+		reverse_proxy web:4321 {
+			import proxy_headers
+		}
+	}
 }
 
 # ── Admin Panel ───────────────────────────────────────────────
-admin-photo.patriciobet.dev {
-    import health
+http://admin-photo.patriciobet.dev:8080 {
+	import health
+	import security_headers
+	header X-Robots-Tag "noindex, nofollow"
+	header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none';"
+	encode gzip
 
-    # No indexing
-    header X-Robots-Tag "noindex, nofollow"
-
-    # Security headers
-    header {
-        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
-        X-Content-Type-Options "nosniff"
-        Referrer-Policy "strict-origin-when-cross-origin"
-        Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
-        Cross-Origin-Opener-Policy "same-origin"
-        Cross-Origin-Resource-Policy "cross-origin"
-        X-Frame-Options "DENY"
-    }
-
-    # CSP for admin (includes WebAuthn and API)
-    header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ${API_URL:-http://api:3000}; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none';"
-
-    # Gzip compression
-    encode gzip
-
-    # Reverse proxy to admin
-    reverse_proxy admin:3000 {
-        header_up Host {upstream_hostport}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
-        header_up X-Forwarded-Port {server_port}
-    }
-
-    # Health check
-    handle_path /health {
-        respond "OK" 200
-    }
+	handle /api/* {
+		reverse_proxy api:3000 {
+			import proxy_headers
+		}
+	}
+	handle {
+		reverse_proxy admin:3000 {
+			import proxy_headers
+		}
+	}
 }
 
 # ── API (direct access for internal use) ──────────────────────
 :8081 {
-    import health
-
-    # Security headers
-    header {
-        X-Content-Type-Options "nosniff"
-        X-Frame-Options "DENY"
-    }
-
-    reverse_proxy api:3000 {
-        header_up Host {upstream_hostport}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
-    }
-
-    handle_path /health {
-        respond "OK" 200
-    }
+	import health
+	reverse_proxy api:3000
 }
