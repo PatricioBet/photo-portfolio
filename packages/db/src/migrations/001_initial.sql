@@ -24,21 +24,6 @@ CREATE TABLE IF NOT EXISTS "session" (
 CREATE INDEX IF NOT EXISTS idx_session_user ON "session"(user_id);
 CREATE INDEX IF NOT EXISTS idx_session_expires ON "session"(expires_at);
 
-CREATE TABLE IF NOT EXISTS "collection" (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  slug TEXT NOT NULL UNIQUE,
-  title_es TEXT NOT NULL,
-  title_en TEXT NOT NULL,
-  description_es TEXT NOT NULL,
-  description_en TEXT NOT NULL,
-  cover_id UUID REFERENCES "media"(id),
-  sort_order INTEGER NOT NULL DEFAULT 0,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_collection_sort ON "collection"(sort_order);
-
 CREATE TABLE IF NOT EXISTS "media" (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT NOT NULL UNIQUE,
@@ -48,7 +33,7 @@ CREATE TABLE IF NOT EXISTS "media" (
   title_en TEXT NOT NULL,
   description_es TEXT NOT NULL,
   description_en TEXT NOT NULL,
-  collection_id UUID REFERENCES "collection"(id),
+  collection_id UUID,
   focal_point_x REAL,
   focal_point_y REAL,
   duration INTEGER,
@@ -83,6 +68,25 @@ CREATE TABLE IF NOT EXISTS "media_variant" (
 );
 
 CREATE INDEX IF NOT EXISTS idx_variant_media ON "media_variant"(media_id);
+
+CREATE TABLE IF NOT EXISTS "collection" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT NOT NULL UNIQUE,
+  title_es TEXT NOT NULL,
+  title_en TEXT NOT NULL,
+  description_es TEXT NOT NULL,
+  description_en TEXT NOT NULL,
+  cover_id UUID,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_collection_sort ON "collection"(sort_order);
+
+-- Circular FK constraints (media <-> collection) added after both tables exist
+ALTER TABLE "media" ADD CONSTRAINT fk_media_collection FOREIGN KEY (collection_id) REFERENCES "collection"(id);
+ALTER TABLE "collection" ADD CONSTRAINT fk_collection_cover FOREIGN KEY (cover_id) REFERENCES "media"(id);
 
 CREATE TABLE IF NOT EXISTS "tag" (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
