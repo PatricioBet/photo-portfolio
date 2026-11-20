@@ -12,7 +12,8 @@ import { nanoid } from "nanoid";
 @Controller("contact")
 export class ContactController {
   private readonly db = createDbClient(
-    process.env.POSTGRES_URL || "postgresql://photo:photo@localhost:5432/photo"
+    process.env.POSTGRES_URL ||
+      "postgresql://patriciobet:patriciobet@localhost:5432/photo"
   );
 
   constructor(private readonly service: ContactService) {}
@@ -24,7 +25,6 @@ export class ContactController {
       email: string;
       message: string;
       consent: boolean;
-      turnstileToken: string;
     }
   ) {
     // Rate limit check (simplified - in production use Redis)
@@ -35,12 +35,9 @@ export class ContactController {
       .where(schema.contactMessage.createdAt.gte(oneHourAgo));
 
     if (recentCount.length >= 3) {
-      throw new TooManyRequestsException("Too many messages. Try again later.");
-    }
-
-    // Validate Turnstile token (simplified)
-    if (!dto.turnstileToken) {
-      throw new BadRequestException("Turnstile token required");
+      throw new TooManyRequestsException(
+        "Too many messages. Try again later."
+      );
     }
 
     if (!dto.consent) {

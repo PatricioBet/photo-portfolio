@@ -24,7 +24,8 @@ import { nanoid } from "nanoid";
 @UseGuards(AccessJwtGuard)
 export class MediaController {
   private readonly db = createDbClient(
-    process.env.POSTGRES_URL || "postgresql://photo:photo@localhost:5432/photo"
+    process.env.POSTGRES_URL ||
+      "postgresql://patriciobet:patriciobet@localhost:5432/photo"
   );
 
   constructor(private readonly mediaService: MediaService) {}

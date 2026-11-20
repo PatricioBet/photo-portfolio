@@ -6,7 +6,8 @@ import { eq } from "drizzle-orm";
 @Processor("media-processing")
 export class QueueProcessor {
   private readonly db = createDbClient(
-    process.env.POSTGRES_URL || "postgresql://photo:photo@localhost:5432/photo"
+    process.env.POSTGRES_URL ||
+      "postgresql://patriciobet:patriciobet@localhost:5432/photo"
   );
 
   @Process("process-photo")
@@ -18,7 +19,7 @@ export class QueueProcessor {
     // 1. Validate format (reject polyglots)
     // 2. Extract EXIF metadata (remove GPS)
     // 3. Generate variants: AVIF, WebP, JPEG at multiple sizes
-    // 4. Upload to R2
+    // 4. Save variants to local storage
     // 5. Store variants in DB
 
     job.updateProgress(100);
@@ -39,7 +40,7 @@ export class QueueProcessor {
     // 2. Transcode to 1080p, 720p, 480p
     // 3. Generate poster image
     // 4. Generate HLS if > 3 minutes
-    // 5. Upload to R2
+    // 5. Save to local storage
 
     job.updateProgress(100);
 

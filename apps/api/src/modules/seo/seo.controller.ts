@@ -7,7 +7,7 @@ import { eq, and, sql } from "drizzle-orm";
 @Controller()
 export class SeoController {
   private readonly db = createDbClient(
-    process.env.POSTGRES_URL || "postgresql://photo:photo@localhost:5432/photo"
+    process.env.POSTGRES_URL || "postgresql://patriciobet:patriciobet@localhost:5432/photo"
   );
 
   constructor(private readonly service: SeoService) {}

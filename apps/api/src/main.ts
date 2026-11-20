@@ -42,6 +42,7 @@ async function bootstrap() {
   console.log(`API running on port ${port}`);
   console.log(`Database: ${process.env.POSTGRES_URL?.replace(/\/\/.*@/, "//***@") ?? "not configured"}`);
   console.log(`Redis: ${process.env.REDIS_HOST ?? "localhost"}`);
+  console.log(`Storage: ${process.env.LOCAL_STORAGE_PATH ?? "not configured"}`);
 }
 
 bootstrap().catch((err) => {

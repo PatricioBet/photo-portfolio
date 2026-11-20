@@ -8,7 +8,7 @@ export const appConfig = {
 export const dbConfig = {
   url:
     process.env.POSTGRES_URL ||
-    "postgresql://photo:photo@localhost:5432/photo",
+    "postgresql://patriciobet:patriciobet@localhost:5432/photo",
 };
 
 export const redisConfig = {
@@ -28,17 +28,8 @@ export const queueConfig = {
   },
 };
 
-export const r2Config = {
-  accountId: process.env.R2_ACCOUNT_ID || "",
-  accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
-  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
-  bucket: process.env.R2_BUCKET || "photo-portfolio",
-  region: process.env.R2_REGION || "auto",
-};
-
-export const turnstileConfig = {
-  siteKey: process.env.TURNSTILE_SITE_KEY || "",
-  secretKey: process.env.TURNSTILE_SECRET_KEY || "",
+export const storageConfig = {
+  localPath: process.env.LOCAL_STORAGE_PATH || "/data/media",
 };
 
 export const contactConfig = {

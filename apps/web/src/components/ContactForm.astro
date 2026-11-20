@@ -83,9 +83,6 @@ export default function ContactForm({ locale }: Props) {
     setGeneralError("");
 
     try {
-      // @ts-expect-error Turnstile global
-      const token = await window.turnstile?.getResponse();
-
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,7 +91,6 @@ export default function ContactForm({ locale }: Props) {
           email,
           message,
           consent,
-          token,
         }),
       });
 
@@ -277,16 +273,6 @@ export default function ContactForm({ locale }: Props) {
           </p>
         )}
       </div>
-
-      {/* Turnstile */}
-      {/* @ts-expect-error Turnstile global */}
-      {window.turnstile && (
-        <div
-          data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
-          data-callback={(token: string) => { /* handled by form submission */ }}
-          style={{ marginBottom: "1.5rem" }}
-        />
-      )}
 
       {/* Submit */}
       <button

@@ -1,14 +1,14 @@
 ---
 /**
  * Contact API endpoint — Handles form submissions.
- * Validates Turnstile token, rate limits, and stores messages.
+ * Validates input, rate limits, and stores messages.
  */
 import type { APIRoute } from "astro";
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
-    const { name, email, message, consent, token } = body;
+    const { name, email, message, consent } = body;
 
     // Validate required fields
     if (!name || !email || !message || !consent) {
@@ -33,28 +33,6 @@ export const POST: APIRoute = async ({ request }) => {
         JSON.stringify({ error: "Message too long" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
-    }
-
-    // Validate Turnstile token (if configured)
-    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
-    if (turnstileSecret && token) {
-      const turnstileResult = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          secret: turnstileSecret,
-          response: token,
-          remoteip: request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "",
-        }),
-      });
-
-      const turnstileData = await turnstileResult.json();
-      if (!turnstileData.success) {
-        return new Response(
-          JSON.stringify({ error: "Turnstile verification failed" }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
-        );
-      }
     }
 
     // Rate limiting check (simple in-memory for now)

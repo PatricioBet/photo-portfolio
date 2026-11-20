@@ -20,7 +20,7 @@ import { nanoid } from "nanoid";
 @UseGuards(AccessJwtGuard)
 export class CollectionsController {
   private readonly db = createDbClient(
-    process.env.POSTGRES_URL || "postgresql://photo:photo@localhost:5432/photo"
+    process.env.POSTGRES_URL || "postgresql://patriciobet:patriciobet@localhost:5432/photo"
   );
 
   constructor(private readonly service: CollectionsService) {}

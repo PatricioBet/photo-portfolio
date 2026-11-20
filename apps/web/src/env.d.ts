@@ -2,7 +2,7 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
-  readonly PUBLIC_TURNSTILE_SITE_KEY: string;
+  readonly PUBLIC_CONTACT_FROM_EMAIL: string;
 }
 
 interface ImportMeta {
