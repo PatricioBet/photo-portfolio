@@ -21,7 +21,6 @@ async function seed() {
 
   await db.insert(schema.user).values({
     email: "admin@patriciobet.dev",
-    role: "admin",
   });
 
   await db.insert(schema.collection).values({

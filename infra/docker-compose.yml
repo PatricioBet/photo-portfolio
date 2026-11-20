@@ -91,8 +91,6 @@ services:
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       API_URL: ${API_URL:-http://localhost:3000}
       LOCAL_STORAGE_PATH: ${LOCAL_STORAGE_PATH:-/data/media}
-      TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY}
-      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY}
       CONTACT_FROM_EMAIL: ${CONTACT_FROM_EMAIL}
       CONTACT_FROM_NAME: ${CONTACT_FROM_NAME:-Patricio Betancourt}
       RP_ID: ${RP_ID:-photo.patriciobet.dev}
@@ -182,8 +180,6 @@ services:
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       API_URL: ${API_URL:-http://localhost:3000}
       LOCAL_STORAGE_PATH: ${LOCAL_STORAGE_PATH:-/data/media}
-      TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY}
-      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY}
       CONTACT_FROM_EMAIL: ${CONTACT_FROM_EMAIL}
       CONTACT_FROM_NAME: ${CONTACT_FROM_NAME:-Patricio Betancourt}
       RP_ID: ${RP_ID:-photo.patriciobet.dev}
