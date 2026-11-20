@@ -61,7 +61,7 @@ COPY --from=build /app/packages/contracts/dist ./packages/contracts/dist
 COPY --from=deps /app/node_modules ./node_modules
 
 # Install production deps (recreates workspace symlinks from source)
-RUN corepack enable && pnpm install --prod --no-frozen-lockfile --ignore-scripts
+RUN corepack enable && pnpm install --prod --no-frozen-lockfile --ignore-scripts --yes
 
 # Non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
