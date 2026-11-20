@@ -48,14 +48,17 @@ RUN apk add --no-cache build-base g++ make jpeg-dev libpng-dev vips-dev tiff-dev
 
 WORKDIR /app
 
+# Copy workspace root for pnpm to resolve workspace:* deps
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps/api/package.json ./apps/api/
+COPY packages/db/package.json ./packages/db/
+COPY packages/contracts/package.json ./packages/contracts/
+
 COPY --from=build /app/apps/api/dist ./dist
-COPY --from=build /app/apps/api/package.json ./
-COPY --from=build /app/packages/db/package.json ./packages/db/
-COPY --from=build /app/packages/contracts/package.json ./packages/contracts/
 
 # Install production deps only
 RUN corepack enable && \
-    pnpm install --prod --ignore-scripts && \
+    pnpm install --prod --frozen-lockfile --ignore-scripts && \
     rm -rf /root/.npm /root/.node-gyp /tmp/*
 
 # Non-root user
