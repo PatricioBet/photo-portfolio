@@ -125,8 +125,8 @@ try {
     </noscript>
 
     <!-- Inline CSS for fast first paint -->
-    <style>{tokensCSS}</style>
-    <style>{globalCSS}</style>
+    <style set:html={tokensCSS} />
+    <style set:html={globalCSS} />
 
     <!-- JSON-LD -->
     {jsonLdString && <script type="application/ld+json">{jsonLdString}</script>}
