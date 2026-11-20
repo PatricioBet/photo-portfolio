@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import { useMedia } from "../hooks/useMedia";
 import { MediaFilters, MediaStatus, MediaStatusValue } from "../types";
 
+interface EsTitle {
+  es?: { title?: string };
+}
+
 const STATUS_OPTIONS: { value: MediaStatusValue | ""; label: string }[] = [
   { value: "", label: "Todo" },
   { value: MediaStatus.PUBLISHED, label: "Publicados" },
@@ -216,7 +220,7 @@ export default function MediaLibrary() {
                 className={`media-card${selected.has(item.id) ? " media-card-selected" : ""}`}
                 role="listitem"
                 aria-label={
-                  (item.metadata as { es?: { title?: string } })?.es?.title ||
+                  ((item.metadata as EsTitle)?.es?.title) ||
                   item.originalFilename
                 }
               >
@@ -230,7 +234,7 @@ export default function MediaLibrary() {
                     }}
                     onClick={(e) => e.stopPropagation()}
                     aria-label={
-                      (item.metadata as { es?: { title?: string } })?.es?.title ||
+                      ((item.metadata as EsTitle)?.es?.title) ||
                       item.originalFilename
                     }
                   />
@@ -251,8 +255,8 @@ export default function MediaLibrary() {
                 </div>
                 <div className="media-card-info">
                   <span className="media-card-title">
-                    (item.metadata as { es?: { title?: string } })?.es?.title ||
-                    item.originalFilename
+                    {(item.metadata as EsTitle)?.es?.title ||
+                    item.originalFilename}
                   </span>
                   <span className="media-card-type">
                     {item.type === "photo" ? "Foto" : "Video"}
