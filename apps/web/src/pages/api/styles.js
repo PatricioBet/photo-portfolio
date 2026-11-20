@@ -1,8 +1,6 @@
----
 /**
  * Serves the combined CSS file for the public site.
- * Route: GET /api/styles.css
- * IMPORTANT: Must be a .js file (not .astro) to return raw content-type.
+ * Route: GET /api/styles
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -18,7 +16,7 @@ try {
   css = `:root{--bg:#0b0b0d;--text:#f4f1ea}body{margin:0;background:var(--bg);color:var(--text)}`;
 }
 
-export function GET({ request }: { request: Request }) {
+export function GET() {
   return new Response(css, {
     headers: {
       "Content-Type": "text/css; charset=utf-8",
