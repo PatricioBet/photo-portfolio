@@ -42,23 +42,16 @@ RUN apk add --no-cache ffmpeg
 
 WORKDIR /app
 
-# Copy workspace structure for pnpm resolution
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
-COPY apps/api/package.json ./apps/api/
-COPY packages/db/package.json ./packages/db/
-COPY packages/contracts/package.json ./packages/contracts/
-
-# Copy source packages (pnpm --prod needs them to resolve workspace links)
-COPY packages/db/ ./packages/db/
-COPY packages/contracts/ ./packages/contracts/
-
 # Copy built outputs
 COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/packages/db/dist ./packages/db/dist
 COPY --from=build /app/packages/contracts/dist ./packages/contracts/dist
 
-# Install production deps (resolves workspace:* from source)
-RUN corepack enable && pnpm install --prod --frozen-lockfile --ignore-scripts && rm -rf /root/.npm /root/.node-gyp /tmp/*
+# Copy node_modules preserving symlinks (workspace links)
+RUN cp -a /tmp/node_modules ./node_modules 2>/dev/null || true
+
+# Alternative: copy from deps stage preserving symlinks
+COPY --from=deps --chown=appuser:appgroup /app/node_modules ./node_modules
 
 # Non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
