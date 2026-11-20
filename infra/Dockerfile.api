@@ -56,12 +56,7 @@ COPY --from=build /app/packages/contracts/dist ./packages/contracts/dist
 # Copy node_modules from deps stage (all npm dependencies)
 COPY --from=deps /app/node_modules ./node_modules
 
-# Create workspace packages in node_modules (pnpm v10 doesn't create symlinks)
-RUN mkdir -p node_modules/@photo-portfolio/db/dist node_modules/@photo-portfolio/contracts/dist && \
-    cp packages/db/package.json node_modules/@photo-portfolio/db/package.json && \
-    cp -r packages/db/dist/* node_modules/@photo-portfolio/db/dist/ && \
-    cp packages/contracts/package.json node_modules/@photo-portfolio/contracts/package.json && \
-    cp -r packages/contracts/dist/* node_modules/@photo-portfolio/contracts/dist/
+# node_modules already has workspace symlinks thanks to shamefully-hoist
 
 # Non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
