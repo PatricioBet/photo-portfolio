@@ -125,6 +125,7 @@ services:
     container_name: photo-web
     environment:
       NODE_ENV: ${NODE_ENV:-development}
+      HOST: 0.0.0.0
       PORT: 4321
       API_URL: ${API_URL:-http://api:3000}
       WEB_URL: ${WEB_URL:-http://localhost:4321}
