@@ -1,16 +1,112 @@
 ---
 /**
- * Home EN — Redirects to /en/
+ * Home EN — English homepage.
  */
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EmptyState from "@components/EmptyState.astro";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Patricio Betancourt",
+  url: "https://photo.patriciobet.dev",
+  description: "Personal archive of photographs and videos by Patricio Betancourt.",
+  inLanguage: ["en", "es"],
+  publisher: {
+    "@type": "Person",
+    name: "Patricio Betancourt",
+  },
+};
 ---
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0;url=/en/" />
-    <title>Redirecting...</title>
-  </head>
-  <body>
-    <p>Redirecting to <a href="/en/">/en/</a>...</p>
-  </body>
-</html>
+
+<BaseLayout
+  title="Patricio Betancourt — Photography and video"
+  description="Personal archive of photographs and videos by Patricio Betancourt."
+  locale="en"
+  path="/"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section style={{ paddingBlock: "clamp(4rem, 12vh, 8rem)", textAlign: "center" }}>
+    <div class="container">
+      <h1 style={{ marginBottom: "0.5rem" }}>Patricio Betancourt</h1>
+      <p style={{ fontSize: "clamp(1.25rem, 3vw, 2rem)", color: "var(--text-muted)", fontFamily: "var(--font-display)", marginBottom: "2rem" }}>
+        Photography and video
+      </p>
+      <p style={{ fontSize: "var(--text-lg)", color: "var(--text-muted)", maxWidth: "48ch", marginInline: "auto", marginBottom: "2.5rem", fontStyle: "italic" }}>
+        A personal archive of images and motion.
+      </p>
+      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+        <a href="/photos" class="btn btn-primary">View photos</a>
+        <a href="/videos" class="btn btn-secondary">View videos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured (empty state) -->
+  <section class="section" style={{ borderTop: "1px solid var(--border)" }}>
+    <div class="container">
+      <h2 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "var(--text-2xl)" }}>
+        Selected work
+      </h2>
+      <EmptyState
+        locale="en"
+        title="THE ARCHIVE IS BEING PREPARED"
+        text="Photographs and videos will arrive soon.\nIn the meantime, you can explore my development work."
+        actions={[
+          { label: "About", href: "/about" },
+          { label: "Contact", href: "/contact" },
+          { label: "Development", href: "https://patriciobet.dev" },
+        ]}
+      />
+    </div>
+  </section>
+
+  <!-- Collections preview (empty state) -->
+  <section class="section" style={{ borderTop: "1px solid var(--border)" }}>
+    <div class="container">
+      <h2 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "var(--text-2xl)" }}>
+        Collections
+      </h2>
+      <EmptyState
+        locale="en"
+        title="COLLECTIONS ARE BEING ORGANIZED"
+        text="In the meantime, you can view all photos and videos."
+        actions={[
+          { label: "View all photos", href: "/photos" },
+          { label: "View all videos", href: "/videos" },
+        ]}
+      />
+    </div>
+  </section>
+
+  <!-- About preview -->
+  <section class="section" style={{ borderTop: "1px solid var(--border)" }}>
+    <div class="container" style={{ textAlign: "center", maxWidth: "48ch", marginInline: "auto" }}>
+      <h2 style={{ marginBottom: "1rem", fontSize: "var(--text-2xl)" }}>
+        About
+      </h2>
+      <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+        I'm Patricio Betancourt. I work in software development and data science, and photography is the other way I look: composition, light and time.
+      </p>
+      <a href="/about" class="btn btn-secondary">
+        Read more
+      </a>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="section" style={{ borderTop: "1px solid var(--border)" }}>
+    <div class="container" style={{ textAlign: "center", maxWidth: "48ch", marginInline: "auto" }}>
+      <h2 style={{ marginBottom: "1rem", fontSize: "var(--text-2xl)" }}>
+        Let's work together
+      </h2>
+      <p style={{ color: "var(--text-muted)", marginBottom: "1.5rem" }}>
+        Do you have a project or a question? Write to me.
+      </p>
+      <a href="/contact" class="btn btn-primary">
+        Contact
+      </a>
+    </div>
+  </section>
+</BaseLayout>
