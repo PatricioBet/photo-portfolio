@@ -6,7 +6,6 @@ import {
   MediaUploadStatus,
   MediaCreatePayload,
   MediaUpdatePayload,
-  ApiError,
 } from "../types";
 import * as api from "../api/client";
 
@@ -93,7 +92,7 @@ export function useMediaDetail(id: string) {
         setItem(updated);
         return { success: true };
       } catch (e) {
-        if (e instanceof ApiError && e.code === "CONFLICT") {
+        if (e instanceof Error && e.message.includes("CONFLICT")) {
           return { success: false, reason: "conflict" as const };
         }
         if (e instanceof Error) return { success: false, reason: e.message };

@@ -7,7 +7,7 @@ export default function AuditLog() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<AuditFilters>({});
-  const [page, setPage] = useState(1);
+  const [page, _setPage] = useState(1);
 
   const fetch = useCallback(async () => {
     setLoading(true);

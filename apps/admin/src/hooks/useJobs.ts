@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Job, Build, Release, ApiError } from "../types";
+import { Job, Build, Release } from "../types";
 import * as api from "../api/client";
 
 export function useJobs() {
@@ -72,7 +72,7 @@ export function useBuilds() {
       setBuilds((prev) => [newBuild, ...prev]);
       return { success: true };
     } catch (e) {
-      if (e instanceof ApiError) return { success: false, error: e.message };
+      if (e instanceof Error) return { success: false, error: e.message };
       return { success: false, error: "Error desconocido" };
     } finally {
       setTriggering(false);

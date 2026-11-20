@@ -1,6 +1,5 @@
 import { useState, useCallback, useRef } from "react";
 import { useMediaUpload } from "../hooks/useMedia";
-import { MediaUploadStatus } from "../types";
 
 const ACCEPTED_TYPES = {
   "image/jpeg": true,
@@ -65,19 +64,6 @@ export default function MediaUpload() {
     []
   );
 
-  const handlePaste = useCallback((e: ClipboardEvent) => {
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    const files: File[] = [];
-    for (const item of Array.from(items)) {
-      if (item.kind === "file") {
-        const file = item.getAsFile();
-        if (file) files.push(file);
-      }
-    }
-    if (files.length > 0) validateAndAdd(files);
-  }, []);
-
   const validateAndAdd = (files: File[]) => {
     const valid = files.filter((file) => {
       const isImage = file.type.startsWith("image/");
@@ -106,7 +92,7 @@ export default function MediaUpload() {
     (u) => u.status === "selected"
   ).length;
   const readyCount = uploads.filter((u) => u.status === "ready").length;
-  const failedCount = uploads.filter((u) => u.status === "failed").length;
+  const _failedCount = uploads.filter((u) => u.status === "failed").length;
 
   return (
     <div className="media-upload">

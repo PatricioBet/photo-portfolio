@@ -30,7 +30,7 @@ export default function SecuritySettings() {
     }
   }, []);
 
-  useCallback(() => {
+  useEffect(() => {
     fetch();
   }, [fetch]);
 

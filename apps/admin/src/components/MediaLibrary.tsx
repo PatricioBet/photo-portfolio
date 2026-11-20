@@ -58,7 +58,7 @@ export default function MediaLibrary() {
     });
   };
 
-  const toggleSelectAll = () => {
+  const _toggleSelectAll = () => {
     if (selected.size === items.length) setSelected(new Set());
     else setSelected(new Set(items.map((i) => i.id)));
   };
@@ -118,9 +118,10 @@ export default function MediaLibrary() {
               className="form-select"
               value={statusFilter}
               onChange={(e) => {
-                setStatusFilter(e.target.value as MediaStatus);
+                const value = e.target.value as MediaStatus | "";
+                setStatusFilter(value);
                 applyFilters({
-                  status: e.target.value || undefined,
+                  status: value || undefined,
                 });
               }}
               aria-label="Filtrar por estado"

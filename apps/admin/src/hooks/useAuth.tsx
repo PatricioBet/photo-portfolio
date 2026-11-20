@@ -6,7 +6,7 @@ import {
   useCallback,
   ReactNode,
 } from "react";
-import { AuthSession, ApiError } from "../types";
+import { AuthSession } from "../types";
 
 interface AuthContextValue {
   session: AuthSession | null;
@@ -102,8 +102,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext value={{ session, loading, error, login, logout }}>
+    <AuthContext.Provider value={{ session, loading, error, login, logout }}>
       {children}
-    </AuthContext>
+    </AuthContext.Provider>
   );
 }

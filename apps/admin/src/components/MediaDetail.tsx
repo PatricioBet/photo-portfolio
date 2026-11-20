@@ -100,9 +100,9 @@ export default function MediaDetail() {
     }
   };
 
-  const updateField = <K extends keyof MediaMetadata>(
+  const updateField = <K extends string>(
     field: K,
-    value: MediaMetadata[K]
+    value: boolean | string | string[] | number | null
   ) => {
     setMetadata((prev) => ({ ...prev, [field]: value }));
   };
@@ -469,7 +469,7 @@ export default function MediaDetail() {
               <label className="form-group checkbox-group">
                 <input
                   type="checkbox"
-                  checked={metadata.isDemo || false}
+                  checked={item?.isDemo || false}
                   onChange={(e) => updateField("isDemo", e.target.checked)}
                 />
                 <span>Contenido demo</span>

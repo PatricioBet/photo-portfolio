@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useJobs, useBuilds } from "../hooks/useJobs";
-import { DashboardStats, BackupStatus } from "../types";
+import { DashboardStats } from "../types";
 import * as api from "../api/client";
 
 export default function Dashboard() {
@@ -72,7 +72,6 @@ export default function Dashboard() {
       published: "success",
       building: "accent",
       ok: "success",
-      failed: "danger",
       pending: "warning",
     };
     return (

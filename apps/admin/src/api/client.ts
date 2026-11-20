@@ -37,8 +37,15 @@ async function fetchJson<T>(
 
   const headers: Record<string, string> = {
     Accept: "application/json",
-    ...options.headers,
   };
+
+  // Merge headers from options
+  if (options.headers) {
+    if (typeof options.headers === "object" && !Array.isArray(options.headers)) {
+      const h = options.headers as Record<string, string>;
+      Object.assign(headers, h);
+    }
+  }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -115,7 +122,7 @@ export async function purgeMedia(id: string): Promise<void> {
 
 export async function bulkUpdateMedia(
   ids: string[],
-  updates: Partial<Pick<MediaMetadata, "collectionId" | "tags" | "license">>
+  updates: Record<string, unknown>
 ): Promise<void> {
   await fetchJson("/api/media/bulk", {
     method: "PATCH",
