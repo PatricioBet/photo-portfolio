@@ -50,4 +50,16 @@ export default defineConfig({
       },
     ],
   },
+  vite: {
+    optimizeDeps: {
+      esbuildOptions: {
+        target: "es2022",
+      },
+    },
+    build: {
+      rollupOptions: {
+        external: ["astro"],
+      },
+    },
+  },
 });
