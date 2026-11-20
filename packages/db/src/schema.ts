@@ -83,6 +83,7 @@ export const collection = pgTable("collection", {
   titleEn: text("title_en").notNull(),
   descriptionEs: text("description_es").notNull(),
   descriptionEn: text("description_en").notNull(),
+  // @ts-expect-error Callback function implicitly has return type any
   coverId: uuid("cover_id").references(() => media.id),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -103,6 +104,7 @@ export const media = pgTable("media", {
   titleEn: text("title_en").notNull(),
   descriptionEs: text("description_es").notNull(),
   descriptionEn: text("description_en").notNull(),
+  // @ts-expect-error Callback function implicitly has return type any
   collectionId: uuid("collection_id").references(() => collection.id),
   focalPointX: real("focal_point_x"),
   focalPointY: real("focal_point_y"),
