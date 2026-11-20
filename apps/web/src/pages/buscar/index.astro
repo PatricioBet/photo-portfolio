@@ -3,7 +3,7 @@
  * Search page — Client-side search with Pagefind. noindex.
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
-import Search from "@components/Search.astro";
+import Search from "@components/Search";
 import type { Locale } from "@i18n/translations";
 
 export function getStaticPaths() {
@@ -63,7 +63,7 @@ const jsonLd = {
         : "Search by title, description, collection or tag."}
     </p>
 
-    <Search locale={locale} />
+    <Search locale={locale} client:load />
   </div>
 
   <!-- Pagefind script (loaded for client-side search) -->

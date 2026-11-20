@@ -3,7 +3,7 @@
  * Search EN — /en/search/
  */
 import BaseLayout from "@layouts/BaseLayout.astro";
-import Search from "@components/Search.astro";
+import Search from "@components/Search";
 
 const locale: "en" = "en";
 
@@ -43,7 +43,7 @@ const jsonLd = {
       Search by title, description, collection or tag.
     </p>
 
-    <Search locale={locale} />
+    <Search locale={locale} client:load />
   </div>
 
   <script src="/pagefind/pagefind-ui.js" defer />
