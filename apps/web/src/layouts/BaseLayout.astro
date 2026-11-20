@@ -57,9 +57,8 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : undefined;
 const ogImage = image || `${site}/og-default.png`;
 
 // Read CSS files for inline injection (SSR-compatible)
-// import.meta.dirname resolves to dist/server/chunks/ in the compiled bundle
-// ../../../src/styles relative to that = /app/src/styles/ in the container
-const stylesDir = path.resolve(import.meta.dirname, "../../../src/styles");
+// process.cwd() = /app in the Docker container (WORKDIR)
+const stylesDir = path.resolve(process.cwd(), "src/styles");
 let tokensCSS = "";
 let globalCSS = "";
 try {
