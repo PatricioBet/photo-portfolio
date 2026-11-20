@@ -28,6 +28,7 @@ FROM node:22-alpine AS production
 WORKDIR /app
 
 COPY --from=build /app/apps/web/dist ./dist
+COPY --from=build /app/apps/web/src/styles ./src/styles
 COPY --from=build /app/apps/web/package.json ./
 COPY --from=build /app/packages/ui/package.json ./packages/ui/
 COPY --from=build /app/packages/contracts/package.json ./packages/contracts/
