@@ -125,6 +125,7 @@ services:
     container_name: photo-web
     environment:
       NODE_ENV: ${NODE_ENV:-development}
+      PORT: 4321
       API_URL: ${API_URL:-http://api:3000}
       WEB_URL: ${WEB_URL:-http://localhost:4321}
     depends_on:
@@ -133,7 +134,7 @@ services:
     ports:
       - "127.0.0.1:4321:4321"
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4321/health || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4321/ || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 5
