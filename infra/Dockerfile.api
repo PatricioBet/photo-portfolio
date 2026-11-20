@@ -37,8 +37,7 @@ COPY apps/api/ ./apps/api/
 COPY packages/db/ ./packages/db/
 COPY packages/contracts/ ./packages/contracts/
 COPY tsconfig.base.json ./
-COPY packages/db/dist ./packages/db/dist
-RUN corepack enable && pnpm --filter api build
+RUN corepack enable && pnpm --filter @photo-portfolio/db build && pnpm --filter api build
 
 # ── Production ────────────────────────────────────────────────
 FROM node:22-alpine AS production
