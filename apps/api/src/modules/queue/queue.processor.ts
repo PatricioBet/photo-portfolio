@@ -1,5 +1,5 @@
-import { Process, Processor } from "@nestjs/bull";
-import { Job } from "bull";
+import { Process, Processor } from "@nestjs/bullmq";
+import { Job } from "bullmq";
 import { createDbClient, schema } from "@photo-portfolio/db";
 import { eq } from "drizzle-orm";
 
@@ -13,7 +13,6 @@ export class QueueProcessor {
   @Process("process-photo")
   async processPhoto(job: Job) {
     const { mediaId, filePath } = job.data;
-    job.updateProgress(10);
 
     // In production: use Sharp to process image
     // 1. Validate format (reject polyglots)
@@ -21,8 +20,6 @@ export class QueueProcessor {
     // 3. Generate variants: AVIF, WebP, JPEG at multiple sizes
     // 4. Save variants to local storage
     // 5. Store variants in DB
-
-    job.updateProgress(100);
 
     await this.db
       .update(schema.media)
@@ -33,7 +30,6 @@ export class QueueProcessor {
   @Process("process-video")
   async processVideo(job: Job) {
     const { mediaId, filePath } = job.data;
-    job.updateProgress(10);
 
     // In production: use FFmpeg to process video
     // 1. Validate with ffprobe (no network access)
@@ -41,8 +37,6 @@ export class QueueProcessor {
     // 3. Generate poster image
     // 4. Generate HLS if > 3 minutes
     // 5. Save to local storage
-
-    job.updateProgress(100);
 
     await this.db
       .update(schema.media)
@@ -53,6 +47,5 @@ export class QueueProcessor {
   @Process("generate-sitemap")
   async generateSitemap(job: Job) {
     // Regenerate sitemap.xml from published media
-    job.updateProgress(100);
   }
 }

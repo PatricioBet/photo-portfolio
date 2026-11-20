@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { InjectQueue } from "@nestjs/bull";
-import { Queue } from "bull";
+import { InjectQueue } from "@nestjs/bullmq";
+import { Queue } from "bullmq";
 
 @Injectable()
 export class QueueService {
@@ -23,14 +23,17 @@ export class QueueService {
     }
 
     const state = await job.getState();
-    const progress = job.progress() as number ?? 0;
+    const progress = job.progress ?? 0;
     const failedReason = job.failedReason;
 
-    return { id: job.id!, state, progress, failedReason };
+    return { id: String(job.id), state, progress, failedReason };
   }
 
   async getQueueLength(queueName: "media-processing" | "default"): Promise<number> {
     const queue = queueName === "media-processing" ? this.mediaQueue : this.defaultQueue;
-    return queue.getLength();
+    const active = await queue.getActiveCount();
+    const waiting = await queue.getWaitingCount();
+    const delayed = await queue.getDelayedCount();
+    return active + waiting + delayed;
   }
 }

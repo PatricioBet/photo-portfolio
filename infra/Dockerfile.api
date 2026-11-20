@@ -55,6 +55,7 @@ COPY packages/db/package.json ./packages/db/
 COPY packages/contracts/package.json ./packages/contracts/
 
 COPY --from=build /app/apps/api/dist ./dist
+COPY --from=build /app/packages/db/dist ./packages/db/dist
 
 # Install production deps only
 RUN corepack enable && \

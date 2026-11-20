@@ -1,16 +1,17 @@
 import { Injectable } from "@nestjs/common";
-import { BullQueue } from "@nestjs/bull";
+import { InjectQueue } from "@nestjs/bullmq";
+import { Queue } from "bullmq";
 
 @Injectable()
 export class MediaService {
-  constructor(private readonly queue: BullQueue) {}
+  constructor(@InjectQueue("media-processing") private readonly queue: Queue) {}
 
   async enqueuePhotoProcessing(mediaId: string, filePath: string): Promise<string> {
     const job = await this.queue.add("process-photo", { mediaId, filePath }, {
       attempts: 3,
       backoff: { type: "exponential", delay: 2000 },
     });
-    return job.id;
+    return String(job.id);
   }
 
   async enqueueVideoProcessing(mediaId: string, filePath: string): Promise<string> {
@@ -18,7 +19,7 @@ export class MediaService {
       attempts: 3,
       backoff: { type: "exponential", delay: 5000 },
     });
-    return job.id;
+    return String(job.id);
   }
 
   async enqueueSitemapGeneration(): Promise<string> {
@@ -26,6 +27,6 @@ export class MediaService {
       attempts: 2,
       backoff: { type: "fixed", delay: 3000 },
     });
-    return job.id;
+    return String(job.id);
   }
 }
