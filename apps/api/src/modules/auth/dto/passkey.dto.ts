@@ -11,17 +11,8 @@ export class CompletePasskeyDto {
   @IsNotEmpty()
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  credentialId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  attestationObject: string;
-
-  @IsString()
   @IsOptional()
-  clientExtensionResults?: string;
+  response?: any;
 }
 
 export class SignPasskeyDto {

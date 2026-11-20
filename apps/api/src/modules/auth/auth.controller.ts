@@ -40,12 +40,7 @@ export class AuthController {
     @Body() dto: CompletePasskeyDto,
     @Headers("x-access-token") accessToken?: string
   ): Promise<{ message: string }> {
-    return this.authService.completePasskeyRegistration(
-      dto.email,
-      dto.credentialId,
-      dto.attestationObject,
-      dto.clientExtensionResults
-    );
+    return this.authService.completePasskeyRegistration(dto.email, dto.response);
   }
 
   @Post("passkey/sign")

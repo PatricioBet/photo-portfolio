@@ -8,6 +8,7 @@ import {
 import type {
   VerifiedRegistrationResponse,
   VerifiedAuthenticationResponse,
+  WebAuthnCredential,
 } from "@simplewebauthn/server";
 import { createDbClient, schema } from "../../db/client";
 import { eq } from "drizzle-orm";
@@ -48,9 +49,9 @@ export class AuthService {
     }
 
     const options = await generateRegistrationOptions({
-      rpId: RP_ID,
+      rpID: RP_ID,
       rpName: "Photo Portfolio",
-      userId: Buffer.from(user[0].id, "hex"),
+      userID: Buffer.from(user[0].id, "hex"),
       userName: email,
       userDisplayName: email,
       timeout: 60000,
@@ -73,9 +74,7 @@ export class AuthService {
 
   async completePasskeyRegistration(
     email: string,
-    credentialId: string,
-    attestationObject: string,
-    clientExtensionResults: string
+    response: any
   ): Promise<{ message: string }> {
     const user = await this.db
       .select()
@@ -89,12 +88,7 @@ export class AuthService {
 
     const verification: VerifiedRegistrationResponse =
       await verifyRegistrationResponse({
-        response: {
-          id: credentialId,
-          rawId: credentialId,
-          response: { attestationObject: attestationObject },
-          clientExtensionResults: JSON.parse(clientExtensionResults || "{}"),
-        },
+        response,
         expectedChallenge: "",
         expectedOrigin: ORIGIN,
         expectedRPID: RP_ID,
@@ -105,13 +99,14 @@ export class AuthService {
     }
 
     const regInfo = verification.registrationInfo;
+    const credential = regInfo?.credential;
 
     await this.db
       .update(schema.user)
       .set({
-        passkeyHandle: credentialId,
-        passkeyPublicKey: verification.base64PublicKey,
-        passkeyCounter: regInfo?.counter ?? 0,
+        passkeyHandle: credential?.id ?? "",
+        passkeyPublicKey: Buffer.from(credential?.publicKey ?? new Uint8Array()).toString("base64"),
+        passkeyCounter: regInfo?.credential?.counter ?? 0,
         updatedAt: new Date(),
       })
       .where(eq(schema.user.email, email));
@@ -150,16 +145,19 @@ export class AuthService {
       throw new UnauthorizedException("User not found or no passkey registered");
     }
 
+    const credential: WebAuthnCredential = {
+      id: user[0].passkeyHandle,
+      publicKey: Buffer.from(user[0].passkeyPublicKey || "", "base64"),
+      counter: user[0].passkeyCounter ?? 0,
+    };
+
     const verification: VerifiedAuthenticationResponse =
       await verifyAuthenticationResponse({
         response,
         expectedChallenge: "",
         expectedOrigin: ORIGIN,
         expectedRPID: RP_ID,
-        advancedFIDOConfig: {
-          credentialID: user[0].passkeyHandle,
-          credentialCounter: user[0].passkeyCounter ?? 0,
-        },
+        credential,
       });
 
     if (!verification.verified) {
