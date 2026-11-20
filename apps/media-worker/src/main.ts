@@ -48,8 +48,8 @@ async function main() {
   );
 
   // Health check server
-  const healthServer = createHealthServer()
-  await healthServer.start()
+  const healthServer = await createHealthServer();
+  await healthServer.start();
 
   // Event listeners
   for (const worker of [photoWorker, videoWorker]) {

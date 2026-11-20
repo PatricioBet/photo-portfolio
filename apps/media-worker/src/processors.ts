@@ -77,8 +77,6 @@ export async function processVideoJob(job: Job<VideoJobData>): Promise<void> {
   try {
     // Read original from local storage
     const input = downloadFile(filePath)
-    const inputPath = join('/tmp', `input-${id}.mp4`)
-    uploadFile(filePath, input) // ensure it's in storage path
 
     // Validate with ffprobe
     const videoInfo: VideoInfo = await validateVideo(filePath)

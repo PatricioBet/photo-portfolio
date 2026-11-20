@@ -1,7 +1,9 @@
 import { Worker } from "bullmq";
 import { createQueue } from "./queue.js";
 import { processPhotoJob, processVideoJob } from "./processors.js";
-import { logger } from "./logger.js";
+import { createLogger } from "./logger.js";
+
+const logger = createLogger("media-worker");
 
 export async function startWorkers() {
   const photoQueue = createQueue("media-processing");

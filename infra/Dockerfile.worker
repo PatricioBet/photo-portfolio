@@ -34,7 +34,7 @@ COPY --from=deps /app/packages/db/node_modules ./packages/db/node_modules
 COPY apps/media-worker/ ./apps/media-worker/
 COPY packages/db/ ./packages/db/
 COPY tsconfig.base.json ./
-RUN corepack enable && pnpm --filter media-worker build
+RUN corepack enable && pnpm --filter @photo-portfolio/db build && pnpm --filter media-worker build
 
 # ── Production ────────────────────────────────────────────────
 FROM node:22-alpine AS production

@@ -167,7 +167,7 @@ export interface PosterResult {
 export async function generatePosters(
   inputPath: string,
   outputDir: string,
-  duration: number
+  _duration: number
 ): Promise<PosterResult[]> {
   const { execFile } = await import('child_process')
   const { promisify } = await import('util')

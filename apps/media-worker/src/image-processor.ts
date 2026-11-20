@@ -120,18 +120,15 @@ export async function processPhoto(input: Buffer, originalKey: string): Promise<
     .toBuffer()
 
   // Extract dominant color
-  const { data, info } = await pipeline.clone()
+  const result = await pipeline.clone()
     .resize(1, 1)
     .raw()
-    .toBuffer({ resolveWithObject: true })
+    .toBuffer({ resolveWithObject: true });
 
-  const dominantColor = info.channels === 3
-    ? `#${data[0].toString(16).padStart(2, '0')}${data[1].toString(16).padStart(2, '0')}${data[2].toString(16).padStart(2, '0')}`
-    : '#000000'
-
-  // Extract EXIF data for DB (before stripping)
-  const exifPipeline = sharp(input)
-  const exifData = await exifPipeline.exif()
+  const dominantColor =
+    result.info.channels === 3 && result.data.length >= 3
+      ? `#${result.data[0].toString(16).padStart(2, '0')}${result.data[1].toString(16).padStart(2, '0')}${result.data[2].toString(16).padStart(2, '0')}`
+      : '#000000';
 
   logger.info(`Photo processed: ${originalKey}, variants: ${originals.length}`)
 
@@ -150,8 +147,7 @@ export async function processPhoto(input: Buffer, originalKey: string): Promise<
 // ── Generate AVIF with budget enforcement ─────────────────────
 async function generateAvif(
   pipeline: sharp.Sharp,
-  size: number,
-  originalMetadata: sharp.Metadata
+  size: number
 ): Promise<Buffer> {
   let quality = FORMAT_CONFIG.avif.quality
   const budget = AVIF_BUDGETS[size] || 40
