@@ -92,8 +92,8 @@ async function fetchJson<T>(
     } catch {
       error = { message: response.statusText };
     }
-    const err = error as ApiError;
-    const httpError = new Error(err.message || "Request failed") as ApiError;
+    const err = error as unknown as ApiError;
+    const httpError = new Error(err.message || "Request failed") as unknown as ApiError;
     httpError.code = (error.code as string) || "UNKNOWN";
     httpError.traceId = (error.traceId as string) || "";
     httpError.status = response.status;

@@ -136,7 +136,7 @@ export default function MediaDetail() {
         >
           ← Medios
         </button>
-        <h1>{item.metadata.es.title || item.originalFilename}</h1>
+        <h1>{(item.metadata as { es?: { title?: string } })?.es?.title || item.originalFilename}</h1>
         <div className="detail-actions">
           <button
             className="btn btn-secondary"
