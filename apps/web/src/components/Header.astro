@@ -13,32 +13,23 @@ export interface Props {
 
 const { locale, currentPage, currentPath } = Astro.props;
 
+const isEn = locale === "en";
+
 const navLinks = [
-  { labelKey: "nav.photos", href: locale === "en" ? "/en/photos" : "/fotos", page: "photos" },
-  { labelKey: "nav.videos", href: locale === "en" ? "/en/videos" : "/videos", page: "videos" },
-  { labelKey: "nav.collections", href: locale === "en" ? "/en/collections" : "/colecciones", page: "collections" },
-  { labelKey: "nav.about", href: locale === "en" ? "/en/about" : "/sobre-mi", page: "about" },
-  { labelKey: "nav.contact", href: locale === "en" ? "/en/contact" : "/contacto", page: "contact" },
+  { label: isEn ? "Photos" : "Fotos", href: isEn ? "/en/photos" : "/fotos", page: "photos" },
+  { label: isEn ? "Videos" : "Videos", href: isEn ? "/en/videos" : "/videos", page: "videos" },
+  { label: isEn ? "Collections" : "Colecciones", href: isEn ? "/en/collections" : "/colecciones", page: "collections" },
+  { label: isEn ? "About" : "Sobre mí", href: isEn ? "/en/about" : "/sobre-mi", page: "about" },
+  { label: isEn ? "Contact" : "Contacto", href: isEn ? "/en/contact" : "/contacto", page: "contact" },
 ];
 
-function getLabel(key: string): string {
-  const map: Record<string, Record<string, string>> = {
-    "nav.photos": { es: "Fotos", en: "Photos" },
-    "nav.videos": { es: "Videos", en: "Videos" },
-    "nav.collections": { es: "Colecciones", en: "Collections" },
-    "nav.about": { es: "Sobre mí", en: "About" },
-    "nav.contact": { es: "Contacto", en: "Contact" },
-  };
-  return map[key]?.[locale] || key;
-}
-
 function getLanguageLabel(): string {
-  return locale === "en" ? "Español" : "English";
+  return isEn ? "Español" : "English";
 }
 
 function getLanguageHref(): string {
   const stripLocale = currentPath.replace(/^\/en(\/|$)/, "/");
-  return locale === "en" ? `/${stripLocale}` : `/en${stripLocale}`;
+  return isEn ? `/${stripLocale}` : `/en${stripLocale}`;
 }
 
 function isActive(page: string): boolean {
@@ -49,7 +40,7 @@ function isActive(page: string): boolean {
 
 <header class="no-print" style={{ position: "sticky", top: 0, zIndex: 100, backgroundColor: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
   <div class="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "var(--header-height)", gap: "var(--space-4)" }}>
-    <a href={locale === "en" ? "/en/" : "/"} aria-label="Patricio Betancourt, inicio" style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--text)", textDecoration: "none" }}>
+    <a href={isEn ? "/en/" : "/"} aria-label="Patricio Betancourt, inicio" style={{ fontFamily: "var(--font-display)", fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--text)", textDecoration: "none" }}>
       PB
     </a>
 
@@ -72,7 +63,7 @@ function isActive(page: string): boolean {
               onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}
               onMouseLeave={(e) => (e.currentTarget.style.color = isActive(link.page) ? "var(--accent-text)" : "var(--text-muted)")}
             >
-              {getLabel(link.labelKey)}
+              {link.label}
             </a>
           </li>
         ))}
@@ -86,7 +77,7 @@ function isActive(page: string): boolean {
         style={{ fontSize: "var(--text-sm)", minWidth: "2.75rem", minHeight: "2.75rem" }}
         aria-label={getLanguageLabel()}
       >
-        {locale === "en" ? "ES" : "EN"}
+        {isEn ? "ES" : "EN"}
       </a>
 
       <!-- Mobile menu button -->
@@ -121,7 +112,7 @@ function isActive(page: string): boolean {
               }}
               aria-current={isActive(link.page) ? "page" : undefined}
             >
-              {getLabel(link.labelKey)}
+              {link.label}
             </a>
           </li>
         ))}
@@ -130,7 +121,7 @@ function isActive(page: string): boolean {
             href={getLanguageHref()}
             style={{ display: "block", padding: "var(--space-3) var(--space-4)", color: "var(--accent-text)", textDecoration: "none" }}
           >
-            {locale === "en" ? "Español" : "English"}
+            {isEn ? "Español" : "English"}
           </a>
         </li>
       </ul>

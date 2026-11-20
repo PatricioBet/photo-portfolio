@@ -11,50 +11,35 @@ export interface Props {
 
 const { locale, currentPath } = Astro.props;
 
+const isEn = locale === "en";
+
 const mainLinks = [
-  { key: "nav.photos", href: locale === "en" ? "/en/photos" : "/fotos" },
-  { key: "nav.videos", href: locale === "en" ? "/en/videos" : "/videos" },
-  { key: "nav.collections", href: locale === "en" ? "/en/collections" : "/colecciones" },
-  { key: "nav.about", href: locale === "en" ? "/en/about" : "/sobre-mi" },
-  { key: "nav.contact", href: locale === "en" ? "/en/contact" : "/contacto" },
+  { label: isEn ? "Photos" : "Fotos", href: isEn ? "/en/photos" : "/fotos" },
+  { label: isEn ? "Videos" : "Videos", href: isEn ? "/en/videos" : "/videos" },
+  { label: isEn ? "Collections" : "Colecciones", href: isEn ? "/en/collections" : "/colecciones" },
+  { label: isEn ? "About" : "Sobre mí", href: isEn ? "/en/about" : "/sobre-mi" },
+  { label: isEn ? "Contact" : "Contacto", href: isEn ? "/en/contact" : "/contacto" },
 ];
 
 const legalLinks = [
-  { key: "footer.privacy", href: locale === "en" ? "/en/privacy" : "/privacidad" },
-  { key: "footer.terms", href: locale === "en" ? "/en/terms" : "/terminos" },
-  { key: "footer.accessibility", href: locale === "en" ? "/en/accessibility" : "/accesibilidad" },
-  { key: "footer.credits", href: locale === "en" ? "/en/credits" : "/creditos" },
+  { label: isEn ? "Privacy" : "Privacidad", href: isEn ? "/en/privacy" : "/privacidad" },
+  { label: isEn ? "Terms" : "Términos", href: isEn ? "/en/terms" : "/terminos" },
+  { label: isEn ? "Accessibility" : "Accesibilidad", href: isEn ? "/en/accessibility" : "/accesibilidad" },
+  { label: isEn ? "Credits" : "Créditos", href: isEn ? "/en/credits" : "/creditos" },
 ];
 
-function getLabel(key: string): string {
-  const map: Record<string, Record<string, string>> = {
-    "nav.photos": { es: "Fotos", en: "Photos" },
-    "nav.videos": { es: "Videos", en: "Videos" },
-    "nav.collections": { es: "Colecciones", en: "Collections" },
-    "nav.about": { es: "Sobre mí", en: "About" },
-    "nav.contact": { es: "Contacto", en: "Contact" },
-    "footer.privacy": { es: "Privacidad", en: "Privacy" },
-    "footer.terms": { es: "Términos", en: "Terms" },
-    "footer.accessibility": { es: "Accesibilidad", en: "Accessibility" },
-    "footer.credits": { es: "Créditos", en: "Credits" },
-    "footer.rss": { es: "RSS", en: "RSS" },
-    "footer.development": { es: "Desarrollo", en: "Development" },
-    "footer.copyright": {
-      es: "© Patricio Betancourt. Todos los derechos reservados.",
-      en: "© Patricio Betancourt. All rights reserved.",
-    },
-    "footer.selfhosted": { es: "Sitio autoalojado", en: "Self-hosted site" },
-  };
-  return map[key]?.[locale] || key;
-}
+const rssHref = isEn ? "/en/rss.xml" : "/rss.xml";
+const copyright = isEn
+  ? "© Patricio Betancourt. All rights reserved."
+  : "© Patricio Betancourt. Todos los derechos reservados.";
 
 function getLanguageHref(): string {
   const stripLocale = currentPath.replace(/^\/en(\/|$)/, "/");
-  return locale === "en" ? `/${stripLocale}` : `/en${stripLocale}`;
+  return isEn ? `/${stripLocale}` : `/en${stripLocale}`;
 }
 
 function getLanguageLabel(): string {
-  return locale === "en" ? "Español" : "English";
+  return isEn ? "Español" : "English";
 }
 ---
 
@@ -67,7 +52,7 @@ function getLanguageLabel(): string {
           <ul class="footer__links">
             {mainLinks.map((link) => (
               <li>
-                <a href={link.href}>{getLabel(link.key)}</a>
+                <a href={link.href}>{link.label}</a>
               </li>
             ))}
           </ul>
@@ -80,11 +65,11 @@ function getLanguageLabel(): string {
           <ul class="footer__links">
             {legalLinks.map((link) => (
               <li>
-                <a href={link.href}>{getLabel(link.key)}</a>
+                <a href={link.href}>{link.label}</a>
               </li>
             ))}
             <li>
-              <a href={locale === "en" ? "/en/rss.xml" : "/rss.xml"}>{getLabel("footer.rss")}</a>
+              <a href={rssHref}>RSS</a>
             </li>
           </ul>
         </nav>
@@ -118,14 +103,14 @@ function getLanguageLabel(): string {
             style={{ fontSize: "var(--text-sm)", padding: "0.4rem 0.75rem" }}
             aria-label={getLanguageLabel()}
           >
-            {locale === "en" ? "ES" : "EN"}
+            {isEn ? "ES" : "EN"}
           </a>
         </div>
       </div>
     </div>
 
     <div class="footer__bottom">
-      <p>{getLabel("footer.copyright")}</p>
+      <p>{copyright}</p>
     </div>
   </div>
 </footer>

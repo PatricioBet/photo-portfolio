@@ -128,7 +128,7 @@ const ogImage = image || `${site}/og-default.png`;
       <slot />
     </main>
 
-    <Footer locale={locale} />
+    <Footer locale={locale} currentPath={currentPage} />
 
     <!-- Theme script (runs before paint) -->
     <script is:inline>
