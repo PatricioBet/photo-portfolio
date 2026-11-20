@@ -2,8 +2,6 @@
 /**
  * BaseLayout — Shared layout with Header, Footer, SEO, and hreflang.
  */
-import fs from "node:fs";
-import path from "node:path";
 import type { Locale } from "@i18n/translations";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
@@ -56,16 +54,11 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : undefined;
 // OG Image
 const ogImage = image || `${site}/og-default.png`;
 
-// Read CSS files for inline injection (SSR-compatible)
-const stylesDir = path.resolve(import.meta.dirname, "../styles");
-let tokensCSS = "";
-let globalCSS = "";
-try {
-  tokensCSS = fs.readFileSync(path.join(stylesDir, "tokens.css"), "utf-8");
-  globalCSS = fs.readFileSync(path.join(stylesDir, "global.css"), "utf-8");
-} catch {
-  // Fallback: empty strings — CSS will be missing but page won't crash
-}
+// Load CSS for inline injection (SSR-compatible)
+const [tokensCSS, globalCSS] = await Promise.all([
+  Astro.glob("/src/styles/tokens.css", { plain: true }),
+  Astro.glob("/src/styles/global.css", { plain: true }),
+]);
 ---
 
 <!doctype html>
@@ -124,8 +117,8 @@ try {
     </noscript>
 
     <!-- Inline CSS for fast first paint -->
-    <style>{tokensCSS}</style>
-    <style>{globalCSS}</style>
+    <style>{tokensCSS[0] ?? ""}</style>
+    <style>{globalCSS[0] ?? ""}</style>
 
     <!-- JSON-LD -->
     {jsonLdString && <script type="application/ld+json">{jsonLdString}</script>}
