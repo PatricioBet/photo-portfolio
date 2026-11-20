@@ -40,9 +40,7 @@ photo.patriciobet.dev {
     header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' ${API_URL:-http://api:3000}; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
 
     # Gzip compression
-    encode gzip {
-        match mime text/html text/css application/javascript application/json image/svg+xml text/plain
-    }
+    encode gzip
 
     # Reverse proxy to Astro
     reverse_proxy web:4321 {
@@ -94,9 +92,7 @@ admin-photo.patriciobet.dev {
     header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ${API_URL:-http://api:3000}; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none';"
 
     # Gzip compression
-    encode gzip {
-        match mime text/html text/css application/javascript application/json image/svg+xml text/plain
-    }
+    encode gzip
 
     # Reverse proxy to admin
     reverse_proxy admin:3000 {

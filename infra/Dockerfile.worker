@@ -50,13 +50,12 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/media-worker/package.json ./apps/media-worker/
 COPY packages/db/package.json ./packages/db/
 
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/apps/media-worker/node_modules ./apps/media-worker/node_modules
+COPY --from=build /app/packages/db/node_modules ./packages/db/node_modules
+
 COPY --from=build /app/apps/media-worker/dist ./dist
 COPY --from=build /app/packages/db/dist ./packages/db/dist
-
-# Install production deps only
-RUN corepack enable && \
-    pnpm install --prod --frozen-lockfile --ignore-scripts && \
-    rm -rf /root/.npm /root/.node-gyp /tmp/*
 
 # Non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
