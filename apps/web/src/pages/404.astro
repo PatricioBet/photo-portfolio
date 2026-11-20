@@ -15,8 +15,6 @@ export function getStaticPaths() {
 const { locale } = Astro.props;
 const basePath = locale === "en" ? "/en" : "";
 
-Astro.response.setStatusAndMessage(404, "Not Found");
-
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebPage",

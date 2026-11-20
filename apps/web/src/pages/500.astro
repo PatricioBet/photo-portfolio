@@ -14,8 +14,6 @@ export function getStaticPaths() {
 
 const { locale } = Astro.props;
 
-Astro.response.setStatusAndMessage(500, "Internal Server Error");
-
 const traceId = crypto.randomUUID();
 
 const jsonLd = {
