@@ -13,6 +13,7 @@ export default defineConfig({
     en: "https://photo.patriciobet.dev/en",
   },
   trailingSlash: "ignore",
+  output: "server",
   adapter: node({
     mode: "standalone",
   }),
