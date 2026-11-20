@@ -42,13 +42,13 @@ RUN apk add --no-cache ffmpeg
 
 WORKDIR /app
 
-# Copy workspace structure
+# Copy workspace structure (package.json files for resolution)
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/db/package.json ./packages/db/
 COPY packages/contracts/package.json ./packages/contracts/
 
-# Copy source packages (needed for workspace links)
+# Copy source packages (workspace links point here)
 COPY packages/db/ ./packages/db/
 COPY packages/contracts/ ./packages/contracts/
 
@@ -57,11 +57,8 @@ COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/packages/db/dist ./packages/db/dist
 COPY --from=build /app/packages/contracts/dist ./packages/contracts/dist
 
-# Copy node_modules from deps stage
+# Copy node_modules from deps stage (includes all deps + workspace symlinks)
 COPY --from=deps /app/node_modules ./node_modules
-
-# Install production deps (recreates workspace symlinks from source)
-RUN corepack enable && pnpm install --prod --no-frozen-lockfile --ignore-scripts --yes
 
 # Non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
