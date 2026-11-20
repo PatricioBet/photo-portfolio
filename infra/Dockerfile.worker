@@ -21,7 +21,7 @@ WORKDIR /app
 # ── Dependencies ──────────────────────────────────────────────
 FROM base AS deps
 WORKDIR /app
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY apps/media-worker/package.json ./apps/media-worker/
 COPY packages/db/package.json ./packages/db/
 RUN corepack enable && pnpm install --frozen-lockfile --ignore-scripts
@@ -46,7 +46,7 @@ RUN apk add --no-cache build-base g++ make jpeg-dev libpng-dev vips-dev tiff-dev
 WORKDIR /app
 
 # Copy workspace root for pnpm to resolve workspace:* deps
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY apps/media-worker/package.json ./apps/media-worker/
 COPY packages/db/package.json ./packages/db/
 
