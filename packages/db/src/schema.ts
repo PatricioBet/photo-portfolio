@@ -75,6 +75,7 @@ export const session = pgTable(
   ]
 );
 
+// @ts-expect-error Circular reference between collection and media tables
 export const collection = pgTable("collection", {
   id: uuid("id").defaultRandom().primaryKey(),
   slug: text("slug").notNull().unique(),
@@ -86,12 +87,13 @@ export const collection = pgTable("collection", {
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}) satisfies Record<string, unknown>;
+}) as const;
 
 export const idxCollectionSort = index("idx_collection_sort").on(
   collection.sortOrder
 );
 
+// @ts-expect-error Circular reference between collection and media tables
 export const media = pgTable("media", {
   id: uuid("id").defaultRandom().primaryKey(),
   slug: text("slug").notNull().unique(),
@@ -115,7 +117,7 @@ export const media = pgTable("media", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   publishedAt: timestamp("published_at"),
   trashedAt: timestamp("trashed_at"),
-}) satisfies Record<string, unknown>;
+}) as const;
 
 export const idxMediaType = index("idx_media_type").on(media.type);
 export const idxMediaStatus = index("idx_media_status").on(media.status);
