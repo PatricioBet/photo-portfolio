@@ -42,23 +42,26 @@ RUN apk add --no-cache ffmpeg
 
 WORKDIR /app
 
-# Copy workspace structure (package.json files for resolution)
+# Copy workspace structure
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/db/package.json ./packages/db/
 COPY packages/contracts/package.json ./packages/contracts/
-
-# Copy source packages (workspace links point here)
-COPY packages/db/ ./packages/db/
-COPY packages/contracts/ ./packages/contracts/
 
 # Copy built outputs
 COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/packages/db/dist ./packages/db/dist
 COPY --from=build /app/packages/contracts/dist ./packages/contracts/dist
 
-# Copy node_modules from deps stage (includes all deps + workspace symlinks)
+# Copy node_modules from deps stage (all npm dependencies)
 COPY --from=deps /app/node_modules ./node_modules
+
+# Create workspace packages in node_modules (pnpm v10 doesn't create symlinks)
+RUN mkdir -p node_modules/@photo-portfolio/db/dist node_modules/@photo-portfolio/contracts/dist && \
+    cp packages/db/package.json node_modules/@photo-portfolio/db/package.json && \
+    cp packages/db/dist/* node_modules/@photo-portfolio/db/dist/ && \
+    cp packages/contracts/package.json node_modules/@photo-portfolio/contracts/package.json && \
+    cp packages/contracts/dist/* node_modules/@photo-portfolio/contracts/dist/
 
 # Non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
