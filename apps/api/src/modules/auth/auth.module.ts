@@ -16,6 +16,6 @@ import { MediaModule } from "../media/media.module";
   ],
   controllers: [AuthController],
   providers: [AuthService],
-  exports: [AuthService],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
