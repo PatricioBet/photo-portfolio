@@ -10,21 +10,19 @@ export interface Props {
 
 const { locale } = Astro.props;
 
-const basePath = locale === "en" ? "/en" : "";
-
 const navLinks = [
-  { key: "nav.photos", href: `${basePath}/photos` },
-  { key: "nav.videos", href: `${basePath}/videos` },
-  { key: "nav.collections", href: `${basePath}/collections` },
-  { key: "nav.about", href: `${basePath}/about` },
-  { key: "nav.contact", href: `${basePath}/contact` },
+  { key: "nav.photos", href: locale === "en" ? "/en/photos" : "/fotos" },
+  { key: "nav.videos", href: locale === "en" ? "/en/videos" : "/videos" },
+  { key: "nav.collections", href: locale === "en" ? "/en/collections" : "/colecciones" },
+  { key: "nav.about", href: locale === "en" ? "/en/about" : "/sobre-mi" },
+  { key: "nav.contact", href: locale === "en" ? "/en/contact" : "/contacto" },
 ];
 
 const legalLinks = [
-  { key: "footer.privacy", href: `${basePath}/privacy` },
-  { key: "footer.terms", href: `${basePath}/terms` },
-  { key: "footer.accessibility", href: `${basePath}/accessibility` },
-  { key: "footer.credits", href: `${basePath}/credits` },
+  { key: "footer.privacy", href: locale === "en" ? "/en/privacy" : "/privacidad" },
+  { key: "footer.terms", href: locale === "en" ? "/en/terms" : "/terminos" },
+  { key: "footer.accessibility", href: locale === "en" ? "/en/accessibility" : "/accesibilidad" },
+  { key: "footer.credits", href: locale === "en" ? "/en/credits" : "/creditos" },
 ];
 
 function getLabel(key: string): string {
@@ -68,7 +66,7 @@ function getLabel(key: string): string {
             </li>
           ))}
           <li>
-            <a href={`${basePath}/rss.xml`}>{getLabel("footer.rss")}</a>
+            <a href={locale === "en" ? "/en/rss.xml" : "/rss.xml"}>{getLabel("footer.rss")}</a>
           </li>
         </ul>
       </div>

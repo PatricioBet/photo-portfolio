@@ -2,11 +2,11 @@
 /**
  * BaseLayout — Shared layout with Header, Footer, SEO, and hreflang.
  */
+import fs from "node:fs";
+import path from "node:path";
 import type { Locale } from "@i18n/translations";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import tokensCSS from "@/styles/tokens.css?inline";
-import globalCSS from "@/styles/global.css?inline";
 
 export interface Props {
   title: string;
@@ -24,7 +24,7 @@ const {
   title,
   description,
   locale,
-  path,
+  path: currentPage,
   noindex = false,
   canonical,
   alternates = {},
@@ -33,21 +33,21 @@ const {
 } = Astro.props;
 
 const site = "https://photo.patriciobet.dev";
-const finalCanonical = canonical || `${site}${path}`;
+const finalCanonical = canonical || `${site}${currentPage}`;
 
 // Default alternates
 const defaultAlternates: Record<string, string> = {
-  es: `${site}${path}`,
-  en: locale === "en" ? `${site}${path}` : `${site}/en${path}`,
-  "x-default": `${site}${path}`,
+  es: `${site}${currentPage}`,
+  en: locale === "en" ? `${site}${currentPage}` : `${site}/en${currentPage}`,
+  "x-default": `${site}${currentPage}`,
 };
 
 const finalAlternates = { ...defaultAlternates, ...alternates };
 if (locale !== "en" && !alternates["en"]) {
-  finalAlternates["en"] = `${site}/en${path}`;
+  finalAlternates["en"] = `${site}/en${currentPage}`;
 }
 if (locale !== "es" && !alternates["es"]) {
-  finalAlternates["es"] = `${site}${path}`;
+  finalAlternates["es"] = `${site}${currentPage}`;
 }
 
 // JSON-LD
@@ -55,6 +55,17 @@ const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : undefined;
 
 // OG Image
 const ogImage = image || `${site}/og-default.png`;
+
+// Read CSS files for inline injection (SSR-compatible)
+const stylesDir = path.resolve(import.meta.dirname, "../styles");
+let tokensCSS = "";
+let globalCSS = "";
+try {
+  tokensCSS = fs.readFileSync(path.join(stylesDir, "tokens.css"), "utf-8");
+  globalCSS = fs.readFileSync(path.join(stylesDir, "global.css"), "utf-8");
+} catch {
+  // Fallback: empty strings — CSS will be missing but page won't crash
+}
 ---
 
 <!doctype html>
@@ -125,7 +136,7 @@ const ogImage = image || `${site}/og-default.png`;
   <body>
     <a href="#main-content" class="skip-link">{locale === "es" ? "Saltar al contenido" : "Skip to content"}</a>
 
-    <Header locale={locale} currentPage={title} currentPath={path} />
+    <Header locale={locale} currentPage={title} currentPath={currentPage} />
 
     <main id="main-content">
       <slot />
@@ -133,7 +144,7 @@ const ogImage = image || `${site}/og-default.png`;
 
     <Footer locale={locale} />
 
-    <!-- Theme restore script -->
+    <!-- Theme script (runs before paint) -->
     <script is:inline>
       (() => {
         const stored = localStorage.getItem("theme");

@@ -3,16 +3,6 @@
    =================================================================== */
 @import "./tokens.css";
 
-/* --- Theme script (runs before paint) --- */
-<script>
-  (() => {
-    const stored = localStorage.getItem("theme");
-    const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-    const theme = stored || (prefersLight ? "light" : "dark");
-    document.documentElement.setAttribute("data-theme", theme);
-  })();
-</script>
-
 /* --- Header scroll padding --- */
 main {
   scroll-padding-top: calc(var(--header-height) + var(--space-4));
