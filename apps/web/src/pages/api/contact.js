@@ -1,11 +1,10 @@
----
 /**
  * Contact API endpoint — Handles form submissions.
- * Validates input, rate limits, and stores messages.
+ * @type {import('astro').APIRoute}
  */
-import type { APIRoute } from "astro";
 
-export const POST: APIRoute = async ({ request }) => {
+/** @type {import('astro').APIRoute} */
+export const POST = async ({ request }) => {
   try {
     const body = await request.json();
     const { name, email, message, consent } = body;
@@ -35,12 +34,7 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Rate limiting check (simple in-memory for now)
-    // In production, use Redis or a similar store
-
     // Process the message
-    // In production: store in database, send email notification, etc.
-    // For now, log and return success
     console.log("Contact form submission:", { name, email, timestamp: new Date().toISOString() });
 
     return new Response(
