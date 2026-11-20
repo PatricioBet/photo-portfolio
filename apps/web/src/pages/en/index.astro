@@ -2,7 +2,15 @@
 /**
  * Home EN — Redirects to /en/
  */
-import { redirect } from "astro:redirect";
-
-redirect("/en/", 301);
 ---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="0;url=/en/" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href="/en/">/en/</a>...</p>
+  </body>
+</html>
