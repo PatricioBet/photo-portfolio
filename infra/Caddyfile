@@ -41,16 +41,15 @@ http://photo.patriciobet.dev:8080 {
 	import security_headers
 	header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
 
+	# API routes → NestJS
 	@api path /api/*
-	handle @api {
-		reverse_proxy api:3000 {
-			import proxy_headers
-		}
+	reverse_proxy @api api:3000 {
+		import proxy_headers
 	}
-	handle {
-		reverse_proxy web:4321 {
-			import proxy_headers
-		}
+
+	# Everything else → Astro web
+	reverse_proxy web:4321 {
+		import proxy_headers
 	}
 }
 
@@ -61,16 +60,15 @@ http://admin-photo.patriciobet.dev:8080 {
 	header X-Robots-Tag "noindex, nofollow"
 	header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none';"
 
+	# API routes → NestJS
 	@api path /api/*
-	handle @api {
-		reverse_proxy api:3000 {
-			import proxy_headers
-		}
+	reverse_proxy @api api:3000 {
+		import proxy_headers
 	}
-	handle {
-		reverse_proxy admin:3000 {
-			import proxy_headers
-		}
+
+	# Everything else → React admin
+	reverse_proxy admin:3000 {
+		import proxy_headers
 	}
 }
 
